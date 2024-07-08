@@ -18,7 +18,7 @@ def homeInfermiere(infermiere):
             break
         elif event == 'Profilo':
             windowHome.Hide()
-            profiloInfermire(infermiere, windowHome)
+            profiloInfermiere(infermiere, windowHome)
         elif event == 'Ok':
             paziente = ricercaPaziente(codiceFiscale)
             cartella = ricercaCartella(codiceFiscale)
