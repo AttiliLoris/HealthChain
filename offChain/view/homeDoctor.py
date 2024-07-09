@@ -25,12 +25,13 @@ def homeDoctor(doctor):
     windowHome.close()
 
 def doctorProfile(doctor, windowHome):
-    layoutProfile = [[sg.Text('Nome'), sg.InputText(doctor.name)],
-              [sg.Text('Cognome'), sg.InputText(doctor.surname)],
-              [sg.Text('Codice fiscale'), sg.InputText(doctor.cf)],
-              [sg.Button('Salva'), sg.Button('Home')]]
+    layoutProfile = [[sg.Text('Nome'), sg.InputText(doctor.name,key='name')],
+                    [sg.Text('Cognome'), sg.InputText(doctor.surname,key='surname')],
+                    [sg.Text('Codice fiscale'), sg.InputText(doctor.cf,key='cf')],
+                    [sg.Button('Salva'), sg.Button('Home')],
+                    [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
 
-    windowProfile = sg.Window('Home', layoutProfile)
+    windowProfile = sg.Window('Profile', layoutProfile)
 
     while True:
         event, values = windowProfile.read()  # SANIFICARE
@@ -40,9 +41,11 @@ def doctorProfile(doctor, windowHome):
             break
         if event == 'Salva':
             if checkValues(values):
-                pass
-            else:
-                break
+        else:
+            windowProfile['-OUTPUT-'].update('Invalid input', text_color='red')
+            windowProfile['name']=doctor.name
+            windowProfile['surname'] = doctor.surname
+            windowProfile['cf'] = doctor.cf
     windowProfile.close()
     windowHome.UnHide()
 

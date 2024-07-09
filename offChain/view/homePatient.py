@@ -20,7 +20,7 @@ def homePatient(patient):
             viewHealthFile(healthFile, windowHome)
         elif event == 'Modifica profilo':
             windowHome.Hide()
-            modifyProfile(patient)
+            modifyProfile(patient,windowHome)
 
     windowHome.close()
 
@@ -49,8 +49,26 @@ def viewHealthFile(healthFile, windowHome):
     windowHealthFile.close()
     windowHome.UnHide()
 
-def modifyProfile(patient):
-    pass
+def modifyProfile(patient,windowHome):
+    sg.theme('DarkAmber')
+    layoutProfile = [[sg.Text('Nome'), sg.InputText(patient.name,key='name')],
+                     [sg.Text('Cognome'), sg.InputText(patient.surname,key='surname')],
+                     [sg.Text('Codice fiscale'), sg.Text(patient.cf, key='cf')],
+                     [sg.Button('Salva'), sg.Button('Home')]]
+    windowProfile = sg.Window('Profile', layoutProfile)
 
+    while True:
+        event, values = windowProfile.read()  # SANIFICARE
+        if event == sg.WIN_CLOSED:
+            break
+        if event == 'Home':
+            break
+        if event == 'Salva':
+            if checkValues(values['name'],values['surname'], values['cf']):
+                pass
+            else:
+                break
+    windowProfile.close()
+    windowHome.UnHide()
 def researchHealthFile(cf):
     pass
