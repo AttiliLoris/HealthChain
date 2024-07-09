@@ -12,6 +12,7 @@ contract Patients {
         string lastName;
         string birthday;
         string birthPlace;
+        string hashedPwd;
         bool isRegistered;
         string cf;
     }
@@ -48,12 +49,21 @@ contract Patients {
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf) public onlyAuthorized{
+    function registerPatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf, string memory password) public onlyAuthorized{
         require(!patients[cf].isRegistered, "Patient already registered");
-        patients[cf] = Patient(name, lastName, birthday, birthPlace, true, cf);
+        string memory hashedPassword = hashFunction(password);
+        patients[cf] = Patient(name, lastName, birthday, birthPlace,hashedPassword, true, cf);
         emit PatientRegistered(cf, "patient");
     }
 
+    function hashFunction(string memory password) private pure returns (string memory) {
+        return string(abi.encodePacked(keccak256(bytes(password))));
+    }
+
+    function verifyPassword(string memory cf, string memory password) public view returns (bool) {
+        string memory hashedPassword = hashFunction(password);
+        return keccak256(bytes(hashedPassword)) == keccak256(bytes(doctors[cf].hashedPwd));
+    }
     /**
      * @dev Updates an existing patient's information.
      * @param name New first name of the patient.
