@@ -17,12 +17,20 @@ contract Caregivers {
 
     // Mapping from cf to caregiver information
     mapping(string => Caregiver) public caregivers;
+    mapping(address => bool) public authorizedEditors;
     address public owner;
-    event CaregiverRegistered(string indexed cf);
+    event CaregiverRegistered(string indexed cf, string indexed ctype);
+    event CaregiverUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this action");
+        _;
+    }
+
+    //Restricts function access to either the contract owner or authorized editors.
+    modifier onlyAuthorized() {
+        require(msg.sender == owner || authorizedEditors[msg.sender], "Access denied: caller is not the owner or an authorized editor.");
         _;
     }
 
@@ -37,10 +45,10 @@ contract Caregivers {
      * @param lastName Last name of the caregiver.
      * @param cf Codice fiscale (tax code) of the caregiver.
      */
-    function registerCaregiver(string memory name, string memory lastName, string memory cf) public {
+    function registerCaregiver(string memory name, string memory lastName, string memory cf) public onlyAuthorized{
         require(!caregivers[cf].isRegistered, "Caregiver already registered");
         caregivers[cf] = Caregiver(name, lastName, true, cf);
-        emit CaregiverRegistered(cf);
+        emit CaregiverRegistered(cf,"caregiver");
     }
 
     /**
@@ -49,12 +57,13 @@ contract Caregivers {
      * @param lastName New last name of the caregiver.
      * @param cf New codice fiscale (tax code) of the caregiver.
      */
-    function updateCaregiver(string memory name, string memory lastName, string memory cf) public {
+    function updateCaregiver(string memory name, string memory lastName, string memory cf) public onlyAuthorized{
         require(caregivers[cf].isRegistered, "Caregiver not found");
         Caregiver storage caregiver = caregivers[cf];
         caregiver.name = name;
         caregiver.lastName = lastName;
         caregiver.cf = cf;
+        emit CaregiverUpdated(cf, "caregiver");
     }
      /**
      * @dev Gets the information of a registered caregiver.

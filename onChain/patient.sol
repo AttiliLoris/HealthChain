@@ -18,12 +18,20 @@ contract Patients {
 
     // Mapping from cf to patient information
     mapping(string => Patient) public patients;
+    mapping(address => bool) public authorizedEditors;
     address public owner;
-    event PatientRegistered(string indexed cf);
+    event PatientRegistered(string indexed cf, string indexed ctype);
+    event PatientUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this action");
+        _;
+    }
+
+    //Restricts function access to either the contract owner or authorized editors.
+    modifier onlyAuthorized() {
+        require(msg.sender == owner || authorizedEditors[msg.sender], "Access denied: caller is not the owner or an authorized editor.");
         _;
     }
 
@@ -40,10 +48,10 @@ contract Patients {
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf) public {
+    function registerPatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf) public onlyAuthorized{
         require(!patients[cf].isRegistered, "Patient already registered");
         patients[cf] = Patient(name, lastName, birthday, birthPlace, true, cf);
-        emit PatientRegistered(cf);
+        emit PatientRegistered(cf, "patient");
     }
 
     /**
@@ -54,7 +62,7 @@ contract Patients {
      * @param birthPlace New birth place of the patient.
      * @param cf New codice fiscale (tax code) of the patient.
      */
-    function updatePatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf) public {
+    function updatePatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf) public onlyAuthorized{
         require(patients[cf].isRegistered, "Patient not found");
         Patient storage patient = patients[cf];
         patient.name = name;
@@ -62,6 +70,7 @@ contract Patients {
         patient.birthday = birthday;
         patient.birthPlace = birthPlace;
         patient.cf = cf;
+        emit PatientUpdated(cf, "patient");
     }
 
      /**
