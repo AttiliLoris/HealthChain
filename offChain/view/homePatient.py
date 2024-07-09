@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-def homePatient(patient,patientContracts, healthFileContracts,private_key):
+def homePatient(patient, patientContracts, healthFileContracts, private_key):
     sg.theme('DarkAmber')
 
     layout = [
@@ -15,12 +15,12 @@ def homePatient(patient,patientContracts, healthFileContracts,private_key):
         if event == sg.WINDOW_CLOSED:
             break
         elif event == 'Visualizza cartella clinica':
-            healthFile = researchHealthFile(patient.cf)
+            healthFile = researchHealthFile(patient.cf, healthFileContracts)
             windowHome.Hide()
             viewHealthFile(healthFile, windowHome)
         elif event == 'Modifica profilo':
             windowHome.Hide()
-            modifyProfile(patient,windowHome)
+            modifyProfile(patient,patientContracts, windowHome, private_key)
 
     windowHome.close()
 
@@ -49,7 +49,7 @@ def viewHealthFile(healthFile, windowHome):
     windowHealthFile.close()
     windowHome.UnHide()
 
-def modifyProfile(patient,windowHome):
+def modifyProfile(patient,patientContracts, windowHome, private_key):
     sg.theme('DarkAmber')
     layoutProfile = [[sg.Text('Nome'), sg.InputText(patient.name,key='name')],
                      [sg.Text('Cognome'), sg.InputText(patient.surname,key='surname')],
@@ -64,11 +64,30 @@ def modifyProfile(patient,windowHome):
         if event == 'Home':
             break
         if event == 'Salva':
-            if checkValues(values['name'],values['surname'], values['cf']):
-                pass
+            if checkValues(values):
+                patientContracts.update_doctor(patient.cf, private_key, values['name'], values['surname'])
+                windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
+                patient.name = values['name']
+                patient.surname = values['surname']
+
             else:
-                break
+                windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
+                windowProfile['name'].update(patient.name)
+                windowProfile['surname'].update(patient.surname)
+                windowProfile['cf'].update(patient.cf)
     windowProfile.close()
     windowHome.UnHide()
-def researchHealthFile(cf):
-    pass
+def researchHealthFile(cf, healthFileContracts):
+    try:
+        healthFile = healthFileContracts.get_healthFile(cf)
+        if healthFile:
+            return healthFile
+    except ValueError as e:
+        return None
+    return None
+
+def checkValues(values):
+    if values['name'] == '' or values['surname'] == '':
+        sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
+        return 0
+    return 1

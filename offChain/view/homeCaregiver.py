@@ -120,11 +120,11 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
                 caregiver.name = values['name']
                 caregiver.surname = values['surname']
 
-        else:
-            windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
-            windowProfile['name'].update(caregiver.name)
-            windowProfile['surname'].update(caregiver.surname)
-            windowProfile['cf'].update(caregiver.cf)
+            else:
+                windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
+                windowProfile['name'].update(caregiver.name)
+                windowProfile['surname'].update(caregiver.surname)
+                windowProfile['cf'].update(caregiver.cf)
     windowProfile.close()
     windowHome.UnHide()
 

@@ -47,11 +47,11 @@ def doctorProfile(doctor, windowHome,doctorContracts,private_key):
                 doctor.name = values['name']
                 doctor.surname = values['surname']
 
-        else:
-            windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
-            windowProfile['name'].update(doctor.name)
-            windowProfile['surname'].update(doctor.surname)
-            windowProfile['cf'].update(doctor.cf)
+            else:
+                windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
+                windowProfile['name'].update(doctor.name)
+                windowProfile['surname'].update(doctor.surname)
+                windowProfile['cf'].update(doctor.cf)
     windowProfile.close()
     windowHome.UnHide()
 
