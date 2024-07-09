@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
-
-def homeMedico(doctor):
+from ..model.healthFile import HealthFile
+def homeDoctor(doctor):
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
                 [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')] ]
@@ -53,10 +53,6 @@ def checkValues(values):
             return 0
     return 1
 
-
-
-def patientResearch(codiceFiscale):
-    pass
 def healthFileResearch(codiceFiscale):
     pass
 

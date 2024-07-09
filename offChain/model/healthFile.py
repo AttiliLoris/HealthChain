@@ -1,6 +1,6 @@
 from web3 import Web3
 provider_url = "http://ganache:8080"
-class healthFile:
+class HealthFile:
     def __init__(self, provider_url, contract_address, abi):
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
         self.contract_address = contract_address
