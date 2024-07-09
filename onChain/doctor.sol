@@ -11,14 +11,17 @@ contract Doctors {
     struct Doctor {
         string name;
         string lastName;
+        string pwd;
         bool isRegistered;
         string cf;
     }
 
     // Mapping from cf to doctor information
     mapping(string => Doctor) public doctors;
+    mapping(address => bool) public authorizedEditors;
     address public owner;
-    event DoctorRegistered(string indexed cf);
+    event DoctorRegistered(string indexed cf, string indexed ctype);
+    event DoctorUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
     modifier onlyOwner() {
@@ -26,6 +29,11 @@ contract Doctors {
         _;
     }
 
+    //Restricts function access to either the contract owner or authorized editors.
+    modifier onlyAuthorized() {
+        require(msg.sender == owner || authorizedEditors[msg.sender], "Access denied: caller is not the owner or an authorized editor.");
+        _;
+    }
     // Constructor to set the contract deployer as the owner
     constructor() {
         owner = msg.sender;
@@ -37,10 +45,10 @@ contract Doctors {
      * @param lastName Last name of the doctor.
      * @param cf Codice fiscale (tax code) of the doctor.
      */
-    function registerDoctor(string memory name, string memory lastName, string memory cf) public {
+    function registerDoctor(string memory name, string memory lastName, string memory cf) public onlyAuthorized{
         require(!doctors[cf].isRegistered, "Doctor already registered");
         doctors[cf] = Doctor(name, lastName, true, cf);
-        emit DoctorRegistered(cf);
+        emit DoctorRegistered(cf, "doctor");
     }
 
     /**
@@ -49,12 +57,13 @@ contract Doctors {
      * @param lastName New last name of the doctor.
      * @param cf New codice fiscale (tax code) of the doctor.
      */
-    function updateDoctor(string memory name, string memory lastName, string memory cf) public {
+    function updateDoctor(string memory name, string memory lastName, string memory cf) public onlyAuthorized{
         require(doctors[cf].isRegistered, "Doctor not found");
         Doctor storage doctor = doctors[cf];
         doctor.name = name;
         doctor.lastName = lastName;
         doctor.cf = cf;
+        emit DoctorUpdated(cf, "doctor");
     }
      /**
      * @dev Gets the information of a registered doctor.
