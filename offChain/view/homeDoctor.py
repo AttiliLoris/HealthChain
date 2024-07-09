@@ -1,111 +1,109 @@
 import PySimpleGUI as sg
-import Logica
 
-def homeMedico(medico):
+def homeMedico(doctor):
     sg.theme('DarkAmber')
-    layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText()],
+    layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
                 [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')] ]
 
 
     windowHome = sg.Window('Home', layoutHome)
 
     while True:
-        event, codiceFiscale = windowHome.read() #SANIFICARE
+        event, values = windowHome.read() #SANIFICARE
+        cf=values['cf']
         if event == sg.WIN_CLOSED or event == 'Cancel':
             break
         if event == 'Profilo':
             windowHome.Hide()
-            profiloMedico(medico, windowHome)
+            doctorProfile(doctor, windowHome)
         if event == 'Ok':
-            paziente = ricercaPaziente(codiceFiscale)
-            fascicolo = ricercaFascicolo(codiceFiscale)
-            if fascicoloPaziente:
+            healthFile = healthFileResearch(cf)
+            if healthFile:
                 windowHome.Hide()
-                fascicoloPaziente(paziente, fascicolo, windowHome)
+                patientHealthFile(healthFile, windowHome)
 
     windowHome.close()
 
-def profiloMedico(medico, windowHome):
-    layoutProfilo = [[sg.Text('Nome'), sg.InputText(medico.nome)],
-              [sg.Text('Cognome'), sg.InputText(medico.cognome)],
-              [sg.Text('Codice fiscale'), sg.InputText(medico.codiceFiscale)],
+def doctorProfile(doctor, windowHome):
+    layoutProfile = [[sg.Text('Nome'), sg.InputText(doctor.name)],
+              [sg.Text('Cognome'), sg.InputText(doctor.surname)],
+              [sg.Text('Codice fiscale'), sg.InputText(doctor.cf)],
               [sg.Button('Salva'), sg.Button('Home')]]
 
-    windowProfilo = sg.Window('Home', layoutProfilo)
+    windowProfile = sg.Window('Home', layoutProfile)
 
     while True:
-        event, valoriInput = windowProfilo.read()  # SANIFICARE
+        event, values = windowProfile.read()  # SANIFICARE
         if event == sg.WIN_CLOSED:
             break
         if event == 'Home':
             break
         if event == 'Salva':
-            if controllaValori(valoriInput):
+            if checkValues(values):
                 pass
             else:
                 break
-    windowProfilo.close()
+    windowProfile.close()
     windowHome.UnHide()
 
-def controllaValori(valoriInput):
-    for elemento in valoriInput:
-        if valoriInput[elemento] == '':
+def checkValues(values):
+    for element in values:
+        if values[element] == '':
             sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
-            return 1
-    medico.salva(valoriInput)
-
-medico = Medico.Medico('Loris', 'Attili', 'CF1')
-homeMedico(medico)
+            return 0
+    return 1
 
 
-def ricercaPaziente(codiceFiscale):
+
+def patientResearch(codiceFiscale):
     pass
-def ricercaFascicolo(codiceFiscale):
+def healthFileResearch(codiceFiscale):
     pass
 
-def fascicoloPaziente(paziente, fascicolo, windowHome):
-    layoutFascicolo = [[sg.Text('Nome: ' + paziente.nome), sg.Text('Cognome: '+ paziente.cognome), sg.Text('Codice fiscale: '+ paziente.codiceFiscale)],
-                        [sg.Text('Storia clinica: '), sg.Text(fascicolo.storiaClinica)],
-                        [sg.Text('Prescrizioni: '), sg.Text(fascicolo.prescrizioni)],
+def patientHealthFile(healthFile, windowHome):
+    layoutHealthFile = [[sg.Text('Nome: ' + healthFile.name), sg.Text('Cognome: '+ healthFile.surname), sg.Text('Codice fiscale: '+ healthFile.cf)],
+                        [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicHistory)],
+                        [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions)],
                         [sg.Button('Home'), sg.Button('Modifica storia clinica'), sg.Button('Modifica prescrizioni')]]
 
-    windowFascicolo = sg.Window('Fascicolo '+ paziente.nome +' '+  paziente.cognome, layoutFascicolo)
+    windowHealthFile = sg.Window('Fascicolo '+ healthFile.name +' '+  healthFile.surname, layoutHealthFile)
 
     while True:
-        event, values = windowFascicolo.read()
+        event, values = windowHealthFile.read()
         if event == sg.WIN_CLOSED:
             break
         if event == 'Modifica storia clinica':
-            windowFascicolo.Hide()
-            modificaStoriaClinica(fascicolo, windowFascicolo)
+            windowHealthFile.Hide()
+            modififyClinicHistory(healthFile, windowHealthFile)
         if event == 'Modifica prescrizioni':
-            windowFascicolo.Hide()
-            modificaPrescrizioni(fascicolo)
+            windowHealthFile.Hide()
+            modifyPrescriptions(healthFile)
         if event == 'Home':
             windowHome.UnHide()
             break
-    windowFascicolo.close()
+    windowHealthFile.close()
 
 
 
-def modificaStoriaClinica(fascicolo, windowFascicolo):
-    layoutModificaStoria = [[sg.Text('Storia clinica: '), sg.InputText(fascicolo.storiaClinica)]
+def modififyClinicHistory(healthFile, windowHealthFile):
+    layoutClinicHistory = [[sg.Text('Storia clinica: '), sg.InputText(healthFile.clinicHistory,key='clinicHistory')]
                             [sg.Button('Conferma'), Sg.Button('Indietro')]]
-    windowModificaStoria = sg.Window('Dettaglio', layoutModificaStoria)
+    windowClinicHistory = sg.Window('Dettaglio', layoutClinicHistory)
 
     while True:
-        event, testo = windowModificaStoria.read()
+        event, values = windowClinicHistory.read()
+        text= values['clinicHistory']
         if event == sg.WIN_CLOSED:
             break
         if event == 'Conferma':
-            if testo =='':
+            if text =='':
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
             else:
-                fascicolo.storiaClinica(testo)
+                healthFile.clinicHistory(text)
                 break
         if event == 'Indietro':
             break
-    windowModificaStoria.close()
-    windowFascicolo.UnHide()
-def modificaPrescrizioni(fascicolo):
+    windowClinicHistory.close()
+    windowHealthFile.UnHide()
+def modifyPrescriptions(fascicolo):
     pass

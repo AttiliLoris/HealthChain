@@ -1,54 +1,56 @@
 import PySimpleGUI as sg
-def homePaziente(paziente):
+def homePatient(patient):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Benvenuto {paziente.nome} {paziente.cognome}')],
+        [sg.Text(f'Benvenuto {patient.name} {patient.surname}')],
         [sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo')]
     ]
 
-    windowHomePaziente = sg.Window('Home Paziente', layout)
+    windowHome = sg.Window('Home Paziente', layout)
 
     while True:
-        event, values = windowHomePaziente.read()
+        event, values = windowHome.read()
 
         if event == sg.WINDOW_CLOSED:
             break
         elif event == 'Visualizza cartella clinica':
-            cartella = ricercaCartella(paziente.codiceFiscale)
-            visualizzaCartellaClinica(paziente, cartella)
+            healthFile = researchHealthFile(patient.cf)
+            windowHome.Hide()
+            viewHealthFile(healthFile, windowHome)
         elif event == 'Modifica profilo':
-            modificaProfilo(paziente)
+            windowHome.Hide()
+            modifyProfile(patient)
 
-    windowHomePaziente.close()
+    windowHome.close()
 
-def visualizzaCartellaClinica(paziente):
+def viewHealthFile(healthFile, windowHome):
     sg.theme('DarkAmber')
-    cartella = ricercaCartella(paziente.codiceFiscale)
     layout = [
-        [sg.Text(f'Cartella di {paziente.nome} {paziente.cognome}')],
-        [sg.Text(f'Nome: {paziente.nome}')],
-        [sg.Text(f'Cognome: {paziente.cognome}')],
-        [sg.Text(f'Codice fiscale: {paziente.codiceFiscale}')],
+        [sg.Text(f'Cartella di {healthFile.name} {healthFile.surname}')],
+        [sg.Text(f'Nome: {healthFile.name}')],
+        [sg.Text(f'Cognome: {healthFile.surname}')],
+        [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text('Prescrizioni:')],
-        [sg.Listbox(values=cartella.prescrizioni, size=(30, 5))],
+        [sg.Listbox(values=healthFile.prescriptions, size=(30, 5))],
         [sg.Text('Note:')],
-        [sg.Listbox(values=cartella.note, size=(30, 5))],
+        [sg.Listbox(values=healthFile.notes, size=(30, 5))],
         [sg.Button('Chiudi')]
     ]
 
-    windowCartellaClinica = sg.Window('Cartella Clinica', layout)
+    windowHealthFile = sg.Window('Cartella Clinica', layout)
 
     while True:
-        event, values = windowCartellaClinica.read()
+        event, values = windowHealthFile.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Chiudi':
             break
 
-    windowCartellaClinica.close()
+    windowHealthFile.close()
+    windowHome.UnHide()
 
-def modificaProfilo(paziente):
+def modifyProfile(patient):
     pass
 
-def ricercaCartella(codiceFiscale):
+def researchHealthFile(cf):
     pass
