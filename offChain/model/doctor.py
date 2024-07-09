@@ -23,10 +23,10 @@ class Doctor:
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_doctor(self, account, private_key, name, surname, cf):
+    def update_doctor(self, cf, private_key, name, surname):
         transaction = self.contract.functions.updateDoctor(name, surname, cf).buildTransaction({
-            'from': account,
-            'nonce': self.web3.eth.getTransactionCount(account),
+            'from': cf,
+            'nonce': self.web3.eth.getTransactionCount(cf),
             'gas': 2000000,
             'gasPrice': self.web3.toWei('50', 'gwei')
         })

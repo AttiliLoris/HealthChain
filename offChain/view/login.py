@@ -41,5 +41,6 @@ def checkCredentials(cf,password,doctorContracts, caregiverContracts, patientCon
         user = patientContracts.getDoctor(cf)
         if user.password == password:
             return user
-    finally:
+        raise ValueError("")
+    except ValueError as e:
         return 0

@@ -19,19 +19,21 @@ HealthFileData = namedtuple('HealthData', ['name', 'surname', 'cf'])
 provider_url = "http://ganache:8080"
 contract_address="contractAddr"
 abi="abiCode"
+private_key="privateKey"
 def main():
     doctorContracts=Doctor(provider_url,contract_address,abi)
     caregiverContracts = Caregiver(provider_url, contract_address, abi)
     patientContracts = Patient(provider_url, contract_address, abi)
+    healthFileContracts = HealthFile(provider_url, contract_address, abi)
 
     user = login(doctorContracts, caregiverContracts, patientContracts)
 
     if isinstance(user, DoctorData):
-        homeDoctor(user)
+        homeDoctor(user,doctorContracts, healthFileContracts, private_key)
     elif isinstance(user, CaregiverData):
-        homeCaregiver(user)
+        homeCaregiver(user,caregiverContracts,private_key)
     elif isinstance(user, PatientData):
-        homePatient(user)
+        homePatient(user,patientContracts,private_key)
 
 
 

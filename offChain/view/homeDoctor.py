@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 from ..model.healthFile import HealthFile
-def homeDoctor(doctor):
+from..model.doctor import Doctor
+def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
                 [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')] ]
@@ -15,19 +16,19 @@ def homeDoctor(doctor):
             break
         if event == 'Profilo':
             windowHome.Hide()
-            doctorProfile(doctor, windowHome)
+            doctorProfile(doctor, windowHome,doctorContracts,private_key)
         if event == 'Ok':
-            healthFile = healthFileResearch(cf)
+            healthFile = healthFileResearch(cf,healthFileContracts)
             if healthFile:
                 windowHome.Hide()
                 patientHealthFile(healthFile, windowHome)
 
     windowHome.close()
 
-def doctorProfile(doctor, windowHome):
+def doctorProfile(doctor, windowHome,doctorContracts,private_key):
     layoutProfile = [[sg.Text('Nome'), sg.InputText(doctor.name,key='name')],
                     [sg.Text('Cognome'), sg.InputText(doctor.surname,key='surname')],
-                    [sg.Text('Codice fiscale'), sg.InputText(doctor.cf,key='cf')],
+                    [sg.Text('Codice fiscale'), sg.Text(doctor.cf,key='cf')],
                     [sg.Button('Salva'), sg.Button('Home')],
                     [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
 
@@ -41,8 +42,13 @@ def doctorProfile(doctor, windowHome):
             break
         if event == 'Salva':
             if checkValues(values):
+                doctorContracts.update_doctor(doctor.cf,private_key,values['name'],values['surname'])
+                windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
+                doctor.name = values['name']
+                doctor.surname = values['surname']
+
         else:
-            windowProfile['-OUTPUT-'].update('Invalid input', text_color='red')
+            windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
             windowProfile['name']=doctor.name
             windowProfile['surname'] = doctor.surname
             windowProfile['cf'] = doctor.cf
@@ -50,13 +56,12 @@ def doctorProfile(doctor, windowHome):
     windowHome.UnHide()
 
 def checkValues(values):
-    for element in values:
-        if values[element] == '':
-            sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
-            return 0
+    if values['name'] == '' or values['surname'] == '':
+        sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
+        return 0
     return 1
 
-def healthFileResearch(codiceFiscale):
+def healthFileResearch(codiceFiscale,healthFileContracts):
     pass
 
 def patientHealthFile(healthFile, windowHome):
