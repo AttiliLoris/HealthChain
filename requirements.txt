@@ -1,0 +1,14 @@
+web3
+#qui dentro dobbiamo inserire tutto quello che c'è da installare per far funzionare l'applicazione
+#ad esempio se usiamo pyGui dobbiamo mettere anche quella etc.
+#queste sotto sono quelle messe da loro quasi sicuramente molte noi non le useremo ma controlliamo e stiamo attenti
+eth-utils
+eth-keys
+pyyaml
+web3
+py-solc-x
+click
+rich
+colorama
+faker
+cryptography
