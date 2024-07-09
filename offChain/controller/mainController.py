@@ -31,9 +31,9 @@ def main():
     if isinstance(user, DoctorData):
         homeDoctor(user,doctorContracts, healthFileContracts, private_key)
     elif isinstance(user, CaregiverData):
-        homeCaregiver(user,caregiverContracts,private_key)
+        homeCaregiver(user,caregiverContracts, healthFileContracts, private_key)
     elif isinstance(user, PatientData):
-        homePatient(user,patientContracts,private_key)
+        homePatient(user,patientContracts, healthFileContracts,private_key)
 
 
 

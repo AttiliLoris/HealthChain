@@ -21,7 +21,7 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
             healthFile = healthFileResearch(cf,healthFileContracts)
             if healthFile:
                 windowHome.Hide()
-                patientHealthFile(healthFile, windowHome)
+                patientHealthFile(healthFile, windowHome, healthFileContracts,private_key)
 
     windowHome.close()
 
@@ -49,9 +49,9 @@ def doctorProfile(doctor, windowHome,doctorContracts,private_key):
 
         else:
             windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
-            windowProfile['name']=doctor.name
-            windowProfile['surname'] = doctor.surname
-            windowProfile['cf'] = doctor.cf
+            windowProfile['name'].update(doctor.name)
+            windowProfile['surname'].update(doctor.surname)
+            windowProfile['cf'].update(doctor.cf)
     windowProfile.close()
     windowHome.UnHide()
 
@@ -61,10 +61,16 @@ def checkValues(values):
         return 0
     return 1
 
-def healthFileResearch(codiceFiscale,healthFileContracts):
-    pass
+def healthFileResearch(cf,healthFileContracts):
+    try:
+        healthFile = healthFileContracts.get_healthFile(cf)
+        if healthFile:
+            return healthFile
+    except ValueError as e:
+        return None
+    return None
 
-def patientHealthFile(healthFile, windowHome):
+def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
     layoutHealthFile = [[sg.Text('Nome: ' + healthFile.name), sg.Text('Cognome: '+ healthFile.surname), sg.Text('Codice fiscale: '+ healthFile.cf)],
                         [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicHistory)],
                         [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions)],
@@ -78,10 +84,10 @@ def patientHealthFile(healthFile, windowHome):
             break
         if event == 'Modifica storia clinica':
             windowHealthFile.Hide()
-            modififyClinicHistory(healthFile, windowHealthFile)
+            modififyClinicHistory(healthFile, windowHealthFile,healthFileContracts, private_key)
         if event == 'Modifica prescrizioni':
             windowHealthFile.Hide()
-            modifyPrescriptions(healthFile)
+            modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,private_key)
         if event == 'Home':
             windowHome.UnHide()
             break
@@ -89,7 +95,7 @@ def patientHealthFile(healthFile, windowHome):
 
 
 
-def modififyClinicHistory(healthFile, windowHealthFile):
+def modififyClinicHistory(healthFile, windowHealthFile, healthFileContracts, private_key):
     layoutClinicHistory = [[sg.Text('Storia clinica: '), sg.InputText(healthFile.clinicHistory,key='clinicHistory')]
                             [sg.Button('Conferma'), Sg.Button('Indietro')]]
     windowClinicHistory = sg.Window('Dettaglio', layoutClinicHistory)
@@ -103,11 +109,12 @@ def modififyClinicHistory(healthFile, windowHealthFile):
             if text =='':
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
             else:
-                healthFile.clinicHistory(text)
+                healthFileContracts.update_healthFile(cf, private_key, name, surname)#vanno aggiunti gli attributi
+                healthFile.clinicHistory=text
                 break
         if event == 'Indietro':
             break
     windowClinicHistory.close()
     windowHealthFile.UnHide()
-def modifyPrescriptions(fascicolo):
+def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts):
     pass

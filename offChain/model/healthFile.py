@@ -22,10 +22,10 @@ class HealthFile:
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_healthFile(self, account, private_key, name, surname,cf):
+    def update_healthFile(self, cf, private_key, name, surname):
         transaction = self.contract.functions.updatehealthFile(name,surname,cf).buildTransaction({
-            'from': account,
-            'nonce': self.web3.eth.getTransactionCount(account),
+            'from': cf,
+            'nonce': self.web3.eth.getTransactionCount(cf),
             'gas': 2000000,
             'gasPrice': self.web3.toWei('50', 'gwei')
         })
@@ -35,7 +35,7 @@ class HealthFile:
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def get_healthFile(self, account):
-        name, surname ,cf = self.contract.functions.getHealthFile().call({'from': account})
-        healthFile = HealthFileData(name, surname, cf)
+    def get_healthFile(self, cf):
+        name, surname ,cfRecived = self.contract.functions.getHealthFile().call({'from': cf})
+        healthFile = HealthFileData(name, surname, cfRecived)
         return healthFile

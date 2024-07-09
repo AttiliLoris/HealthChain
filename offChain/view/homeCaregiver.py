@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-def homeCaregiver(caregiver):
+def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, private_key):
     sg.theme('DarkAmber')
 
     layout = [
@@ -18,7 +18,7 @@ def homeCaregiver(caregiver):
             break
         elif event == 'Profilo':
             windowHome.Hide()
-            caregiverProfile(caregiver, windowHome)
+            caregiverProfile(caregiver,caregiverContracts, windowHome, private_key)
         elif event == 'Ok':
             cf = values['cf']
             healthFile = healthFileResearch(cf)
@@ -92,30 +92,51 @@ def addNote(healthFile, windowHealthFile):
     windowAddNote.close()
     windowHealthFile.UnHide()
 
-def caregiverProfile(caregiver, windowHome):
-    layoutProfilo = [[sg.Text(f'Nome: {caregiver.name}')],
-        [sg.Text(f'Cognome: {caregiver.surname}')],
-        [sg.Text(f'Codice fiscale: {caregiver.cf}')],
-              [sg.Button('Home')]]
+def checkValues(values):
+    if values['name'] == '' or values['surname'] == '':
+        sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
+        return 0
+    return 1
 
-    windowProfile = sg.Window('Home', layoutProfilo)
+def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
+    layoutProfile = [[sg.Text('Nome'), sg.InputText(caregiver.name, key='name')],
+                     [sg.Text('Cognome'), sg.InputText(caregiver.surname, key='surname')],
+                     [sg.Text('Codice fiscale'), sg.Text(caregiver.cf, key='cf')],
+                     [sg.Button('Salva'), sg.Button('Home')],
+                     [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
+
+    windowProfile = sg.Window('Profile', layoutProfile)
 
     while True:
-        event, valoriInput = windowProfile.read()  # SANIFICARE
+        event, values = windowProfile.read()  # SANIFICARE
         if event == sg.WIN_CLOSED:
             break
         if event == 'Home':
-            windowHome.UnHide()
             break
+        if event == 'Salva':
+            if checkValues(values):
+                caregiverContracts.update_caregiver(caregiver.cf, private_key, values['name'], values['surname'])
+                windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
+                caregiver.name = values['name']
+                caregiver.surname = values['surname']
+
+        else:
+            windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
+            windowProfile['name'].update(caregiver.name)
+            windowProfile['surname'].update(caregiver.surname)
+            windowProfile['cf'].update(caregiver.cf)
     windowProfile.close()
     windowHome.UnHide()
 
 
-def patientResearch(codiceFiscale):
-    pass
-
-def healthFileResearch(codiceFiscale):
-    pass
+def healthFileResearch(cf,healthFileContracts):
+    try:
+        healthFile = healthFileContracts.get_healthFile(cf)
+        if healthFile:
+            return healthFile
+    except ValueError as e:
+        return None
+    return None
 
 def confermaCure(paziente, cartella):
     pass

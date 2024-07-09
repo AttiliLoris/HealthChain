@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-def homePatient(patient):
+def homePatient(patient,patientContracts, healthFileContracts,private_key):
     sg.theme('DarkAmber')
 
     layout = [
