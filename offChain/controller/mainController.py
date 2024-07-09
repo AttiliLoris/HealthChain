@@ -26,15 +26,12 @@ def main():
 
     user = login(doctorContracts, caregiverContracts, patientContracts)
 
-    if user['type']=='doctor':
-        doctor = DoctorData(user['name'], user['surname'], user['cf'])
-        homeDoctor(doctor)
-    elif user['type']=='caregiver':
-        caregiver = CaregiverData(user['name'], user['surname'])
-        homeCaregiver(caregiver)
-    elif user['type']=='patient':
-        patient = PatientData(user['name'], user['surname'],user['cf'])
-        homePatient(patient)
+    if isinstance(user, DoctorData):
+        homeDoctor(user)
+    elif isinstance(user, CaregiverData):
+        homeCaregiver(user)
+    elif isinstance(user, PatientData):
+        homePatient(user)
 
 
 

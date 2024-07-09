@@ -1,5 +1,8 @@
+from collections import namedtuple
+
 from web3 import Web3
 provider_url = "http://ganache:8080"
+HealthFileData = namedtuple('HealthData', ['name', 'surname', 'cf'])
 class HealthFile:
     def __init__(self, provider_url, contract_address, abi):
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
@@ -34,8 +37,5 @@ class HealthFile:
 
     def get_healthFile(self, account):
         name, surname ,cf = self.contract.functions.getHealthFile().call({'from': account})
-        return {
-            'name': name,
-            'surname': surname,
-            'cf': cf
-        }
+        healthFile = HealthFileData(name, surname, cf)
+        return healthFile

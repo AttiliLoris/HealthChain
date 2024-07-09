@@ -1,5 +1,8 @@
+from collections import namedtuple
+
 from web3 import Web3
 
+CaregiverData = namedtuple('CaregiverData', ['name', 'surname'])
 class Caregiver:
     def __init__(self, provider_url, contract_address, abi):
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
@@ -34,7 +37,5 @@ class Caregiver:
 
     def get_caregiver(self, account):
         name, surname = self.contract.functions.getCaregiver().call({'from': account})
-        return {
-            'name': name,
-            'surname': surname
-        }
+        caregiver = CaregiverData(name, surname)
+        return caregiver

@@ -1,6 +1,9 @@
 import json
+from collections import namedtuple
+
 from web3 import Web3
 provider_url = "http://ganache:8080"
+PatientData = namedtuple('PatientData', ['name', 'surname', 'cf'])
 class Patient:
     def __init__(self, provider_url, contract_address, abi):
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
@@ -35,9 +38,6 @@ class Patient:
 
     def get_patient(self, account):
         name, surname, cf = self.contract.functions.getDoctor().call({'from': account})
-        return {
-            'name': name,
-            'surname': surname,
-            'cf': cf
-        }
+        patient = PatientData(name, surname, cf)
+        return patient
 

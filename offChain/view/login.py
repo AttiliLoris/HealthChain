@@ -33,16 +33,13 @@ def login(doctorContracts, caregiverContracts, patientContracts):
 def checkCredentials(cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
         user= doctorContracts.getDoctor(cf)
-        if user['password'] == password:
-            user['type']='doctor'
+        if user.password == password:
             return user
         user = caregiverContracts.getDoctor(cf)
-        if user['password'] == password:
-            user['type'] = 'caregiver'
+        if user.password == password:
             return user
         user = patientContracts.getDoctor(cf)
-        if user['password'] == password:
-            user['type'] = 'patient'
+        if user.password == password:
             return user
     finally:
         return 0
