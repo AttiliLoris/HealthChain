@@ -1,18 +1,37 @@
 from collections import namedtuple
 from ..view.login import login
 from ..view.homeCaregiver import homeCaregiver
-Doctor = namedtuple('Doctor', ['name', 'surname', 'cf'])
-Caregiver = namedtuple('Caregiver', ['name', 'surname'])
-Patient = namedtuple('Patient', ['name', 'surname', 'cf'])
-HealthFile = namedtuple('HealthFile', ['name', 'surname', 'cf'])
+from ..view.homeDoctor import homeDoctor
+from ..view.homePatient import homePatient
 
+from ..model.caregiver import Caregiver
+from ..model.doctor import Doctor
+from ..model.healthFile import HealthFile
+from ..model.patient import Patient
+
+
+DoctorData = namedtuple('DoctorData', ['name', 'surname', 'cf'])
+CaregiverData = namedtuple('CaregiverData', ['name', 'surname'])
+PatientData = namedtuple('PatientData', ['name', 'surname', 'cf'])
+HealthFileData = namedtuple('HealthData', ['name', 'surname', 'cf'])
+
+#provider_url, contract_address, abi
+provider_url = "http://ganache:8080"
+contract_address="contractAddr"
+abi="abiCode"
 def main():
-    user = login()
-    if isinstance(user, Doctor):
-        pass
-    elif isinstance(user, Caregiver):
+    doctorContracts=Doctor(provider_url,contract_address,abi)
+    caregiverContracts = Caregiver(provider_url, contract_address, abi)
+    patientContracts = Patient(provider_url, contract_address, abi)
+
+    user = login(doctorContracts, caregiverContracts, patientContracts)
+
+    if isinstance(user, DoctorData):
+        homeDoctor(user)
+    elif isinstance(user, CaregiverData):
         homeCaregiver(user)
-    elif isinstance(user, Patient):
-        pass
+    elif isinstance(user, PatientData):
+        homePatient(user)
+
 
 

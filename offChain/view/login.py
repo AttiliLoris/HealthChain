@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-def login():
+def login(doctorContracts, caregiverContracts, patientContracts):
     sg.theme('DarkAmber')
 
     layout = [
@@ -19,7 +19,7 @@ def login():
         if event == sg.WINDOW_CLOSED or event == 'Esci':
             return None
         elif event == 'Conferma':
-            utente = checkCredentials(values['username'], values['password'])
+            utente = checkCredentials(values['username'], values['password'],doctorContracts, caregiverContracts, patientContracts)
             if utente:
                 windowLogin['-OUTPUT-'].update('Login Successful', text_color='green')
                 windowLogin.close()
@@ -27,8 +27,8 @@ def login():
             else:
                 windowLogin['-OUTPUT-'].update('Login Failed', text_color='red')
                 # Azzerare il contenuto degli input text
-                windowLogin['-USERNAME-'].update('')
-                windowLogin['-PASSWORD-'].update('')
+                windowLogin['username'].update('')
+                windowLogin['password'].update('')
 
-def checkCredentials(username, password):
+def checkCredentials(username, password,doctorContracts, caregiverContracts, patientContracts):
     pass
