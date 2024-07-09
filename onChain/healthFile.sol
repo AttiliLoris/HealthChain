@@ -64,7 +64,6 @@ contract HealthFiles {
         healthFile.note = note;
         emit NewHealthFile(cf);
     }
-
      /**
      * @dev Gets the health file of a patient.
      * @param cf Codice fiscale (tax code) of the patient.

@@ -56,7 +56,6 @@ contract Doctors {
         doctor.lastName = lastName;
         doctor.cf = cf;
     }
-
      /**
      * @dev Gets the information of a registered doctor.
      * @param cf Codice fiscale (tax code) of the doctor.

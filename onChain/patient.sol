@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 /**
  * @title Patients
- * @dev This contract manages the registration and updates of patients.
+ * @dev This contract manages the registration and updates of patient.
  */
 contract Patients {
     // Struct to store patient information

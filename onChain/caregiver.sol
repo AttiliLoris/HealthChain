@@ -56,7 +56,6 @@ contract Caregivers {
         caregiver.lastName = lastName;
         caregiver.cf = cf;
     }
-
      /**
      * @dev Gets the information of a registered caregiver.
      * @param cf Codice fiscale (tax code) of the caregiver.
