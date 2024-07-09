@@ -33,12 +33,13 @@ class Doctor:
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def get_doctor(self, account):
-        name, surname, cf = self.contract.functions.getDoctor().call({'from': account})
+    def get_doctor(self, cf):
+        name, surname, cf1, password= self.contract.functions.getDoctor().call({'from': cf})
         return {
             'name': name,
             'surname': surname,
-            'cf': cf
+            'cf': cf1,
+            'password': password
         }
 """
 Esempio di utilizzo:

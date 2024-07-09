@@ -4,8 +4,8 @@ def login(doctorContracts, caregiverContracts, patientContracts):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Benvenuto, Inserire username e password')],
-        [sg.Text('Username', size=(15, 1)), sg.InputText(key='username')],
+        [sg.Text(f'Benvenuto, Inserire codice fiscale e password')],
+        [sg.Text('Codice fiscale', size=(15, 1)), sg.InputText(key='cf')],
         [sg.Text('Password', size=(15, 1)), sg.InputText(key='password', password_char='*')],
         [ sg.Button('Esci'), sg.Button('Conferma')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
@@ -19,16 +19,30 @@ def login(doctorContracts, caregiverContracts, patientContracts):
         if event == sg.WINDOW_CLOSED or event == 'Esci':
             return None
         elif event == 'Conferma':
-            utente = checkCredentials(values['username'], values['password'],doctorContracts, caregiverContracts, patientContracts)
+            utente = checkCredentials(values['cf'], values['password'],doctorContracts, caregiverContracts, patientContracts)
             if utente:
                 windowLogin['-OUTPUT-'].update('Login Successful', text_color='green')
                 windowLogin.close()
                 return utente
             else:
                 windowLogin['-OUTPUT-'].update('Login Failed', text_color='red')
-                # Azzerare il contenuto degli input text
-                windowLogin['username'].update('')
+                # Azzera il contenuto degli input text
+                windowLogin['cf'].update('')
                 windowLogin['password'].update('')
 
-def checkCredentials(username, password,doctorContracts, caregiverContracts, patientContracts):
-    pass
+def checkCredentials(cf,password,doctorContracts, caregiverContracts, patientContracts):
+    try:
+        user= doctorContracts.getDoctor(cf)
+        if user['password'] == password:
+            user['type']='doctor'
+            return user
+        user = caregiverContracts.getDoctor(cf)
+        if user['password'] == password:
+            user['type'] = 'caregiver'
+            return user
+        user = patientContracts.getDoctor(cf)
+        if user['password'] == password:
+            user['type'] = 'patient'
+            return user
+    finally:
+        return 0
