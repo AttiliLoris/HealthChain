@@ -1,120 +1,120 @@
 import PySimpleGUI as sg
 
-def homeInfermiere(infermiere):
+def homeCaregiver(caregiver):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Benvenuto {infermiere.nome} {infermiere.cognome}')],
-        [sg.Text('Inserire il codice fiscale del paziente:'), sg.InputText(), sg.Button('Ok')],
+        [sg.Text(f'Benvenuto {caregiver.name} {caregiver.surname}')],
+        [sg.Text('Inserire il codice fiscale del paziente:'), sg.InputText(key='cf'), sg.Button('Ok')],
         [ sg.Button('Indietro'), sg.Button('Profilo')]
     ]
 
     windowHome = sg.Window('Home', layout)
 
     while True:
-        event, codiceFiscale = windowHome.read()
+        event, values = windowHome.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Indietro':
             break
         elif event == 'Profilo':
             windowHome.Hide()
-            profiloInfermiere(infermiere, windowHome)
+            caregiverProfile(caregiver, windowHome)
         elif event == 'Ok':
-            paziente = ricercaPaziente(codiceFiscale)
-            cartella = ricercaCartella(codiceFiscale)
-            if cartella:
+            cf = values['cf']
+            healthFile = healthFileResearch(cf)
+            if healthFile:
                 windowHome.Hide()
-                cartellaPaziente(paziente, cartella, windowHome)
+                patientHealthFile(healthFile, windowHome)
             break
 
     windowHome.close()
 
-def cartellaPaziente(paziente, cartella, windowHome):
+def patientHealthFile(healthFile, windowHome):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Cartella di {paziente.nome} {paziente.cognome}')],
-        [sg.Text(f'Nome: {paziente.nome}')],
-        [sg.Text(f'Cognome: {paziente.cognome}')],
-        [sg.Text(f'Codice fiscale: {paziente.codiceFiscale}')],
+        [sg.Text(f'Cartella di {healthFile.name} {healthFile.surname}')],
+        [sg.Text(f'Nome: {healthFile.name}')],
+        [sg.Text(f'Cognome: {healthFile.surname}')],
+        [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text('Prescrizioni:')],
-        [sg.Listbox(values=cartella.prescrizioni, size=(30, 5))],
+        [sg.Listbox(values=healthFile.prescriptions, size=(30, 5))],
         [sg.Text('Note:')],
-        [sg.Listbox(values=cartella.note, size=(30, 5))],
+        [sg.Listbox(values=healthFile.notes, size=(30, 5))],
         [sg.Button('Chiudi'), sg.Button('Aggiungi nota'), sg.Button('Conferma'), sg.Button('Home')]
     ]
 
-    windowCartella = sg.Window('Cartella Paziente', layout)
+    windowHealthFile = sg.Window('Cartella Paziente', layout)
 
     while True:
-        event, values = windowCartella.read()
+        event, values = windowHealthFile.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Chiudi':
             break
         elif event == 'Conferma':
-            confermaCure(paziente,cartella) #non so come ma conferma di aver adto le cure che il medico
+            confermaCure(healthFile) #non so come ma conferma di aver adto le cure che il medico
                                             #ha scritto nelle prescrizioni
         elif event == 'Aggiungi':
-            nota_inserita = values['nota_input']
-            if nota_inserita:
-                aggiungiNotaPaziente(paziente,cartella, windowCartella)
-
+            note = values['nota_input']
+            if note:
+                addNote(healthFile, windowHealthFile)
         elif event == 'Home':
             windowHome.UnHide()
             break
 
-    windowCartella.close()
+    windowHealthFile.close()
 
-def aggiungiNotaPaziente(paziente,cartella, windowCartella):
+def addNote(healthFile, windowHealthFile):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Aggiungi Nota per {paziente.nome} {paziente.cognome}')],
+        [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.surname}')],
         [sg.Text('Nuova Nota:'), sg.InputText(key='nuova_nota')],
         [sg.Button('Aggiungi'), sg.Button('Annulla')]
     ]
 
-    windowAggiungiNota = sg.Window('Aggiungi Nota', layout)
+    windowAddNote = sg.Window('Aggiungi Nota', layout)
 
     while True:
-        event, values = windowAggiungiNota.read()
+        event, values = windowAddNote.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Aggiungi':
-            nuova_nota = values['nuova_nota']
-            if nuova_nota:
+            newNote = values['nuova_nota']
+            if newNote:
                 conferma = sg.popup_ok_cancel(f'Confermi di voler aggiungere la nota?')
                 if conferma == 'OK':
-                    cartella.note.append(nuova_nota)
+                    healthFile.notes.append(newNote)
                     sg.popup(f'Nota aggiunta.')
                     break
 
-    windowAggiungiNota.close()
+    windowAddNote.close()
+    windowHealthFile.UnHide()
 
-def profiloInfermiere(infermiere, windowHome):
-    layoutProfilo = [[sg.Text(f'Nome: {infermiere.nome}')],
-        [sg.Text(f'Cognome: {infermiere.cognome}')],
-        [sg.Text(f'Codice fiscale: {infermiere.codiceFiscale}')],
+def caregiverProfile(caregiver, windowHome):
+    layoutProfilo = [[sg.Text(f'Nome: {caregiver.name}')],
+        [sg.Text(f'Cognome: {caregiver.surname}')],
+        [sg.Text(f'Codice fiscale: {caregiver.cf}')],
               [sg.Button('Home')]]
 
-    windowProfilo = sg.Window('Home', layoutProfilo)
+    windowProfile = sg.Window('Home', layoutProfilo)
 
     while True:
-        event, valoriInput = windowProfilo.read()  # SANIFICARE
+        event, valoriInput = windowProfile.read()  # SANIFICARE
         if event == sg.WIN_CLOSED:
             break
         if event == 'Home':
             windowHome.UnHide()
             break
-    windowProfilo.close()
+    windowProfile.close()
     windowHome.UnHide()
 
 
-def ricercaPaziente(codiceFiscale):
+def patientResearch(codiceFiscale):
     pass
 
-def ricercaCartella(codiceFiscale):
+def healthFileResearch(codiceFiscale):
     pass
 
 def confermaCure(paziente, cartella):
