@@ -30,9 +30,9 @@ def login(doctorContracts, caregiverContracts, patientContracts):
                 windowLogin['cf'].update('')
                 windowLogin['password'].update('')
 
-def checkCredentials(cf,password,doctorContracts, caregiverContracts, patientContracts):
+def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
-        user= doctorContracts.getDoctor(cf)
+        user = doctorContracts.getDoctor(cf)
         if user.password == password:
             return user
         user = caregiverContracts.getDoctor(cf)

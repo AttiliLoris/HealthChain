@@ -65,7 +65,7 @@ def modifyProfile(patient,patientContracts, windowHome, private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                patientContracts.update_doctor(patient.cf, private_key, values['name'], values['surname'])
+                patientContracts.update_patient(patient.cf, private_key, values['name'], values['surname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
                 patient.surname = values['surname']

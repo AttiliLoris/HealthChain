@@ -55,7 +55,7 @@ def patientHealthFile(healthFile, windowHome):
             confermaCure(healthFile) #non so come ma conferma di aver adto le cure che il medico
                                             #ha scritto nelle prescrizioni
         elif event == 'Aggiungi':
-            note = values['nota_input']
+            note = values['nota_input'] #perchè c'è questo? dove lo inserisce? i don't get it
             if note:
                 addNote(healthFile, windowHealthFile)
         elif event == 'Home':
@@ -68,7 +68,7 @@ def addNote(healthFile, windowHealthFile):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.surname}')],
+        [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.surname}')], #amo healthFile non ha name e surname ha solo cf
         [sg.Text('Nuova Nota:'), sg.InputText(key='nuova_nota')],
         [sg.Button('Aggiungi'), sg.Button('Annulla')]
     ]

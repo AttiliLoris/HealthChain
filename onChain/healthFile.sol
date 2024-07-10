@@ -11,7 +11,7 @@ contract HealthFiles {
     struct HealthFile {
         string cf;
         string clinicalHistory;
-        string[] prescriptions;
+        string prescriptions;
         string[] treatmentPlan;
         string[] note;
     }
