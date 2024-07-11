@@ -139,5 +139,5 @@ def healthFileResearch(cf,healthFileContracts):
         return None
     return None
 
-def confermaCure(paziente, cartella):
+def confirmTreatment(patient, cartella):
     pass

@@ -10,10 +10,10 @@ contract Patients {
     struct Patient {
         string name;
         string lastName;
-        string birthday;
         string birthPlace;
         string hashedPwd;
         bool isRegistered;
+        bool isIndependent;
         string cf;
     }
 
@@ -49,10 +49,10 @@ contract Patients {
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf, string memory password) public onlyAuthorized{
+    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory cf,bool memory isIndependent, string memory password) public onlyAuthorized{
         require(!patients[cf].isRegistered, "Patient already registered");
         string memory hashedPassword = hashFunction(password);
-        patients[cf] = Patient(name, lastName, birthday, birthPlace,hashedPassword, true, cf);
+        patients[cf] = Patient(name, lastName, birthPlace,isIndependent,hashedPassword, true, cf);
         emit PatientRegistered(cf, "patient");
     }
 
@@ -72,12 +72,11 @@ contract Patients {
      * @param birthPlace New birth place of the patient.
      * @param cf New codice fiscale (tax code) of the patient.
      */
-    function updatePatient(string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory cf) public onlyAuthorized{
+    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory cf) public onlyAuthorized{
         require(patients[cf].isRegistered, "Patient not found");
         Patient storage patient = patients[cf];
         patient.name = name;
         patient.lastName = lastName;
-        patient.birthday = birthday;
         patient.birthPlace = birthPlace;
         patient.cf = cf;
         emit PatientUpdated(cf, "patient");
@@ -92,10 +91,10 @@ contract Patients {
      * @return birthPlace Birth place of the patient.
      * @return _cf Codice fiscale (tax code) of the patient.
      */
-    function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthday, string memory birthPlace, string memory _cf) {
+    function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthPlace, string memory _cf) {
         require(patients[cf].isRegistered, "Patient not found");
         Patient memory patient = patients[cf];
-        return (patient.name, patient.lastName, patient.birthday, patient.birthPlace, patient.cf);
+        return (patient.name, patient.lastName, patient.birthPlace,patient.isIndependent, patient.cf);
     }
 
 }

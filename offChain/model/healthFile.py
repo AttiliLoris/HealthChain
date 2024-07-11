@@ -39,3 +39,25 @@ class HealthFile:
         name, surname ,cfRecived = self.contract.functions.getHealthFile().call({'from': cf})
         healthFile = HealthFileData(name, surname, cfRecived)
         return healthFile
+    #isIndependet da fare
+
+    def confirm_treatment(self, cfCaregiver, cfPatient , isIndependent, private_key):
+        if isIndependent:
+            transaction = self.contract.functions.confirmTreatment(cfCaregiver,cfPatient).build_transaction({
+                'from': cfPatient,
+                'nonce': self.web3.eth.getTransactionCount(cfPatient),
+                'gas': 2000000,
+                'gasPrice': self.web3.toWei('50', 'gwei')
+            })
+        else:
+            transaction = self.contract.functions.confirmTreatment(cfCaregiver, cfPatient).build_transaction({
+                'from': cfCaregiver,
+                'nonce': self.web3.eth.getTransactionCount(cfCaregiver),
+                'gas': 2000000,
+                'gasPrice': self.web3.toWei('50', 'gwei')
+            })
+
+        signed_txn = self.web3.eth.account.signTransaction(transaction, private_key=private_key)
+        tx_hash = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
+        return receipt

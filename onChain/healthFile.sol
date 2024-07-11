@@ -12,8 +12,8 @@ contract HealthFiles {
         string cf;
         string clinicalHistory;
         string prescriptions;
-        string[] treatmentPlan;
-        string[] note;
+        string treatmentPlan;
+        string note;
     }
 
     // Mapping from cf to health file information
@@ -21,6 +21,7 @@ contract HealthFiles {
     address public owner;
     event NewHealthFile(string indexed cf);
     event HealthFileUpdated(string indexed cf);
+    event ConfirmTreatment(string indexed cfCaregiver, string indexed cfPatient);
 
     // Modifier to restrict access to the contract owner
     modifier onlyOwner() {
@@ -42,7 +43,7 @@ contract HealthFiles {
      * @param note List of notes for the patient.
      */
     //si può mettere i parametri di defualt a 0?
-    function createHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string[] memory treatmentPlan, string[] memory note) public onlyOwner {
+    function createHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory note) public onlyOwner {
         require(bytes(healthFiles[cf].cf).length == 0, "Health file already exists");
         HealthFile memory newHealthFile = HealthFile(cf, clinicalHistory, prescriptions, treatmentPlan, note);
         healthFiles[cf] = newHealthFile;
@@ -57,7 +58,7 @@ contract HealthFiles {
      * @param treatmentPlan List of treatment plans for the patient.
      * @param note List of notes for the patient.
      */
-    function updateHealthFile(string memory cf, string memory clinicalHistory, string[] memory prescriptions, string[] memory treatmentPlan, string[] memory note) public onlyOwner {
+    function updateHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory note) public onlyOwner {
         HealthFile storage healthFile = healthFiles[cf];
         healthFile.cf = cf;
         healthFile.clinicalHistory = clinicalHistory;
@@ -71,10 +72,14 @@ contract HealthFiles {
      * @param cf Codice fiscale (tax code) of the patient.
      * @return Clinical history, prescriptions, treatment plan, and notes of the patient.
      */
-    function getHealthFile(string memory cf) public view returns (string memory clinicalHistory, string[] memory prescriptions, string[] memory treatmentPlan, string[] memory note) {
+    function getHealthFile(string memory cf) public view returns (string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory note) {
         HealthFile memory healthFile = healthFiles[cf];
         require(bytes(healthFile.cf).length != 0, "Health file not found");
         return (healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan, healthFile.note);
+    }
+
+    function confirmTreatment(string memory cfCaregiver, string memory cfPatient) public  {
+        emit ConfirmTreatment(cfCaregiver,cfPatient);
     }
 
 }

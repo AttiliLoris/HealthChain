@@ -91,3 +91,6 @@ def checkValues(values):
         sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
         return 0
     return 1
+
+def confirmTreatment(patient, cartella):
+    pass
