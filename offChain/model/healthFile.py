@@ -41,7 +41,7 @@ class HealthFile:
         return healthFile
     #isIndependet da fare
 
-    def confirm_treatment(self, cfCaregiver, cfPatient , isIndependent, private_key):
+    def confirm_treatment(self, cfCaregiver,cfPatient , isIndependent, private_key):
         if isIndependent:
             transaction = self.contract.functions.confirmTreatment(cfCaregiver,cfPatient).build_transaction({
                 'from': cfPatient,
