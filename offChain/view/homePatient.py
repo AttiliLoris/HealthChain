@@ -1,11 +1,14 @@
 import PySimpleGUI as sg
-def homePatient(patient, patientContracts, healthFileContracts, private_key):
+def homePatient(patient, caregiverContracts, patientContracts, healthFileContracts, private_key):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Benvenuto {patient.name} {patient.surname}')],
-        [sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo')]
+        [sg.Text(f'Benvenuto {patient.name} {patient.surname}')]
     ]
+    if not patient.isIndependent:
+        layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo')])
+    else:
+        layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Conferma cure'), sg.Button('Modifica profilo')])
 
     windowHome = sg.Window('Home Paziente', layout)
 
@@ -21,7 +24,8 @@ def homePatient(patient, patientContracts, healthFileContracts, private_key):
         elif event == 'Modifica profilo':
             windowHome.Hide()
             modifyProfile(patient,patientContracts, windowHome, private_key)
-
+        elif event == 'Conferma cure':
+            viewConfirmTreatement(patient, caregiverContracts,healthFileContracts, windowHome, private_key)
     windowHome.close()
 
 def viewHealthFile(healthFile, windowHome):
@@ -92,5 +96,33 @@ def checkValues(values):
         return 0
     return 1
 
-def confirmTreatment(patient, cartella):
-    pass
+def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windowHome, private_key):
+    sg.theme('DarkAmber')
+    layout=[[sg.Text('Inserire codice fiscale del caregiver: '),sg.InputText('', key='cfCaregiver')],
+            [sg.Text('', size=(30, 1), key='-OUTPUT-')],
+            [sg.Button('Indietro'), sg.Button('Conferma')]]
+    windowConfirmTreatement = sg.Window('Conferma cure', layout)
+
+    while True:
+        event, values = windowHome.read()
+
+        if event == sg.WINDOW_CLOSED or event == 'Indietro':
+            break
+        elif event == 'Conferma cure':
+            if checkCaregiver(values['cfCaregiver'], caregiverContracts):
+                healthFileContracts.confirm_treatement( values['cfCaregiver'],patient.cf , patient.isIndependent, private_key)
+            else:
+                windowConfirmTreatement['-OUTPUT-'].update('Modifiche non valide', text_color='red')
+                windowConfirmTreatement['cfCaregover'].update('')
+
+    windowConfirmTreatement.close()
+    windowHome.UnHide()
+
+def checkCaregiver(cf, caregiverContracts):
+    try:
+        caregiver = caregiverContracts.get_caregiver(cf)
+        if caregiver:
+            return 1
+    except ValueError as e:
+        return None
+    return None

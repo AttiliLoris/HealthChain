@@ -1,8 +1,7 @@
 import PySimpleGUI as sg
 
-def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, private_key):
+def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientContracts, private_key):
     sg.theme('DarkAmber')
-
     layout = [
         [sg.Text(f'Benvenuto {caregiver.name} {caregiver.surname}')],
         [sg.Text('Inserire il codice fiscale del paziente:'), sg.InputText(key='cf'), sg.Button('Ok')],
@@ -24,23 +23,26 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, private_ke
             healthFile = healthFileResearch(cf, healthFileContracts)
             if healthFile:
                 windowHome.Hide()
-                patientHealthFile(healthFile, windowHome,healthFileContracts,private_key)
+                patientHealthFile(caregiver, healthFile, windowHome,healthFileContracts, patientContracts,private_key)
             break
 
     windowHome.close()
 
-def patientHealthFile(healthFile, windowHome,healthFileContracts,private_key):
+def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, patientContracts, private_key):
     sg.theme('DarkAmber')
-
+    patient= patientContracts.getPatient(healthFile.cf)
     layout = [
         [sg.Text(f'Cartella di {healthFile.name} {healthFile.surname}')],
         [sg.Text(f'Nome: {healthFile.name}')],
         [sg.Text(f'Cognome: {healthFile.surname}')],
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text(f'Prescrizioni:{healthFile.prescriptions}')],
-        [sg.Text(f'Note: {healthFile.notes}')],
-        [sg.Button('Aggiungi nota'), sg.Button('Conferma cure'), sg.Button('Home')]
-    ]
+        [sg.Text(f'Note: {healthFile.notes}')]]
+    if not patient.isIndependent:
+        layout.append([sg.Button('Aggiungi nota'), sg.Button('Conferma cure'), sg.Button('Home')])
+    else:
+        layout.append([sg.Button('Aggiungi nota'), sg.Button('Home')])
+
 
     windowHealthFile = sg.Window('Cartella Paziente', layout)
 
@@ -50,8 +52,7 @@ def patientHealthFile(healthFile, windowHome,healthFileContracts,private_key):
         if event == sg.WINDOW_CLOSED or event == 'Chiudi':
             break
         elif event == 'Conferma cure':
-            confermaCure(healthFile) #non so come ma conferma di aver adto le cure che il medico
-                                            #ha scritto nelle prescrizioni
+            healthFileContracts.confirm_treatment(caregiver.cf, healthFile.cf, patient.isIndependent, private_key)
         elif event == 'Aggiungi nota':
             addNote(healthFile, windowHealthFile, healthFileContracts,private_key)
         elif event == 'Home':
@@ -139,5 +140,3 @@ def healthFileResearch(cf,healthFileContracts):
         return None
     return None
 
-def confirmTreatment(patient, cartella):
-    pass
