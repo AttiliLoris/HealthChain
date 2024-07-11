@@ -33,7 +33,7 @@ def main():
     elif isinstance(user, CaregiverData):
         homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts, private_key)
     elif isinstance(user, PatientData):
-        homePatient(user,patientContracts, caregiverContracts,healthFileContracts,private_key)
+        homePatient(user,patientContracts, caregiverContracts, healthFileContracts,private_key)
 
 
 
