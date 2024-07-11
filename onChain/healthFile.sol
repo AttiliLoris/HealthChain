@@ -41,8 +41,6 @@ contract HealthFiles {
      * @param treatmentPlan List of treatment plans for the patient.
      * @param note List of notes for the patient.
      */
-
-    //quando si crea un paziente secondo me si dovrebbe creare automaticamente un fascicolo con tutte le cose vuote
     function createHealthFile(string memory cf, string memory clinicalHistory, string[] memory prescriptions, string[] memory treatmentPlan, string[] memory note) public onlyOwner {
         require(bytes(healthFiles[cf].cf).length == 0, "Health file already exists");
         HealthFile memory newHealthFile = HealthFile(cf, clinicalHistory, prescriptions, treatmentPlan, note);
@@ -58,7 +56,6 @@ contract HealthFiles {
      * @param treatmentPlan List of treatment plans for the patient.
      * @param note List of notes for the patient.
      */
-    //le persone che possono modificare un fascicolo sono solo medici e caregiver non i pazienti, non so come fare questo
     function updateHealthFile(string memory cf, string memory clinicalHistory, string[] memory prescriptions, string[] memory treatmentPlan, string[] memory note) public onlyOwner {
         HealthFile storage healthFile = healthFiles[cf];
         healthFile.cf = cf;

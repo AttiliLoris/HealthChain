@@ -10,7 +10,7 @@ class Caregiver:
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=abi)
 
     def create_caregiver(self, account, private_key, name, surname,cf):
-        transaction = self.contract.functions.registerCaregiver(name, surname, cf).buildTransaction({
+        transaction = self.contract.functions.registerCaregiver(name, surname, cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,
@@ -23,7 +23,7 @@ class Caregiver:
         return receipt
 
     def update_caregiver(self, account, private_key, name, surname):
-        transaction = self.contract.functions.updateCaregiver(name,surname).buildTransaction({
+        transaction = self.contract.functions.updateCaregiver(name,surname).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,

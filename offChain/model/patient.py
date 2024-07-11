@@ -11,7 +11,7 @@ class Patient:
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=abi)
 
     def create_patient(self, account, private_key, name, surname, cf):
-        transaction = self.contract.functions.createPatient(name, surname, cf).buildTransaction({
+        transaction = self.contract.functions.createPatient(name, surname, cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,
@@ -24,7 +24,7 @@ class Patient:
         return receipt
 
     def update_patient(self, account, private_key, name, surname, cf):
-        transaction = self.contract.functions.updatePatient(name, surname, cf).buildTransaction({
+        transaction = self.contract.functions.updatePatient(name, surname, cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,

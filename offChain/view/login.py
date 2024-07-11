@@ -7,7 +7,7 @@ def login(doctorContracts, caregiverContracts, patientContracts):
         [sg.Text(f'Benvenuto, Inserire codice fiscale e password')],
         [sg.Text('Codice fiscale', size=(15, 1)), sg.InputText(key='cf')],
         [sg.Text('Password', size=(15, 1)), sg.InputText(key='password', password_char='*')],
-        [ sg.Button('Esci'), sg.Button('Conferma')],
+        [ sg.Button('Esci'), sg.Button('Conferma'), sg.Button('Registritati')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
 
@@ -29,6 +29,8 @@ def login(doctorContracts, caregiverContracts, patientContracts):
                 # Azzera il contenuto degli input text
                 windowLogin['cf'].update('')
                 windowLogin['password'].update('')
+        elif event == 'Registrati':
+
 
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
