@@ -134,7 +134,7 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,privat
             if text == '':
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
             else:
-                healthFileContracts.update_healthFile(cf, private_key, name, surname)  # vanno aggiunti gli attributi
+                healthFileContracts.update_healthFile(healthFile.cf, private_key, healthFile.name, healthFile.surname)  # vanno aggiunti gli attributi
                 healthFile.prescriptions = text
                 break
         if event == 'Indietro':

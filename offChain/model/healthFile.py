@@ -9,8 +9,8 @@ class HealthFile:
         self.contract_address = contract_address
         self.contract = self.web3.eth.contract(address=self.contract_address, abi=abi)
 
-    def create_healthFile(self, account, private_key, name, surname, cf):
-        transaction = self.contract.functions.createHealthFile(name, surname,cf).build_transaction({
+    def create_healthFile(self, account, private_key, cf):
+        transaction = self.contract.functions.createHealthFile(cf,'','','','').build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,

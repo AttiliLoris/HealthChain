@@ -21,15 +21,15 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, private_ke
             caregiverProfile(caregiver,caregiverContracts, windowHome, private_key)
         elif event == 'Ok':
             cf = values['cf']
-            healthFile = healthFileResearch(cf)
+            healthFile = healthFileResearch(cf, healthFileContracts)
             if healthFile:
                 windowHome.Hide()
-                patientHealthFile(healthFile, windowHome)
+                patientHealthFile(healthFile, windowHome,healthFileContracts,private_key)
             break
 
     windowHome.close()
 
-def patientHealthFile(healthFile, windowHome):
+def patientHealthFile(healthFile, windowHome,healthFileContracts,private_key):
     sg.theme('DarkAmber')
 
     layout = [
@@ -37,11 +37,9 @@ def patientHealthFile(healthFile, windowHome):
         [sg.Text(f'Nome: {healthFile.name}')],
         [sg.Text(f'Cognome: {healthFile.surname}')],
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
-        [sg.Text('Prescrizioni:')],
-        [sg.Listbox(values=healthFile.prescriptions, size=(30, 5))],
-        [sg.Text('Note:')],
-        [sg.Listbox(values=healthFile.notes, size=(30, 5))],
-        [sg.Button('Chiudi'), sg.Button('Aggiungi nota'), sg.Button('Conferma'), sg.Button('Home')]
+        [sg.Text(f'Prescrizioni:{healthFile.prescriptions}')],
+        [sg.Text(f'Note: {healthFile.notes}')],
+        [sg.Button('Aggiungi nota'), sg.Button('Conferma cure'), sg.Button('Home')]
     ]
 
     windowHealthFile = sg.Window('Cartella Paziente', layout)
@@ -51,25 +49,24 @@ def patientHealthFile(healthFile, windowHome):
 
         if event == sg.WINDOW_CLOSED or event == 'Chiudi':
             break
-        elif event == 'Conferma':
+        elif event == 'Conferma cure':
             confermaCure(healthFile) #non so come ma conferma di aver adto le cure che il medico
                                             #ha scritto nelle prescrizioni
-        elif event == 'Aggiungi':
-            note = values['nota_input'] #perchè c'è questo? dove lo inserisce? i don't get it
-            if note:
-                addNote(healthFile, windowHealthFile)
+        elif event == 'Aggiungi nota':
+            addNote(healthFile, windowHealthFile, healthFileContracts,private_key)
         elif event == 'Home':
             windowHome.UnHide()
             break
 
     windowHealthFile.close()
 
-def addNote(healthFile, windowHealthFile):
+def addNote(healthFile, windowHealthFile, healthFileContracts,private_key):
     sg.theme('DarkAmber')
 
     layout = [
         [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.surname}')], #amo healthFile non ha name e surname ha solo cf
         [sg.Text('Nuova Nota:'), sg.InputText(key='nuova_nota')],
+        [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Aggiungi'), sg.Button('Annulla')]
     ]
 
@@ -85,9 +82,13 @@ def addNote(healthFile, windowHealthFile):
             if newNote:
                 conferma = sg.popup_ok_cancel(f'Confermi di voler aggiungere la nota?')
                 if conferma == 'OK':
-                    healthFile.notes.append(newNote)
+                    windowAddNote['-OUTPUT-'].update('')
+                    healthFile.notes=healthFile.notes +'\n'+ newNote
+                    healthFileContracts.update_healthFile(healthFile.cf, private_key, healthFile.notes)
                     sg.popup(f'Nota aggiunta.')
                     break
+            else:
+                windowAddNote['-OUTPUT-'].update('Modifiche non valide', text_color='red')
 
     windowAddNote.close()
     windowHealthFile.UnHide()

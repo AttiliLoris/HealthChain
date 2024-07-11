@@ -41,7 +41,8 @@ contract HealthFiles {
      * @param treatmentPlan List of treatment plans for the patient.
      * @param note List of notes for the patient.
      */
-    function createHealthFile(string memory cf, string memory clinicalHistory, string[] memory prescriptions, string[] memory treatmentPlan, string[] memory note) public onlyOwner {
+    //si può mettere i parametri di defualt a 0?
+    function createHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string[] memory treatmentPlan, string[] memory note) public onlyOwner {
         require(bytes(healthFiles[cf].cf).length == 0, "Health file already exists");
         HealthFile memory newHealthFile = HealthFile(cf, clinicalHistory, prescriptions, treatmentPlan, note);
         healthFiles[cf] = newHealthFile;
