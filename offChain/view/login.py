@@ -7,7 +7,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
         [sg.Text(f'Benvenuto, Inserire codice fiscale e password')],
         [sg.Text('Codice fiscale', size=(15, 1)), sg.InputText(key='cf')],
         [sg.Text('Password', size=(15, 1)), sg.InputText(key='password', password_char='*')],
-        [ sg.Button('Esci'), sg.Button('Conferma'), sg.Button('Registritati')],
+        [ sg.Button('Esci'), sg.Button('Conferma'), sg.Button('Registrati')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
 
@@ -74,3 +74,5 @@ def signIn(patientContracts,healthFileContract,windowLogin):
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
         windowLogin.UnHide()
+
+login('','','','')

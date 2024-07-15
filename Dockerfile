@@ -11,5 +11,5 @@ COPY . /HealthChain
 EXPOSE 8000
 
 #qui dobbiamo far partire il nostro progetto quindi ad esempio ora sarebbe HealthChain/offChain/main.py
-CMD [ "python", "/HealthChain/off_chain/main.py" ]
+CMD [ "python", "/HealthChain/offChain/main.py" ]
 
