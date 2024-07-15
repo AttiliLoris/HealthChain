@@ -2,13 +2,13 @@ import json
 from collections import namedtuple
 from web3 import Web3
 
+from offChain.model.model import Model
+
 provider_url = "http://ganache:8080"
 DoctorData = namedtuple('DoctorData', ['name', 'surname', 'cf'])
-class Doctor:
-    def __init__(self, provider_url, contract_address, abi):
-        self.web3 = Web3(Web3.HTTPProvider(provider_url))
-        self.contract_address = contract_address
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=abi)
+class Doctor(Model):
+    def __init__(self, provider_url):
+        super().__init__(provider_url,'doctor')
 
     def create_doctor(self, account, private_key, name, surname, cf):
         transaction = self.contract.functions.createDoctor(name, surname, cf).build_transaction({

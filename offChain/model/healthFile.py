@@ -1,13 +1,14 @@
 from collections import namedtuple
 
 from web3 import Web3
+
+from offChain.model.model import Model
+
 provider_url = "http://ganache:8080"
 HealthFileData = namedtuple('HealthData', ['name', 'surname', 'cf'])
-class HealthFile:
-    def __init__(self, provider_url, contract_address, abi):
-        self.web3 = Web3(Web3.HTTPProvider(provider_url))
-        self.contract_address = contract_address
-        self.contract = self.web3.eth.contract(address=self.contract_address, abi=abi)
+class HealthFile(Model):
+    def __init__(self, provider_url):
+        super().__init__(provider_url,'healthFile')
 
     def create_healthFile(self, account, private_key, cf):
         transaction = self.contract.functions.createHealthFile(cf,'','','','').build_transaction({
