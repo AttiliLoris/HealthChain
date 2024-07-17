@@ -46,9 +46,9 @@ contract Caregivers {
      * @param lastName Last name of the caregiver.
      * @param cf Codice fiscale (tax code) of the caregiver.
      */
-    function registerCaregiver(string memory name, string memory lastName, string memory cf, string memory password) public onlyAuthorized{
+    function registerCaregiver(string memory name, string memory lastName, string memory hashedPwd, string memory cf) public onlyAuthorized{
         require(!caregivers[cf].isRegistered, "Caregiver already registered");
-        string memory hashedPassword = hashFunction(password);
+        string memory hashedPassword = hashFunction(hashedPwd);
         caregivers[cf] = Caregiver(name, lastName,hashedPassword, true, cf);
         emit CaregiverRegistered(cf,"caregiver");
     }
@@ -59,7 +59,7 @@ contract Caregivers {
 
     function verifyPassword(string memory cf, string memory password) public view returns (bool) {
         string memory hashedPassword = hashFunction(password);
-        return keccak256(bytes(hashedPassword)) == keccak256(bytes(doctors[cf].hashedPwd));
+        return keccak256(bytes(hashedPassword)) == keccak256(bytes(caregivers[cf].hashedPwd));
     }
 
     /**
@@ -83,10 +83,10 @@ contract Caregivers {
      * @return lastName Last name of the caregiver.
      * @return _cf Codice fiscale (tax code) of the caregiver.
      */
-    function getCaregiver(string memory cf) public view returns (string memory name, string memory lastName, string memory _cf) {
+    function getCaregiver(string memory cf) public view returns (string memory name, string memory lastName,string memory hashedPwd, string memory _cf) {
         require(caregivers[cf].isRegistered, "Caregiver not found");
         Caregiver memory caregiver = caregivers[cf];
-        return (caregiver.name, caregiver.lastName,caregiver.cf);
+        return (caregiver.name, caregiver.lastName,caregiver.hashedPwd, caregiver.cf);
     }
 
 }

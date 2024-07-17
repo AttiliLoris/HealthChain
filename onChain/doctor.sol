@@ -46,9 +46,9 @@ contract Doctors {
      * @param cf Codice fiscale (tax code) of the doctor.
      */
 
-    function registerDoctor(string memory name, string memory lastName, string memory cf, string memory password) public onlyAuthorized{
+    function registerDoctor(string memory name, string memory lastName, string memory hashedPwd, string memory cf) public onlyAuthorized{
         require(!doctors[cf].isRegistered, "Doctor already registered");
-        string memory hashedPassword = hashFunction(password);
+        string memory hashedPassword = hashFunction(hashedPwd);
         doctors[cf] = Doctor(name, lastName, hashedPassword, true, cf);
         emit DoctorRegistered(cf);
     }
@@ -83,10 +83,10 @@ contract Doctors {
      * @return lastName Last name of the doctor.
      * @return _cf Codice fiscale (tax code) of the doctor.
      */
-    function getDoctor(string memory cf) public view returns (string memory name, string memory lastName, string memory _cf) {
+    function getDoctor(string memory cf) public view returns (string memory name, string memory lastName,string memory hashedPwd, string memory _cf) {
         require(doctors[cf].isRegistered, "Doctor not found");
         Doctor memory doctor = doctors[cf];
-        return (doctor.name, doctor.lastName,doctor.cf);
+        return (doctor.name, doctor.lastName, doctor.hashedPwd,doctor.cf);
     }
 
 }

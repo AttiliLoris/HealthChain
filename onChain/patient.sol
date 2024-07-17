@@ -49,9 +49,9 @@ contract Patients {
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory cf,bool memory isIndependent, string memory password) public onlyAuthorized{
+    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool memory isIndependent, string memory cf) public onlyAuthorized{
         require(!patients[cf].isRegistered, "Patient already registered");
-        string memory hashedPassword = hashFunction(password);
+        string memory hashedPassword = hashFunction(hashedPwd);
         patients[cf] = Patient(name, lastName, birthPlace,isIndependent,hashedPassword, true, cf);
         emit PatientRegistered(cf, "patient");
     }
@@ -72,13 +72,15 @@ contract Patients {
      * @param birthPlace New birth place of the patient.
      * @param cf New codice fiscale (tax code) of the patient.
      */
-    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory cf) public onlyAuthorized{
+    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool memory isIndependent, string memory cf) public onlyAuthorized{
         require(patients[cf].isRegistered, "Patient not found");
         Patient storage patient = patients[cf];
         patient.name = name;
         patient.lastName = lastName;
         patient.birthPlace = birthPlace;
-        patient.cf = cf;
+        patient.hashedPwd = hashedPwd;
+        patient.isIndependent = isIndependent;
+        patient.cf = cf;//cambio password come
         emit PatientUpdated(cf, "patient");
     }
 
@@ -91,10 +93,10 @@ contract Patients {
      * @return birthPlace Birth place of the patient.
      * @return _cf Codice fiscale (tax code) of the patient.
      */
-    function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthPlace, string memory _cf) {
+    function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool memory isIndependent, string memory _cf) {
         require(patients[cf].isRegistered, "Patient not found");
         Patient memory patient = patients[cf];
-        return (patient.name, patient.lastName, patient.birthPlace,patient.isIndependent, patient.cf);
+        return (patient.name, patient.lastName, patient.birthPlace,patient.hashedPwd,patient.isIndependent, patient.cf);
     }
 
 }
