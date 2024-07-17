@@ -4,13 +4,13 @@ from web3 import Web3
 
 from offChain.model.model import Model
 
-CaregiverData = namedtuple('CaregiverData', ['name', 'surname'])
+CaregiverData = namedtuple('CaregiverData', ['name', 'lastName','password','isRegistered','cf'])
 class Caregiver(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url,'caregiver')
 
-    def create_caregiver(self, account, private_key, name, surname,cf):
-        transaction = self.contract.functions.registerCaregiver(name, surname, cf).build_transaction({
+    def create_caregiver(self, account, private_key, name, lastname, hashedPwd, cf):
+        transaction = self.contract.functions.registerCaregiver(name, lastname, hashedPwd, cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,
@@ -22,8 +22,8 @@ class Caregiver(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_caregiver(self, account, private_key, name, surname):
-        transaction = self.contract.functions.updateCaregiver(name,surname).build_transaction({
+    def update_caregiver(self, account, private_key, name, lastname,cf):
+        transaction = self.contract.functions.updateCaregiver(name,lastname, cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,
@@ -36,6 +36,8 @@ class Caregiver(Model):
         return receipt
 
     def get_caregiver(self, account):
-        name, surname = self.contract.functions.getCaregiver().call({'from': account})
-        caregiver = CaregiverData(name, surname)
+        name, lastname,pwd, cf= self.contract.functions.getCaregiver().call({'from': account})
+        caregiver = CaregiverData(name, lastname,pwd, 0, cf)
+        if caregiver.name:
+            caregiver.isRegistered = True
         return caregiver

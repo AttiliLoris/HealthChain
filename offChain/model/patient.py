@@ -6,13 +6,13 @@ from web3 import Web3
 from offChain.model.model import Model
 
 provider_url = "http://ganache:8080"
-PatientData = namedtuple('PatientData', ['name', 'surname', 'cf'])
+PatientData = namedtuple('PatientData', ['name', 'lastName', 'birthPlace','password','isRegistered','isIndependent','cf'])
 class Patient(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url, 'patient')
 
-    def create_patient(self, account, private_key, name, surname, cf):
-        transaction = self.contract.functions.createPatient(name, surname, cf).build_transaction({
+    def create_patient(self, account, private_key, name, lastname, birthPlace, pwd, isIndependent,cf):
+        transaction = self.contract.functions.createPatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,
@@ -24,8 +24,8 @@ class Patient(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_patient(self, account, private_key, name, surname, cf):
-        transaction = self.contract.functions.updatePatient(name, surname, cf).build_transaction({
+    def update_patient(self, account, private_key, name, lastname, birthPlace, pwd, isIndependent,cf):
+        transaction = self.contract.functions.updatePatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
             'from': account,
             'nonce': self.web3.eth.getTransactionCount(account),
             'gas': 2000000,
@@ -37,8 +37,8 @@ class Patient(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def get_patient(self, account):
-        name, surname, cf = self.contract.functions.getDoctor().call({'from': account})
-        patient = PatientData(name, surname, cf)
+    def get_patient(self,cf):
+        name, lastname, birthPlace, pwd, isIndependent, cf = self.contract.functions.getDoctor().call({'from': cf})
+        patient = PatientData(name, lastname, birthPlace, pwd, 1,isIndependent,cf)
         return patient
 

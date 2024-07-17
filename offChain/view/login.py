@@ -30,7 +30,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
                 windowLogin['cf'].update('')
                 windowLogin['password'].update('')
         elif event == 'Registrati':
-            signIn(patientContracts,healthFileContract,windowLogin)#?????? non so cosa sto facendo
+            signIn(patientContracts,healthFileContract,windowLogin)
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
         user = doctorContracts.getDoctor(cf)

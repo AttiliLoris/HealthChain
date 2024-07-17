@@ -5,7 +5,7 @@ from web3 import Web3
 from offChain.model.model import Model
 
 provider_url = "http://ganache:8080"
-HealthFileData = namedtuple('HealthData', ['name', 'surname', 'cf'])
+HealthFileData = namedtuple('HealthData', ['cf','clinicalHistory','prescriptions','treatmentPlan','notes'])
 class HealthFile(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url,'healthFile')
@@ -23,8 +23,8 @@ class HealthFile(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_healthFile(self, cf, private_key, name, surname):
-        transaction = self.contract.functions.updatehealthFile(name,surname,cf).build_transaction({
+    def update_healthFile(self,private_key, cf,clinicalHistory,prescriptions,treatmentPlan,note):
+        transaction = self.contract.functions.updatehealthFile(cf,clinicalHistory,prescriptions,treatmentPlan,note).build_transaction({
             'from': cf,
             'nonce': self.web3.eth.getTransactionCount(cf),
             'gas': 2000000,
@@ -37,8 +37,8 @@ class HealthFile(Model):
         return receipt
 
     def get_healthFile(self, cf):
-        name, surname ,cfRecived = self.contract.functions.getHealthFile().call({'from': cf})
-        healthFile = HealthFileData(name, surname, cfRecived)
+        cf,clinicalHistory,prescriptions,treatmentPlan,note = self.contract.functions.getHealthFile().call({'from': cf})
+        healthFile = HealthFileData(cf,clinicalHistory,prescriptions,treatmentPlan,note)
         return healthFile
     #isIndependet da fare
 
