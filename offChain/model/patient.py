@@ -5,8 +5,7 @@ from web3 import Web3
 
 from .model import Model
 
-provider_url = "http://ganache:8080"
-PatientData = namedtuple('PatientData', ['name', 'lastName', 'birthPlace','password','isRegistered','isIndependent','cf'])
+PatientData = namedtuple('PatientData', ['name', 'lastname', 'birthPlace','password','isRegistered','isIndependent','cf'])
 class Patient(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url, 'patient')

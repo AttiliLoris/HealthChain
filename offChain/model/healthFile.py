@@ -4,7 +4,6 @@ from web3 import Web3
 
 from .model import Model
 
-provider_url = "http://ganache:8080"
 HealthFileData = namedtuple('HealthData', ['cf','clinicalHistory','prescriptions','treatmentPlan','notes'])
 class HealthFile(Model):
     def __init__(self, provider_url):
