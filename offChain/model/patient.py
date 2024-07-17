@@ -10,10 +10,10 @@ class Patient(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url, 'patient')
 
-    def create_patient(self, account, private_key, name, lastname, birthPlace, pwd, isIndependent,cf):
-        transaction = self.contract.functions.createPatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
-            'from': account,
-            'nonce': self.web3.eth.getTransactionCount(account),
+    def create_patient(self, private_key, name, lastname, birthPlace, pwd, isIndependent,cf):
+        transaction = super().contract.functions.createPatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
+            'from': cf,
+            'nonce': self.web3.eth.getTransactionCount(cf),
             'gas': 2000000,
             'gasPrice': self.web3.toWei('50', 'gwei')
         })

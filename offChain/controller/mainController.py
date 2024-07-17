@@ -1,15 +1,13 @@
 from collections import namedtuple
 
-from view.login import login
-from view.homeCaregiver import homeCaregiver
-from view.homeDoctor import homeDoctor
-from view.homePatient import homePatient
-
-from model.caregiver import Caregiver
-from model.doctor import Doctor
-from model.healthFile import HealthFile
-from model.patient import Patient
-
+from offChain.model.caregiver import Caregiver
+from offChain.model.doctor import Doctor
+from offChain.model.healthFile import HealthFile
+from offChain.model.patient import Patient
+from offChain.view.homeCaregiver import homeCaregiver
+from offChain.view.homeDoctor import homeDoctor
+from offChain.view.homePatient import homePatient
+from offChain.view.login import login
 
 DoctorData = namedtuple('DoctorData', ['name', 'lastname','password','isRegistered','cf'])
 CaregiverData = namedtuple('CaregiverData', ['name', 'lastname','password','isRegistered','cf'])
@@ -27,7 +25,7 @@ def main():
     patientContracts = Patient(provider_url)
     healthFileContracts = HealthFile(provider_url)
 
-    user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
+    user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts, private_key)
 
     if isinstance(user, DoctorData):
         homeDoctor(user,doctorContracts, healthFileContracts, private_key)
@@ -36,7 +34,17 @@ def main():
     elif isinstance(user, PatientData):
         homePatient(user,patientContracts, caregiverContracts, healthFileContracts,private_key)
 
+'''
+from view.login import login
+from view.homeCaregiver import homeCaregiver
+from view.homeDoctor import homeDoctor
+from view.homePatient import homePatient
 
+from model.caregiver import Caregiver
+from model.doctor import Doctor
+from model.healthFile import HealthFile
+from model.patient import Patient
+'''
 
 
 
