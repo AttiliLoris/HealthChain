@@ -2,7 +2,7 @@ import json
 from collections import namedtuple
 from web3 import Web3
 
-from offChain.model.model import Model
+from .model import Model
 
 provider_url = "http://ganache:8080"
 DoctorData = namedtuple('DoctorData', ['name', 'lastName','password','isRegistered','cf'])

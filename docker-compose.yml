@@ -3,10 +3,10 @@ version: '3.8'
 services:
   ganache:
     image: trufflesuite/ganache-cli
-    command: ganache-cli --host 0.0.0.0 --port 8545 --accounts 10 --defaultBalanceEther 1000 --mnemonic "saddle point immune salmon swear indoor riot process easily marine charge leave"
+    command: ganache-cli --host 0.0.0.0 --port 8080 --accounts 10 --defaultBalanceEther 1000 --mnemonic "saddle point immune salmon swear indoor riot process easily marine charge leave"
     #qui specifica i paramentri in esecuzione su ganache in particolare crea 10 account e imposta il saldo a 1000 ether infine utilizza questa frase mnemonica per generare gli account
     ports:
-      - 8545:8545
+      - 8080:8080
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8545"]
       interval: 10s
@@ -23,7 +23,7 @@ services:
       - ganache
     restart: always
     environment:
-      - ETHEREUM_NODE_URL=http://ganache:8545
+      - ETHEREUM_NODE_URL=http://ganache:8080
     #se decidiamo di cambiare la porta dobbiamo cambiare anche qui
     ports:
       - 3000:3000

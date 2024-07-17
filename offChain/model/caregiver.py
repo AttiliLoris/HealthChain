@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from web3 import Web3
 
-from offChain.model.model import Model
+from .model import Model
 
 CaregiverData = namedtuple('CaregiverData', ['name', 'lastName','password','isRegistered','cf'])
 class Caregiver(Model):

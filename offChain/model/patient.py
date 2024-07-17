@@ -3,7 +3,7 @@ from collections import namedtuple
 
 from web3 import Web3
 
-from offChain.model.model import Model
+from .model import Model
 
 provider_url = "http://ganache:8080"
 PatientData = namedtuple('PatientData', ['name', 'lastName', 'birthPlace','password','isRegistered','isIndependent','cf'])
