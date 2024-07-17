@@ -11,14 +11,12 @@ from model.healthFile import HealthFile
 from model.patient import Patient
 
 
-DoctorData = namedtuple('DoctorData', ['name', 'lastName','password','isRegistered','cf'])
-CaregiverData = namedtuple('CaregiverData', ['name', 'lastName','password','isRegistered','cf'])
-PatientData = namedtuple('PatientData', ['name', 'lastName', 'birthPlace','password','isRegistered','isIndependent','cf'])
+DoctorData = namedtuple('DoctorData', ['name', 'lastname','password','isRegistered','cf'])
+CaregiverData = namedtuple('CaregiverData', ['name', 'lastname','password','isRegistered','cf'])
+PatientData = namedtuple('PatientData', ['name', 'lastname', 'birthPlace','password','isRegistered','isIndependent','cf'])
 HealthFileData = namedtuple('HealthData', ['cf','clinicalHistory','prescriptions','treatmentPlan','notes'])
 
-#provider_url, contract_address, abi
 provider_url = "http://ganache:8080"
-contract_address = "contractAddr"
 
 
 private_key = "privateKey"

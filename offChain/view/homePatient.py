@@ -3,7 +3,7 @@ def homePatient(patient, caregiverContracts, patientContracts, healthFileContrac
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Benvenuto {patient.name} {patient.surname}')]
+        [sg.Text(f'Benvenuto {patient.name} {patient.lastname}')]
     ]
     if not patient.isIndependent:
         layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo')])
@@ -31,9 +31,9 @@ def homePatient(patient, caregiverContracts, patientContracts, healthFileContrac
 def viewHealthFile(healthFile, windowHome):
     sg.theme('DarkAmber')
     layout = [
-        [sg.Text(f'Cartella di {healthFile.name} {healthFile.surname}')],
+        [sg.Text(f'Cartella di {healthFile.name} {healthFile.lastname}')],
         [sg.Text(f'Nome: {healthFile.name}')],
-        [sg.Text(f'Cognome: {healthFile.surname}')],
+        [sg.Text(f'Cognome: {healthFile.lastname}')],
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text('Prescrizioni:')],
         [sg.Listbox(values=healthFile.prescriptions, size=(30, 5))],
@@ -56,7 +56,7 @@ def viewHealthFile(healthFile, windowHome):
 def modifyProfile(patient,patientContracts, windowHome, private_key):
     sg.theme('DarkAmber')
     layoutProfile = [[sg.Text('Nome'), sg.InputText(patient.name,key='name')],
-                     [sg.Text('Cognome'), sg.InputText(patient.surname,key='surname')],
+                     [sg.Text('Cognome'), sg.InputText(patient.lastname,key='lastname')],
                      [sg.Text('Codice fiscale'), sg.Text(patient.cf, key='cf')],
                      [sg.Button('Salva'), sg.Button('Home')]]
     windowProfile = sg.Window('Profile', layoutProfile)
@@ -69,15 +69,15 @@ def modifyProfile(patient,patientContracts, windowHome, private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                patientContracts.update_patient(patient.cf, private_key, values['name'], values['surname'])
+                patientContracts.update_patient(patient.cf, private_key, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
-                patient.surname = values['surname']
+                patient.lastname = values['lastname']
 
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(patient.name)
-                windowProfile['surname'].update(patient.surname)
+                windowProfile['lastname'].update(patient.lastname)
                 windowProfile['cf'].update(patient.cf)
     windowProfile.close()
     windowHome.UnHide()
@@ -91,7 +91,7 @@ def researchHealthFile(cf, healthFileContracts):
     return None
 
 def checkValues(values):
-    if values['name'] == '' or values['surname'] == '':
+    if values['name'] == '' or values['lastname'] == '':
         sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
         return 0
     return 1

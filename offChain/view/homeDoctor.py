@@ -25,7 +25,7 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
 
 def doctorProfile(doctor, windowHome,doctorContracts,private_key):
     layoutProfile = [[sg.Text('Nome'), sg.InputText(doctor.name,key='name')],
-                    [sg.Text('Cognome'), sg.InputText(doctor.surname,key='surname')],
+                    [sg.Text('Cognome'), sg.InputText(doctor.lastname,key='lastname')],
                     [sg.Text('Codice fiscale'), sg.Text(doctor.cf,key='cf')],
                     [sg.Button('Salva'), sg.Button('Home')],
                     [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
@@ -40,21 +40,21 @@ def doctorProfile(doctor, windowHome,doctorContracts,private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                doctorContracts.update_doctor(doctor.cf,private_key,values['name'],values['surname'])
+                doctorContracts.update_doctor(doctor.cf,private_key,values['name'],values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 doctor.name = values['name']
-                doctor.surname = values['surname']
+                doctor.lastname = values['lastname']
 
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(doctor.name)
-                windowProfile['surname'].update(doctor.surname)
+                windowProfile['lastname'].update(doctor.lastname)
                 windowProfile['cf'].update(doctor.cf)
     windowProfile.close()
     windowHome.UnHide()
 
 def checkValues(values):
-    if values['name'] == '' or values['surname'] == '':
+    if values['name'] == '' or values['lastname'] == '':
         sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
         return 0
     return 1
@@ -69,13 +69,13 @@ def healthFileResearch(cf,healthFileContracts):
     return None
 
 def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
-    layoutHealthFile = [[sg.Text('Nome: ' + healthFile.name), sg.Text('Cognome: '+ healthFile.surname), sg.Text('Codice fiscale: '+ healthFile.cf)],
+    layoutHealthFile = [[sg.Text('Nome: ' + healthFile.name), sg.Text('Cognome: '+ healthFile.lastname), sg.Text('Codice fiscale: '+ healthFile.cf)],
                         [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicHistory)],
                         [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions)],
                         [sg.Text('Trattamenti: '), sg.Text(healthFile.treatmentPlan)], #è un vettore non so se si fa così
                         [sg.Button('Home'), sg.Button('Aggiorna storia clinica'), sg.Button('Modifica prescrizioni'), sg.Button('Aggiungi trattamento')]]
 
-    windowHealthFile = sg.Window('Fascicolo '+ healthFile.name +' '+  healthFile.surname, layoutHealthFile)
+    windowHealthFile = sg.Window('Fascicolo '+ healthFile.name +' '+  healthFile.lastname, layoutHealthFile)
 
     while True:
         event, values = windowHealthFile.read()
@@ -111,8 +111,9 @@ def modififyClinicHistory(healthFile, windowHealthFile, healthFileContracts, pri
             if text =='':
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
             else:
-                healthFileContracts.update_healthFile(cf, private_key, name, surname)#vanno aggiunti gli attributi
-                healthFile.clinicHistory=text
+                healthFile.clinicHistory = text
+                healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)#vanno aggiunti gli attributi
+
                 break
         if event == 'Indietro':
             break
@@ -132,8 +133,9 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,privat
             if text == '':
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
             else:
-                healthFileContracts.update_healthFile(healthFile.cf, private_key, healthFile.name, healthFile.surname)  # vanno aggiunti gli attributi
                 healthFile.prescriptions = text
+                healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)  # vanno aggiunti gli attributi
+
                 break
         if event == 'Indietro':
             break

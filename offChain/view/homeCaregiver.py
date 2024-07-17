@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientContracts, private_key):
     sg.theme('DarkAmber')
     layout = [
-        [sg.Text(f'Benvenuto {caregiver.name} {caregiver.surname}')],
+        [sg.Text(f'Benvenuto {caregiver.name} {caregiver.lastname}')],
         [sg.Text('Inserire il codice fiscale del paziente:'), sg.InputText(key='cf'), sg.Button('Ok')],
         [ sg.Button('Indietro'), sg.Button('Profilo')]
     ]
@@ -32,9 +32,9 @@ def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, pa
     sg.theme('DarkAmber')
     patient= patientContracts.getPatient(healthFile.cf)
     layout = [
-        [sg.Text(f'Cartella di {healthFile.name} {healthFile.surname}')],
+        [sg.Text(f'Cartella di {healthFile.name} {healthFile.lastname}')],
         [sg.Text(f'Nome: {healthFile.name}')],
-        [sg.Text(f'Cognome: {healthFile.surname}')],
+        [sg.Text(f'Cognome: {healthFile.lastname}')],
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text(f'Prescrizioni:{healthFile.prescriptions}')],
         [sg.Text(f'Note: {healthFile.notes}')]]
@@ -65,7 +65,7 @@ def addNote(healthFile, windowHealthFile, healthFileContracts,private_key):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.surname}')], #amo healthFile non ha name e surname ha solo cf
+        [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.lastname}')], #amo healthFile non ha name e lastname ha solo cf
         [sg.Text('Nuova Nota:'), sg.InputText(key='nuova_nota')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Aggiungi'), sg.Button('Annulla')]
@@ -95,14 +95,14 @@ def addNote(healthFile, windowHealthFile, healthFileContracts,private_key):
     windowHealthFile.UnHide()
 
 def checkValues(values):
-    if values['name'] == '' or values['surname'] == '':
+    if values['name'] == '' or values['lastname'] == '':
         sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
         return 0
     return 1
 
 def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
     layoutProfile = [[sg.Text('Nome'), sg.InputText(caregiver.name, key='name')],
-                     [sg.Text('Cognome'), sg.InputText(caregiver.surname, key='surname')],
+                     [sg.Text('Cognome'), sg.InputText(caregiver.lastname, key='lastname')],
                      [sg.Text('Codice fiscale'), sg.Text(caregiver.cf, key='cf')],
                      [sg.Button('Salva'), sg.Button('Home')],
                      [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
@@ -117,15 +117,15 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                caregiverContracts.update_caregiver(caregiver.cf, private_key, values['name'], values['surname'])
+                caregiverContracts.update_caregiver(caregiver.cf, private_key, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 caregiver.name = values['name']
-                caregiver.surname = values['surname']
+                caregiver.lastname = values['lastname']
 
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(caregiver.name)
-                windowProfile['surname'].update(caregiver.surname)
+                windowProfile['lastname'].update(caregiver.lastname)
                 windowProfile['cf'].update(caregiver.cf)
     windowProfile.close()
     windowHome.UnHide()
