@@ -2,6 +2,13 @@ FROM python:3.11
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# Copia il tuo script nel container
+COPY acceptLicense.py .
+
+# Copia le immagini di riferimento nel container
+
+COPY acceptButton.png .
+COPY okButton.png .
 
 #dobbiamo scegliere la nostra directory per ora è HealthChain
 WORKDIR /HealthChain
@@ -11,5 +18,5 @@ COPY . /HealthChain
 EXPOSE 8000
 
 #qui dobbiamo far partire il nostro progetto quindi ad esempio ora sarebbe HealthChain/offChain/main.py
-CMD [ "python", "/HealthChain/offChain/main.py" ]
+CMD [ "python", "/HealthChain/offChain/main.py", "&&", "python", "/HeathChain/acceptLicense.py" ]
 
