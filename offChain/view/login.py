@@ -53,8 +53,8 @@ def signIn(patientContracts,healthFileContract,windowLogin):
         [sg.Text('Nome: '), sg.InputText(key='name')],
         [sg.Text('Cognome: '), sg.InputText(key='surname')],
         [sg.Text('Codice fiscale: '), sg.InputText(key='cf')],
-        [sg.Text('Data di nascita: '), sg.InputText(key='birthday')], #zi la toglierei è solo no sbatti
         [sg.Text('Luogo di nascita: '), sg.InputText(key='birthPlace')],
+        [sg.Text('Indipendente: '), sg.InputText(key='isIndependent')],#come bottone
         [sg.Text('Password: '), sg.InputText(key='hashedPwd')], #forse da mettere doppia e che non se vede dai
         [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Registrati'), sg.Button('Annulla')]
@@ -69,10 +69,8 @@ def signIn(patientContracts,healthFileContract,windowLogin):
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Registrati':
-            patientContracts.create_patient(values['name'], values['surname'], values['birthday'],values['birthPlace'],values['cf'], values['hashedPwd'])
+            patientContracts.create_patient(values['name'], values['surname'],values['birthPlace'],values['isIndependent'],values['cf'], values['hashedPwd'])
             healthFileContract.create_healthFile(values['cf'])
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
         windowLogin.UnHide()
-
-login('','','','')

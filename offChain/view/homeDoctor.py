@@ -1,6 +1,4 @@
 import PySimpleGUI as sg
-from ..model.healthFile import HealthFile
-from..model.doctor import Doctor
 def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
