@@ -30,6 +30,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
                 windowLogin['cf'].update('')
                 windowLogin['password'].update('')
         elif event == 'Registrati':
+            windowLogin.Hide()
             signIn(patientContracts,healthFileContract,windowLogin, private_key)
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
@@ -69,7 +70,7 @@ def signIn(patientContracts,healthFileContract,windowLogin,private_key):
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Registrati':
-            patientContracts.create_patient(private_key,values['name'], values['surname'],values['birthPlace'],values['isIndependent'],values['cf'], values['hashedPwd'])
+            patientContracts.create_patient(private_key,values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(values['isIndependent']),values['cf'])
             healthFileContract.create_healthFile(values['cf'])
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
