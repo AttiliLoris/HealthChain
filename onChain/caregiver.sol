@@ -81,6 +81,7 @@ contract Caregivers {
      * @param cf Codice fiscale (tax code) of the caregiver.
      * @return name First name of the caregiver.
      * @return lastName Last name of the caregiver.
+     * @return hashedPwd password of the caregiver.
      * @return _cf Codice fiscale (tax code) of the caregiver.
      */
     function getCaregiver(string memory cf) public view returns (string memory name, string memory lastName,string memory hashedPwd, string memory _cf) {

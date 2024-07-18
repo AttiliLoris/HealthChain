@@ -44,15 +44,16 @@ class Model:
         if self.solc_version not in get_installed_solc_versions():
             install_solc(self.solc_version)
 
+        print(get_installed_solc_versions())
         # Compile the Solidity source code
         compiled_sol = compile_standard({
             "language": "Solidity",
-            "sources": {f"on_chain/{contract_name}.sol": {"content": contract_source_code}},
+            "sources": {f"../onChain/{contract_name}.sol": {"content": contract_source_code}},
             "settings": {"outputSelection": {"*": {"*": ["abi", "evm.bytecode"]}}}
         }, solc_version=self.solc_version)
 
-        # Extract the ABI and bytecode
-        self.contract_id, self.contract_interface = next(iter(compiled_sol['contracts'][f"on_chain/{contract_name}.sol"].items()))
+        # Extract the ABI and bytecode non arriva qui
+        self.contract_id, self.contract_interface = next(iter(compiled_sol['contracts'][f"../onChain/{contract_name}.sol"].items()))
         self.abi = self.contract_interface['abi']
         self.bytecode = self.contract_interface['evm']['bytecode']['object']
         account = random.choice(self.web3.eth.accounts)
@@ -64,7 +65,7 @@ class Model:
         tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         self.contract = self.web3.eth.contract(address=tx_receipt.contractAddress, abi=self.abi)
 
-        with open(f'../on_chain/address/{contract_name}.txt', 'w') as file:
+        with open(f'../onChain/address/{contract_name}.txt', 'w') as file:
             file.write(self.contract.address)
-        with open(f'on_chain/abi/{contract_name}.json', 'w') as file:
+        with open(f'../onChain/abi/{contract_name}.json', 'w') as file:
             json.dump(self.contract.abi, file)

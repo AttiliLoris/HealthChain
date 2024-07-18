@@ -45,14 +45,13 @@ contract Patients {
      * @dev Registers a new patient.
      * @param name First name of the patient.
      * @param lastName Last name of the patient.
-     * @param birthday Birthday of the patient.
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool memory isIndependent, string memory cf) public onlyAuthorized{
+    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public onlyAuthorized{
         require(!patients[cf].isRegistered, "Patient already registered");
         string memory hashedPassword = hashFunction(hashedPwd);
-        patients[cf] = Patient(name, lastName, birthPlace,isIndependent,hashedPassword, true, cf);
+        patients[cf] = Patient(name, lastName, birthPlace,hashedPassword,isIndependent, true, cf);
         emit PatientRegistered(cf, "patient");
     }
 
@@ -62,17 +61,16 @@ contract Patients {
 
     function verifyPassword(string memory cf, string memory password) public view returns (bool) {
         string memory hashedPassword = hashFunction(password);
-        return keccak256(bytes(hashedPassword)) == keccak256(bytes(doctors[cf].hashedPwd));
+        return keccak256(bytes(hashedPassword)) == keccak256(bytes(patients[cf].hashedPwd));
     }
     /**
      * @dev Updates an existing patient's information.
      * @param name New first name of the patient.
      * @param lastName New last name of the patient.
-     * @param birthday New birthday of the patient.
      * @param birthPlace New birth place of the patient.
      * @param cf New codice fiscale (tax code) of the patient.
      */
-    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool memory isIndependent, string memory cf) public onlyAuthorized{
+    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public onlyAuthorized{
         require(patients[cf].isRegistered, "Patient not found");
         Patient storage patient = patients[cf];
         patient.name = name;
@@ -89,11 +87,12 @@ contract Patients {
      * @param cf Codice fiscale (tax code) of the patient.
      * @return name First name of the patient.
      * @return lastName Last name of the patient.
-     * @return birthday Birthday of the patient.
      * @return birthPlace Birth place of the patient.
+     * @return hashedPwd password of the patient.
+     * @return isIndependent of the patient.
      * @return _cf Codice fiscale (tax code) of the patient.
      */
-    function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool memory isIndependent, string memory _cf) {
+    function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory _cf) {
         require(patients[cf].isRegistered, "Patient not found");
         Patient memory patient = patients[cf];
         return (patient.name, patient.lastName, patient.birthPlace,patient.hashedPwd,patient.isIndependent, patient.cf);

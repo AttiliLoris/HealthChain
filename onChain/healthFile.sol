@@ -40,7 +40,7 @@ contract HealthFiles {
      * @param clinicalHistory Clinical history of the patient.
      * @param prescriptions List of prescriptions for the patient.
      * @param treatmentPlan List of treatment plans for the patient.
-     * @param note List of notes for the patient.
+     * @param notes List of notes for the patient.
      */
     //si può mettere i parametri di defualt a 0?
     function createHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) public onlyOwner {
@@ -60,7 +60,7 @@ contract HealthFiles {
      * @param clinicalHistory Clinical history of the patient.
      * @param prescriptions List of prescriptions for the patient.
      * @param treatmentPlan List of treatment plans for the patient.
-     * @param note List of notes for the patient.
+     * @param notes List of notes for the patient.
      */
     function updateHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) public onlyOwner {
         HealthFile storage healthFile = healthFiles[cf];
@@ -74,9 +74,13 @@ contract HealthFiles {
      /**
      * @dev Gets the health file of a patient.
      * @param cf Codice fiscale (tax code) of the patient.
-     * @return Clinical history, prescriptions, treatment plan, and notes of the patient.
+     * @return _cf of the patient.
+     * @return clinicalHistory of the patient.
+     * @return prescriptions of the patient.
+     * @return treatmentPlan of the patient.
+     * @return notes of the patient.
      */
-    function getHealthFile(string memory cf) public view returns (string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) {
+    function getHealthFile(string memory cf) public view returns (string memory _cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) {
         HealthFile memory healthFile = healthFiles[cf];
         require(bytes(healthFile.cf).length != 0, "Health file not found");
         return (healthFile.cf,healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan, healthFile.notes);
