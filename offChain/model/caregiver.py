@@ -4,7 +4,13 @@ from web3 import Web3
 
 from .model import Model
 
-CaregiverData = namedtuple('CaregiverData', ['name', 'lastname','password','isRegistered','cf'])
+class CaregiverData:
+    def __init__(self, name, lastname, password, isRegistered, cf):
+        self.name = name
+        self.lastname = lastname
+        self.password = password
+        self.isRegistered = isRegistered
+        self.cf = cf
 class Caregiver(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url,'caregiver')

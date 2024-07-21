@@ -10,6 +10,7 @@ from model.caregiver import Caregiver
 from model.doctor import Doctor
 from model.healthFile import HealthFile
 from model.patient import Patient
+from model.patient import PatientData
 
 
 
@@ -24,7 +25,7 @@ from offChain.view.login import login'''
 
 DoctorData = namedtuple('DoctorData', ['name', 'lastname','password','isRegistered','cf'])
 CaregiverData = namedtuple('CaregiverData', ['name', 'lastname','password','isRegistered','cf'])
-PatientData = namedtuple('PatientData', ['name', 'lastname', 'birthPlace','password','isRegistered','isIndependent','cf'])
+
 HealthFileData = namedtuple('HealthData', ['cf','clinicalHistory','prescriptions','treatmentPlan','notes'])
 
 provider_url = "http://ganache:8080"

@@ -97,7 +97,7 @@ contract Patients {
         Patient memory patient = patients[cf];
         if (bytes(patient.cf).length == 0) {
 
-                return ("0", "0", "0", "0", 0, "0");
+                return ('', '', '', '', false, '');
         }
         return (patient.name, patient.lastName, patient.birthPlace,patient.hashedPwd,patient.isIndependent, patient.cf);
     }

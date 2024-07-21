@@ -35,6 +35,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
         user = doctorContracts.get_doctor(cf)
+        print(user.password)
         if user.password == password:
             return user
         user = caregiverContracts.get_caregiver(cf)
