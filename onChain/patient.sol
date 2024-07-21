@@ -50,19 +50,10 @@ contract Patients {
      */
     function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public {
         require(!patients[cf].isRegistered, "Patient already registered");
-        string memory hashedPassword = hashFunction(hashedPwd);
-        patients[cf] = Patient(name, lastName, birthPlace,hashedPassword,isIndependent, true, cf);
+        patients[cf] = Patient(name, lastName, birthPlace,hashedPwd,isIndependent, true, cf);
         emit PatientRegistered(cf, "patient");
     }
 
-    function hashFunction(string memory password) private pure returns (string memory) {
-        return string(abi.encodePacked(keccak256(bytes(password))));
-    }
-
-    function verifyPassword(string memory cf, string memory password) public view returns (bool) {
-        string memory hashedPassword = hashFunction(password);
-        return keccak256(bytes(hashedPassword)) == keccak256(bytes(patients[cf].hashedPwd));
-    }
     /**
      * @dev Updates an existing patient's information.
      * @param name New first name of the patient.

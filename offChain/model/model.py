@@ -18,7 +18,7 @@ class Model:
         try:
             abi = self.get_contract_abi(contract_name)
             address = self.get_contract_address(contract_name)
-            self.contract = self.web3.eth.contract(address=address, abi=abi)
+            self.contract = self.web3.eth.contract(address=address,abi=abi)
         except Exception as e:
         '''
         self.deploy_contract(contract_name)

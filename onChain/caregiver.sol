@@ -48,18 +48,8 @@ contract Caregivers {
      */
     function registerCaregiver(string memory name, string memory lastName, string memory hashedPwd, string memory cf) public onlyAuthorized{
         require(!caregivers[cf].isRegistered, "Caregiver already registered");
-        string memory hashedPassword = hashFunction(hashedPwd);
-        caregivers[cf] = Caregiver(name, lastName,hashedPassword, true, cf);
+        caregivers[cf] = Caregiver(name, lastName,hashedPwd, true, cf);
         emit CaregiverRegistered(cf,"caregiver");
-    }
-
-    function hashFunction(string memory password) private pure returns (string memory) {
-        return string(abi.encodePacked(keccak256(bytes(password))));
-    }
-
-    function verifyPassword(string memory cf, string memory password) public view returns (bool) {
-        string memory hashedPassword = hashFunction(password);
-        return keccak256(bytes(hashedPassword)) == keccak256(bytes(caregivers[cf].hashedPwd));
     }
 
     /**

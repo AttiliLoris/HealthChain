@@ -48,18 +48,8 @@ contract Doctors {
 
     function registerDoctor(string memory name, string memory lastName, string memory hashedPwd, string memory cf) public onlyAuthorized{
         require(!doctors[cf].isRegistered, "Doctor already registered");
-        string memory hashedPassword = hashFunction(hashedPwd);
-        doctors[cf] = Doctor(name, lastName, hashedPassword, true, cf);
+        doctors[cf] = Doctor(name, lastName, hashedPwd, true, cf);
         emit DoctorRegistered(cf, "doctor");
-    }
-
-    function hashFunction(string memory password) private pure returns (string memory) {
-        return string(abi.encodePacked(keccak256(bytes(password))));
-    }
-
-    function verifyPassword(string memory cf, string memory password) public view returns (bool) {
-        string memory hashedPassword = hashFunction(password);
-        return keccak256(bytes(hashedPassword)) == keccak256(bytes(doctors[cf].hashedPwd));
     }
 
     /**

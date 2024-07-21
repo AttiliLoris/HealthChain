@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-def homePatient(patient, caregiverContracts, patientContracts, healthFileContracts, private_key):
+def homePatient(patient,patientContracts, caregiverContracts, healthFileContracts, private_key):
     sg.theme('DarkAmber')
 
     layout = [
@@ -31,9 +31,7 @@ def homePatient(patient, caregiverContracts, patientContracts, healthFileContrac
 def viewHealthFile(healthFile, windowHome):
     sg.theme('DarkAmber')
     layout = [
-        [sg.Text(f'Cartella di {healthFile.name} {healthFile.lastname}')],
-        [sg.Text(f'Nome: {healthFile.name}')],
-        [sg.Text(f'Cognome: {healthFile.lastname}')],
+
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text('Prescrizioni:')],
         [sg.Listbox(values=healthFile.prescriptions, size=(30, 5))],
