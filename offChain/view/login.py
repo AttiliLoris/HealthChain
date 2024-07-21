@@ -34,13 +34,13 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
             signIn(patientContracts,healthFileContract,windowLogin, private_key)
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
-        user = doctorContracts.getDoctor(cf)
+        user = doctorContracts.get_doctor(cf)
         if user.password == password:
             return user
-        user = caregiverContracts.getDoctor(cf)
+        user = caregiverContracts.get_caregiver(cf)
         if user.password == password:
             return user
-        user = patientContracts.getDoctor(cf)
+        user = patientContracts.get_patient(cf)
         if user.password == password:
             return user
         raise ValueError("")
@@ -71,7 +71,7 @@ def signIn(patientContracts,healthFileContract,windowLogin,private_key):
             break
         elif event == 'Registrati':
             patientContracts.create_patient(private_key,values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(values['isIndependent']),values['cf'])
-            healthFileContract.create_healthFile(values['cf'])
+            healthFileContract.create_healthFile(private_key, values['cf'])
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
         windowLogin.UnHide()

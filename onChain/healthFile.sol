@@ -43,14 +43,14 @@ contract HealthFiles {
      * @param notes List of notes for the patient.
      */
     //si può mettere i parametri di defualt a 0?
-    function createHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) public onlyOwner {
+    function createHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) public  {
         require(bytes(healthFiles[cf].cf).length == 0, "Health file already exists");
         HealthFile memory newHealthFile = HealthFile(cf, clinicalHistory, prescriptions, treatmentPlan, notes);
         healthFiles[cf] = newHealthFile;
         emit NewHealthFile(cf);
     }
 
-    function createEmptyHealthFile(string memory cf) public onlyOwner {
+    function createEmptyHealthFile(string memory cf) public {
         createHealthFile(cf, "", "", "", "");
     }
 
@@ -82,7 +82,6 @@ contract HealthFiles {
      */
     function getHealthFile(string memory cf) public view returns (string memory _cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) {
         HealthFile memory healthFile = healthFiles[cf];
-        require(bytes(healthFile.cf).length != 0, "Health file not found");
         return (healthFile.cf,healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan, healthFile.notes);
     }
 

@@ -48,7 +48,7 @@ contract Patients {
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public onlyAuthorized{
+    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public {
         require(!patients[cf].isRegistered, "Patient already registered");
         string memory hashedPassword = hashFunction(hashedPwd);
         patients[cf] = Patient(name, lastName, birthPlace,hashedPassword,isIndependent, true, cf);
@@ -93,8 +93,12 @@ contract Patients {
      * @return _cf Codice fiscale (tax code) of the patient.
      */
     function getPatient(string memory cf) public view returns (string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory _cf) {
-        require(patients[cf].isRegistered, "Patient not found");
+
         Patient memory patient = patients[cf];
+        if (bytes(patient.cf).length == 0) {
+
+                return ("0", "0", "0", "0", 0, "0");
+        }
         return (patient.name, patient.lastName, patient.birthPlace,patient.hashedPwd,patient.isIndependent, patient.cf);
     }
 

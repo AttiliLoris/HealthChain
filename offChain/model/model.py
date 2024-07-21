@@ -14,12 +14,14 @@ class Model:
         self.loris(contract_name) #non va bene perchè così è come se fosse che conctract non esiste
 
     def loris(self, contract_name):
+        '''
         try:
             abi = self.get_contract_abi(contract_name)
             address = self.get_contract_address(contract_name)
             self.contract = self.web3.eth.contract(address=address, abi=abi)
         except Exception as e:
-            self.deploy_contract(contract_name)
+        '''
+        self.deploy_contract(contract_name)
 
     def get_contract_abi(self, contract_name):
         with open(f'onChain/abi/{contract_name}.json') as f:

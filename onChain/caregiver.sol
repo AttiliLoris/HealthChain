@@ -85,8 +85,13 @@ contract Caregivers {
      * @return _cf Codice fiscale (tax code) of the caregiver.
      */
     function getCaregiver(string memory cf) public view returns (string memory name, string memory lastName,string memory hashedPwd, string memory _cf) {
-        require(caregivers[cf].isRegistered, "Caregiver not found");
+
         Caregiver memory caregiver = caregivers[cf];
+
+
+        if (bytes(caregiver.cf).length == 0) {
+                return ("0", "0", "0", "0");
+        }
         return (caregiver.name, caregiver.lastName,caregiver.hashedPwd, caregiver.cf);
     }
 

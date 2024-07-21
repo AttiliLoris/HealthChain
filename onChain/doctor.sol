@@ -85,9 +85,11 @@ contract Doctors {
      * @return _cf Codice fiscale (tax code) of the doctor.
      */
     function getDoctor(string memory cf) public view returns (string memory name, string memory lastName,string memory hashedPwd, string memory _cf) {
-        require(doctors[cf].isRegistered, "Doctor not found");
         Doctor memory doctor = doctors[cf];
-        return (doctor.name, doctor.lastName, doctor.hashedPwd,doctor.cf);
-    }
+         if (bytes(doctor.cf).length == 0) {
+                return ("0", "0", "0", "0");
+        }
 
+        return (doctor.name, doctor.lastName, doctor.hashedPwd, doctor.cf);
+    }
 }

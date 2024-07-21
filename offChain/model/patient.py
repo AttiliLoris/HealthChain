@@ -37,7 +37,7 @@ class Patient(Model):
         return receipt
 
     def get_patient(self,cf):
-        name, lastname, birthPlace, pwd, isIndependent, cf = self.contract.functions.getDoctor().call({'from': cf})
+        name, lastname, birthPlace, pwd, isIndependent, cf = self.contract.functions.getPatient(cf).call({'from': '0x098049451CC663e32544Bb4AA2136df812b5235c'})
         patient = PatientData(name, lastname, birthPlace, pwd, 1,isIndependent,cf)
         return patient
 

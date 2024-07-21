@@ -36,7 +36,7 @@ class Doctor(Model):
         return receipt
 
     def get_doctor(self, cf):
-        name, lastname,pwd, cf= self.contract.functions.getDoctor().call({'from': cf})
+        name, lastname,pwd, cf= self.contract.functions.getDoctor(cf).call({'from': '0x098049451CC663e32544Bb4AA2136df812b5235c'})
         doctor = DoctorData(name, lastname,pwd,0, cf)
         if doctor.name:
             doctor.isRegistered=True

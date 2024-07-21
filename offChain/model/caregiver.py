@@ -35,8 +35,8 @@ class Caregiver(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def get_caregiver(self, account):
-        name, lastname,pwd, cf= self.contract.functions.getCaregiver().call({'from': account})
+    def get_caregiver(self, cf):
+        name, lastname,pwd, cf= self.contract.functions.getCaregiver(cf).call({'from': '0x098049451CC663e32544Bb4AA2136df812b5235c'})
         caregiver = CaregiverData(name, lastname,pwd, 0, cf)
         if caregiver.name:
             caregiver.isRegistered = True
