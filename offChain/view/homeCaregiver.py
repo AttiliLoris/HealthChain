@@ -85,7 +85,7 @@ def addNote(healthFile, windowHealthFile, healthFileContracts,private_key):
                 if conferma == 'OK':
                     windowAddNote['-OUTPUT-'].update('')
                     healthFile.notes=healthFile.notes +'\n'+ newNote
-                    healthFileContracts.update_healthFile(healthFile.cf, private_key, healthFile.notes)
+                    healthFileContracts.update_healthFile(private_key, healthFile.cf, healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan,healthFile.notes)
                     sg.popup(f'Nota aggiunta.')
                     break
             else:
@@ -134,7 +134,7 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
 def healthFileResearch(cf,healthFileContracts):
     try:
         healthFile = healthFileContracts.get_healthFile(cf)
-        if healthFile:
+        if healthFile.cf:
             return healthFile
     except ValueError as e:
         return None

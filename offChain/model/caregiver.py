@@ -28,10 +28,10 @@ class Caregiver(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_caregiver(self, account, private_key, name, lastname,cf):
+    def update_caregiver(self, cf, private_key, name, lastname):
         transaction = self.contract.functions.updateCaregiver(name,lastname, cf).build_transaction({
-            'from': account,
-            'nonce': self.web3.eth.getTransactionCount(account),
+            'from': cf,
+            'nonce': self.web3.eth.getTransactionCount(cf),
             'gas': 2000000,
             'gasPrice': self.web3.toWei('50', 'gwei')
         })

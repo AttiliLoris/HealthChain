@@ -82,7 +82,10 @@ contract HealthFiles {
      */
     function getHealthFile(string memory cf) public view returns (string memory _cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) {
         HealthFile memory healthFile = healthFiles[cf];
-        return (healthFile.cf,healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan, healthFile.notes);
+         if (bytes(healthFile.cf).length == 0) {
+                return ("", "", "", "","");
+        }
+        return (healthFile.cf, healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan, healthFile.notes);
     }
 
     function confirmTreatment(string memory cfCaregiver, string memory cfPatient) public  {

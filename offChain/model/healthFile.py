@@ -22,8 +22,8 @@ class HealthFile(Model):
         receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         return receipt
 
-    def update_healthFile(self,private_key, cf,clinicalHistory,prescriptions,treatmentPlan,note):
-        transaction = self.contract.functions.updatehealthFile(cf,clinicalHistory,prescriptions,treatmentPlan,note).build_transaction({
+    def update_healthFile(self,private_key, cf,clinicalHistory,prescriptions,treatmentPlan,notes):
+        transaction = self.contract.functions.updatehealthFile(cf,clinicalHistory,prescriptions,treatmentPlan,notes).build_transaction({
             'from': cf,
             'nonce': self.web3.eth.getTransactionCount(cf),
             'gas': 2000000,

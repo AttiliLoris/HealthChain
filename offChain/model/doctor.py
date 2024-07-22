@@ -28,7 +28,7 @@ class Doctor(Model):
         receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
         return receipt
 
-    def update_doctor(self, private_key,  name, lastname,cf):
+    def update_doctor(self, cf, private_key,  name, lastname):
         transaction = self.contract.functions.updateDoctor( name, lastname,cf).build_transaction({
             'from': cf,
             'nonce': self.web3.eth.getTransactionCount(cf),

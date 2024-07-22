@@ -2,7 +2,8 @@ import PySimpleGUI as sg
 def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
-                [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')] ]
+                [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')],
+                  [sg.Text('', size=(30, 1), key='-OUTPUT-')] ]
 
 
     windowHome = sg.Window('Home', layoutHome)
@@ -20,6 +21,9 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
             if healthFile:
                 windowHome.Hide()
                 patientHealthFile(healthFile, windowHome, healthFileContracts,private_key)
+            else:
+                windowHome['-OUTPUT-'].update('Cartella non trovata', text_color='red')
+                windowHome['cf'].update('')
 
     windowHome.close()
 
@@ -54,6 +58,7 @@ def doctorProfile(doctor, windowHome,doctorContracts,private_key):
     windowHome.UnHide()
 
 def checkValues(values):
+    #Questi controlli sono forse un po' troppo banali
     if values['name'] == '' or values['lastname'] == '':
         sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
         return 0
@@ -68,14 +73,15 @@ def healthFileResearch(cf,healthFileContracts):
         return None
     return None
 
+
 def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
-    layoutHealthFile = [[sg.Text('Nome: ' + healthFile.name), sg.Text('Cognome: '+ healthFile.lastname), sg.Text('Codice fiscale: '+ healthFile.cf)],
-                        [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicHistory)],
+    layoutHealthFile = [[sg.Text('Codice fiscale: '+ healthFile.cf)],
+                        [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicalHistory)],
                         [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions)],
-                        [sg.Text('Trattamenti: '), sg.Text(healthFile.treatmentPlan)], #è un vettore non so se si fa così
+                        [sg.Text('Trattamenti: '), sg.Text(healthFile.treatmentPlan)],
                         [sg.Button('Home'), sg.Button('Aggiorna storia clinica'), sg.Button('Modifica prescrizioni'), sg.Button('Aggiungi trattamento')]]
 
-    windowHealthFile = sg.Window('Fascicolo '+ healthFile.name +' '+  healthFile.lastname, layoutHealthFile)
+    windowHealthFile = sg.Window('Fascicolo', layoutHealthFile)
 
     while True:
         event, values = windowHealthFile.read()
@@ -83,7 +89,7 @@ def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
             break
         if event == 'Aggiorna storia clinica':
             windowHealthFile.Hide()
-            modififyClinicHistory(healthFile, windowHealthFile,healthFileContracts, private_key)
+            modififyClinicalHistory(healthFile, windowHealthFile,healthFileContracts, private_key)
         if event == 'Modifica prescrizioni':
             windowHealthFile.Hide()
             modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,private_key)
@@ -91,33 +97,31 @@ def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
             windowHome.UnHide()
         if event == 'Aggiungi trattamento':
             windowHealthFile.hide()
-            addTreatmentPlan(healthFile, windowHealthFile,healthFileContracts,private_key) #cosa è private_key??
+            addTreatmentPlan(healthFile, windowHealthFile,healthFileContracts,private_key)
             break
     windowHealthFile.close()
 
 
-
-def modififyClinicHistory(healthFile, windowHealthFile, healthFileContracts, private_key):
-    layoutClinicHistory = [[sg.Text('Storia clinica: '), sg.InputText(healthFile.clinicHistory,key='clinicHistory')],
+def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts, private_key):
+    layoutClinicalHistory = [[sg.Text('Storia clinica: '), sg.InputText(healthFile.clinicalHistory,key='clinicalHistory')],
                             [sg.Button('Conferma'), sg.Button('Indietro')]]
-    windowClinicHistory = sg.Window('Dettaglio', layoutClinicHistory)
-
+    windowClinicalHistory = sg.Window('Dettaglio', layoutClinicalHistory)
     while True:
-        event, values = windowClinicHistory.read()
-        text= values['clinicHistory']
+        event, values = windowClinicalHistory.read()
+        text= values['clinicalHistory']
         if event == sg.WIN_CLOSED:
             break
         if event == 'Conferma':
             if text =='':
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
+                windowClinicalHistory['clinicalHistory'].update(healthFile.clinicalHistory)
             else:
-                healthFile.clinicHistory = text
+                healthFile.clinicalHistory = text
                 healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)#vanno aggiunti gli attributi
-
                 break
         if event == 'Indietro':
             break
-    windowClinicHistory.close()
+    windowClinicalHistory.close()
     windowHealthFile.UnHide()
 def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,private_key):
     layoutPrescription = [[sg.Text('Prescrizioni: '), sg.InputText(healthFile.prescriptions, key='prescriptions')],
@@ -130,40 +134,43 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,privat
         if event == sg.WIN_CLOSED:
             break
         if event == 'Conferma':
-            if text == '':
+            if text == '': #in realtà potrebbe andare bene se è vuoto
                 sg.popup_error('Il testo è vuoto, modifiche non valide')
+                windowPrescription['prescriptions'].update(healthFile.prescriptions)
             else:
                 healthFile.prescriptions = text
-                healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)  # vanno aggiunti gli attributi
-
+                healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
                 break
         if event == 'Indietro':
             break
     windowPrescription.close()
     windowHealthFile.UnHide()
 
-#non ho capito come funziona private_key, cioè se in caregiver le note le ho potute aggiungere così: perchè non posso
-#farlo anche per i trattamenti e di base anche per la storia clinica ad esempio??
-def addTreatmentPlan(healthFile, windowHealthFile):
+
+def addTreatmentPlan(healthFile, windowHealthFile, healthFileContracts,private_key):
     sg.theme('DarkAmber')
 
     layoutTreatmentPlan= [[sg.Text('Trattamenti: '), sg.InputText(healthFile.treatmentPlan, key='treatmentPlan')],
                           [sg.Button('Conferma'), sg.Button('Indietro')]]
-    windowTreatmentPlan = sg.Window('Dettaglio', layoutTreatmentPlan)
+    windowTreatmentPlan = sg.Window('Piano di trattamenti', layoutTreatmentPlan)
 
     while True:
         event, values = windowTreatmentPlan.read()
 
-        if event == sg.WINDOW_CLOSED or event == 'Annulla':
+        if event == sg.WINDOW_CLOSED or event == 'Indietro':
             break
-        elif event == 'Aggiungi':
+        elif event == 'Conferma':
             newTreatmentPlan = values['treatmentPlan']
             if newTreatmentPlan:
                 conferma = sg.popup_ok_cancel(f'Confermi di voler aggiungere il trattamento?')
                 if conferma == 'OK':
-                    healthFile.treatmentPlan.append(newTreatmentPlan)
+                    healthFile.treatmentPlan= newTreatmentPlan
+                    healthFileContracts.update_healthFile(private_key, healthFile.cf, healthFile.clinicalHistory,
+                                                          healthFile.prescriptions, healthFile.treatmentPlan,
+                                                          healthFile.notes)
                     sg.popup(f'trattamento aggiunto.')
                     break
+
 
     windowTreatmentPlan.close()
     windowHealthFile.UnHide()
