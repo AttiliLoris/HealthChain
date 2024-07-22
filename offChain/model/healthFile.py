@@ -25,14 +25,14 @@ class HealthFile(Model):
     def update_healthFile(self,private_key, cf,clinicalHistory,prescriptions,treatmentPlan,notes):
         transaction = self.contract.functions.updatehealthFile(cf,clinicalHistory,prescriptions,treatmentPlan,notes).build_transaction({
             'from': cf,
-            'nonce': self.web3.eth.getTransactionCount(cf),
+            'nonce': self.web3.eth.get_transaction_count(cf),
             'gas': 2000000,
-            'gasPrice': self.web3.toWei('50', 'gwei')
+            'gasPrice': self.web3.to_wei('50', 'gwei')
         })
 
-        signed_txn = self.web3.eth.account.signTransaction(transaction, private_key=private_key)
-        tx_hash = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-        receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
+        signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=private_key)
+        tx_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         return receipt
 
     def get_healthFile(self, cf):
@@ -41,23 +41,23 @@ class HealthFile(Model):
         return healthFile
     #isIndependet da fare
 
-    def confirm_treatment(self, cfCaregiver,cfPatient , isIndependent, private_key):
+    def confirm_treatment(self, cfCaregiver, cfPatient, isIndependent, private_key):
         if isIndependent:
             transaction = self.contract.functions.confirmTreatment(cfCaregiver,cfPatient).build_transaction({
                 'from': cfPatient,
-                'nonce': self.web3.eth.getTransactionCount(cfPatient),
+                'nonce': self.web3.eth.get_transaction_count(cfPatient),
                 'gas': 2000000,
-                'gasPrice': self.web3.toWei('50', 'gwei')
+                'gasPrice': self.web3.to_wei('50', 'gwei')
             })
         else:
             transaction = self.contract.functions.confirmTreatment(cfCaregiver, cfPatient).build_transaction({
                 'from': cfCaregiver,
-                'nonce': self.web3.eth.getTransactionCount(cfCaregiver),
+                'nonce': self.web3.eth.get_transaction_count(cfCaregiver),
                 'gas': 2000000,
-                'gasPrice': self.web3.toWei('50', 'gwei')
+                'gasPrice': self.web3.to_wei('50', 'gwei')
             })
 
-        signed_txn = self.web3.eth.account.signTransaction(transaction, private_key=private_key)
-        tx_hash = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-        receipt = self.web3.eth.waitForTransactionReceipt(tx_hash)
+        signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=private_key)
+        tx_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         return receipt
