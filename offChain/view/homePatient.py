@@ -55,7 +55,10 @@ def modifyProfile(patient,patientContracts, windowHome, private_key):
     sg.theme('DarkAmber')
     layoutProfile = [[sg.Text('Nome'), sg.InputText(patient.name,key='name')],
                      [sg.Text('Cognome'), sg.InputText(patient.lastname,key='lastname')],
-                     [sg.Text('Codice fiscale'), sg.Text(patient.cf, key='cf')],
+                     [sg.Text('Codice fiscale'), sg.InputText(patient.cf, key='cf')],#non dovrebbe essere modificabile
+                     [sg.Text('Luogo di nascita'), sg.InputText(patient.birthPlace, key='birthPlace')],
+                     [sg.Text('Indipendente'), sg.InputText(patient.isIndependent, key='isIndependent')],#bottone
+                     [sg.Text('Password'), sg.InputText(patient.password, key='password')],#per modificare la password dovremmo fare una cosa a parte
                      [sg.Button('Salva'), sg.Button('Home')]]
     windowProfile = sg.Window('Profile', layoutProfile)
 
@@ -67,15 +70,20 @@ def modifyProfile(patient,patientContracts, windowHome, private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                patientContracts.update_patient(patient.cf, private_key, values['name'], values['lastname'])
+                patientContracts.update_patient(patient.cf, private_key, values['name'], values['lastname'],values['birthPlace'],values['password'],bool(values['isIndependent']),values['cf'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
                 patient.lastname = values['lastname']
+                patient.isIndependent = values['isIndependent']
+                patient.birthPlace = values['birthPlace']
 
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(patient.name)
                 windowProfile['lastname'].update(patient.lastname)
+                windowProfile['birthPlace'].update(patient.birthPlace)
+                windowProfile['isIndependent'].update(patient.isIndependent)
+                windowProfile['password'].update(patient.password)
                 windowProfile['cf'].update(patient.cf)
     windowProfile.close()
     windowHome.UnHide()

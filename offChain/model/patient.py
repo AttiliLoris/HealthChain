@@ -26,7 +26,7 @@ class Patient(Model):
     def update_patient(self, account, private_key, name, lastname, birthPlace, pwd, isIndependent,cf):
         transaction = self.contract.functions.updatePatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
             'from': account,
-            'nonce': self.web3.eth.getTransactionCount(account),
+            'nonce': self.web3.eth.get_transaction_count(account),
             'gas': 2000000,
             'gasPrice': self.web3.toWei('50', 'gwei')
         })
