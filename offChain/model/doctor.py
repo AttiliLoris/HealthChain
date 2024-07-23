@@ -23,7 +23,7 @@ class Doctor(Model):
             'from': address,
             'nonce': self.web3.eth.get_transaction_count(private_key),
             'gas': 2000000,
-            'gasPrice': self.web3.to_wei('50', 'gwei')
+            'gasPrice': self.web3.to_wei('0', 'gwei')
         })
 
         signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=private_key)

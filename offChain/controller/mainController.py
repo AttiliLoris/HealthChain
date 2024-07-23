@@ -71,12 +71,12 @@ def handle_event(event):
     file_path='onChain/address/addressList.json'
     data = load_addresses(file_path)
     cf = event['args']['cf']
-    address = event['args']['address']
+    address = event['args']['addres']
     private_key = event['args']['private_key']
     type = event['args']['ctype']
 
     data[cf] = {
-        "address": address,
+        "address": str(address),
         "private_key": private_key,
         "type": type
     }
@@ -94,4 +94,4 @@ def load_addresses(file_path):
 
 def save_addresses(file_path, addresses):
     with open(file_path, 'w') as file:
-        json.dump({"addresses": addresses}, file, indent=4)
+        json.dump(addresses, file, indent=4)

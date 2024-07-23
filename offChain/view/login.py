@@ -17,7 +17,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
         event, values = windowLogin.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Esci':
-            return None
+            windowLogin.Hide()
         elif event == 'Conferma':
             utente = checkCredentials(values['cf'], values['password'],doctorContracts, caregiverContracts, patientContracts)
             if utente:
@@ -72,7 +72,7 @@ def signIn(patientContracts,healthFileContract,windowLogin):
             break
         elif event == 'Registrati':
             patientContracts.create_patient(values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(values['isIndependent']),values['cf'])
-            healthFileContract.create_healthFile( values['cf'])
+            healthFileContract.create_healthFile(values['cf'])
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
         windowLogin.UnHide()

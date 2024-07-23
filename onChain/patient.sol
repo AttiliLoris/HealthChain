@@ -21,7 +21,7 @@ contract Patients {
     mapping(string => Patient) public patients;
     mapping(address => bool) public authorizedEditors;
     address public owner;
-    event PatientRegistered(string indexed cf, address indexed addres, string indexed private_key, string ctype);
+    event PatientRegistered(string cf, address indexed addres, string private_key, string ctype);
     event PatientUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
