@@ -4,6 +4,7 @@ import os
 from solcx import install_solc, get_installed_solc_versions, compile_standard
 from web3 import Web3
 import random
+from eth_account import Account
 
 class Model:
 
@@ -75,6 +76,16 @@ class Model:
         try:
             with open("onChain/address/addressList.json", 'r') as file:
                 data = json.load(file)
-            return data
+            return data[cf]
         except (FileNotFoundError, json.JSONDecodeError):
             return {}
+
+    def create_new_account(self):
+        # Genera un nuovo account
+        new_account = Account.create()
+
+        # Estrai l'indirizzo e la chiave privata
+        address = new_account.address
+        private_key = new_account.privateKey.hex()
+
+        return address, private_key

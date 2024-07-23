@@ -34,7 +34,6 @@ HealthFileData = namedtuple('HealthData', ['cf','clinicalHistory','prescriptions
 provider_url = "http://ganache:8080"
 
 
-private_key = "0xd4485a65c4f843d9d1169d6ccca7caf2cf22b6fb3f5a1b0c5ba008e688aaf725"
 
 
 def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
@@ -58,14 +57,14 @@ def main():
     event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
     event_listener_thread.start()
 
-    user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts, private_key)
+    user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
     #come si fa con l'admin?????? ad accedere alla sua home dico
     if isinstance(user, DoctorData):
-        homeDoctor(user,doctorContracts, healthFileContracts, private_key)
+        homeDoctor(user,doctorContracts, healthFileContracts)
     elif isinstance(user, CaregiverData):
-        homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts, private_key)
+        homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts)
     elif isinstance(user, PatientData):
-        homePatient(user,patientContracts, caregiverContracts, healthFileContracts,private_key)
+        homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
 
 
 def handle_event(event):

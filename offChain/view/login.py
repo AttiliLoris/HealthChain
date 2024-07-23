@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-def login(doctorContracts, caregiverContracts, patientContracts,healthFileContract,private_key):
+def login(doctorContracts, caregiverContracts, patientContracts,healthFileContract):
     sg.theme('DarkAmber')
 
     layout = [
@@ -31,7 +31,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
                 windowLogin['password'].update('')
         elif event == 'Registrati':
             windowLogin.Hide()
-            signIn(patientContracts,healthFileContract,windowLogin, private_key)
+            signIn(patientContracts,healthFileContract,windowLogin)
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
         user = doctorContracts.get_doctor(cf)
@@ -48,7 +48,7 @@ def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientCo
     except ValueError as e:
         return 0
 
-def signIn(patientContracts,healthFileContract,windowLogin,private_key):
+def signIn(patientContracts,healthFileContract,windowLogin):
     sg.theme('DarkAmber')
 
     layout = [
@@ -71,8 +71,8 @@ def signIn(patientContracts,healthFileContract,windowLogin,private_key):
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Registrati':
-            patientContracts.create_patient(private_key,values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(values['isIndependent']),values['cf'])
-            healthFileContract.create_healthFile(private_key, values['cf'])
+            patientContracts.create_patient(values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(values['isIndependent']),values['cf'])
+            healthFileContract.create_healthFile( values['cf'])
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
         windowLogin.UnHide()

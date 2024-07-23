@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 
-def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientContracts, private_key):
+def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientContracts):
     sg.theme('DarkAmber')
     layout = [
         [sg.Text(f'Benvenuto {caregiver.name} {caregiver.lastname}')],
@@ -17,18 +17,18 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
             break
         elif event == 'Profilo':
             windowHome.Hide()
-            caregiverProfile(caregiver,caregiverContracts, windowHome, private_key)
+            caregiverProfile(caregiver,caregiverContracts, windowHome)
         elif event == 'Ok':
             cf = values['cf']
             healthFile = healthFileResearch(cf, healthFileContracts)
             if healthFile:
                 windowHome.Hide()
-                patientHealthFile(caregiver, healthFile, windowHome,healthFileContracts, patientContracts,private_key)
+                patientHealthFile(caregiver, healthFile, windowHome,healthFileContracts, patientContracts)
             break
 
     windowHome.close()
 
-def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, patientContracts, private_key):
+def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, patientContracts):
     sg.theme('DarkAmber')
     patient= patientContracts.getPatient(healthFile.cf)
     layout = [
@@ -52,16 +52,16 @@ def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, pa
         if event == sg.WINDOW_CLOSED or event == 'Chiudi':
             break
         elif event == 'Conferma cure':
-            healthFileContracts.confirm_treatment(caregiver.cf, healthFile.cf, patient.isIndependent, private_key)
+            healthFileContracts.confirm_treatment(caregiver.cf, healthFile.cf, patient.isIndependent)
         elif event == 'Aggiungi nota':
-            addNote(healthFile, windowHealthFile, healthFileContracts,private_key)
+            addNote(healthFile, windowHealthFile, healthFileContracts)
         elif event == 'Home':
             windowHome.UnHide()
             break
 
     windowHealthFile.close()
 
-def addNote(healthFile, windowHealthFile, healthFileContracts,private_key):
+def addNote(healthFile, windowHealthFile, healthFileContracts):
     sg.theme('DarkAmber')
 
     layout = [
@@ -85,7 +85,7 @@ def addNote(healthFile, windowHealthFile, healthFileContracts,private_key):
                 if conferma == 'OK':
                     windowAddNote['-OUTPUT-'].update('')
                     healthFile.notes=healthFile.notes +'\n'+ newNote
-                    healthFileContracts.update_healthFile(private_key, healthFile.cf, healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan,healthFile.notes)
+                    healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan,healthFile.notes)
                     sg.popup(f'Nota aggiunta.')
                     break
             else:
@@ -100,7 +100,7 @@ def checkValues(values):
         return 0
     return 1
 
-def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
+def caregiverProfile(caregiver, caregiverContracts, windowHome):
     layoutProfile = [[sg.Text('Nome'), sg.InputText(caregiver.name, key='name')],
                      [sg.Text('Cognome'), sg.InputText(caregiver.lastname, key='lastname')],
                      [sg.Text('Codice fiscale'), sg.Text(caregiver.cf, key='cf')],
@@ -117,7 +117,7 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome, private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                caregiverContracts.update_caregiver(caregiver.cf, private_key, values['name'], values['lastname'])
+                caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 caregiver.name = values['name']
                 caregiver.lastname = values['lastname']

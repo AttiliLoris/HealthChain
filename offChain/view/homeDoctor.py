@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
+def homeDoctor(doctor,doctorContracts,healthFileContracts):
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
                 [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')],
@@ -15,19 +15,19 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts, private_key):
             break
         if event == 'Profilo':
             windowHome.Hide()
-            doctorProfile(doctor, windowHome,doctorContracts,private_key)
+            doctorProfile(doctor, windowHome,doctorContracts)
         if event == 'Ok':
             healthFile = healthFileResearch(cf,healthFileContracts)
             if healthFile:
                 windowHome.Hide()
-                patientHealthFile(healthFile, windowHome, healthFileContracts,private_key)
+                patientHealthFile(healthFile, windowHome, healthFileContracts)
             else:
                 windowHome['-OUTPUT-'].update('Cartella non trovata', text_color='red')
                 windowHome['cf'].update('')
 
     windowHome.close()
 
-def doctorProfile(doctor, windowHome,doctorContracts,private_key):
+def doctorProfile(doctor, windowHome,doctorContracts):
     layoutProfile = [[sg.Text('Nome'), sg.InputText(doctor.name,key='name')],
                     [sg.Text('Cognome'), sg.InputText(doctor.lastname,key='lastname')],
                     [sg.Text('Codice fiscale'), sg.Text(doctor.cf,key='cf')],
@@ -44,7 +44,7 @@ def doctorProfile(doctor, windowHome,doctorContracts,private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                doctorContracts.update_doctor(doctor.cf,private_key,values['name'],values['lastname'])
+                doctorContracts.update_doctor(doctor.cf,values['name'],values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 doctor.name = values['name']
                 doctor.lastname = values['lastname']
@@ -74,7 +74,7 @@ def healthFileResearch(cf,healthFileContracts):
     return None
 
 
-def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
+def patientHealthFile(healthFile, windowHome, healthFileContracts):
     layoutHealthFile = [[sg.Text('Codice fiscale: '+ healthFile.cf)],
                         [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicalHistory)],
                         [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions)],
@@ -89,20 +89,20 @@ def patientHealthFile(healthFile, windowHome, healthFileContracts, private_key):
             break
         if event == 'Aggiorna storia clinica':
             windowHealthFile.Hide()
-            modififyClinicalHistory(healthFile, windowHealthFile,healthFileContracts, private_key)
+            modififyClinicalHistory(healthFile, windowHealthFile,healthFileContracts)
         if event == 'Modifica prescrizioni':
             windowHealthFile.Hide()
-            modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,private_key)
+            modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts)
         if event == 'Home':
             windowHome.UnHide()
         if event == 'Aggiungi trattamento':
             windowHealthFile.hide()
-            addTreatmentPlan(healthFile, windowHealthFile,healthFileContracts,private_key)
+            addTreatmentPlan(healthFile, windowHealthFile,healthFileContracts)
             break
     windowHealthFile.close()
 
 
-def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts, private_key):
+def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts):
     layoutClinicalHistory = [[sg.Text('Storia clinica: '), sg.InputText(healthFile.clinicalHistory,key='clinicalHistory')],
                             [sg.Button('Conferma'), sg.Button('Indietro')]]
     windowClinicalHistory = sg.Window('Dettaglio', layoutClinicalHistory)
@@ -117,13 +117,13 @@ def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts, p
                 windowClinicalHistory['clinicalHistory'].update(healthFile.clinicalHistory)
             else:
                 healthFile.clinicalHistory = text
-                healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)#vanno aggiunti gli attributi
+                healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)#vanno aggiunti gli attributi
                 break
         if event == 'Indietro':
             break
     windowClinicalHistory.close()
     windowHealthFile.UnHide()
-def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,private_key):
+def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts):
     layoutPrescription = [[sg.Text('Prescrizioni: '), sg.InputText(healthFile.prescriptions, key='prescriptions')],
                            [sg.Button('Conferma'), sg.Button('Indietro')]]
     windowPrescription = sg.Window('Dettaglio', layoutPrescription)
@@ -139,7 +139,7 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,privat
                 windowPrescription['prescriptions'].update(healthFile.prescriptions)
             else:
                 healthFile.prescriptions = text
-                healthFileContracts.update_healthFile(private_key, healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
+                healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
                 break
         if event == 'Indietro':
             break
@@ -147,7 +147,7 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts,privat
     windowHealthFile.UnHide()
 
 
-def addTreatmentPlan(healthFile, windowHealthFile, healthFileContracts,private_key):
+def addTreatmentPlan(healthFile, windowHealthFile, healthFileContracts):
     sg.theme('DarkAmber')
 
     layoutTreatmentPlan= [[sg.Text('Trattamenti: '), sg.InputText(healthFile.treatmentPlan, key='treatmentPlan')],
@@ -165,7 +165,7 @@ def addTreatmentPlan(healthFile, windowHealthFile, healthFileContracts,private_k
                 conferma = sg.popup_ok_cancel(f'Confermi di voler aggiungere il trattamento?')
                 if conferma == 'OK':
                     healthFile.treatmentPlan= newTreatmentPlan
-                    healthFileContracts.update_healthFile(private_key, healthFile.cf, healthFile.clinicalHistory,
+                    healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
                                                           healthFile.prescriptions, healthFile.treatmentPlan,
                                                           healthFile.notes)
                     sg.popup(f'trattamento aggiunto.')

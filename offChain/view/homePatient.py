@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-def homePatient(patient,patientContracts, caregiverContracts, healthFileContracts, private_key):
+def homePatient(patient,patientContracts, caregiverContracts, healthFileContracts):
     sg.theme('DarkAmber')
 
     layout = [
@@ -23,9 +23,9 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
             viewHealthFile(healthFile, windowHome)
         elif event == 'Modifica profilo':
             windowHome.Hide()
-            modifyProfile(patient,patientContracts, windowHome, private_key)
+            modifyProfile(patient,patientContracts, windowHome)
         elif event == 'Conferma cure':
-            viewConfirmTreatement(patient, caregiverContracts,healthFileContracts, windowHome, private_key)
+            viewConfirmTreatement(patient, caregiverContracts,healthFileContracts, windowHome)
     windowHome.close()
 
 def viewHealthFile(healthFile, windowHome):
@@ -51,7 +51,7 @@ def viewHealthFile(healthFile, windowHome):
     windowHealthFile.close()
     windowHome.UnHide()
 
-def modifyProfile(patient,patientContracts, windowHome, private_key):
+def modifyProfile(patient,patientContracts, windowHome):
     sg.theme('DarkAmber')
     layoutProfile = [[sg.Text('Nome'), sg.InputText(patient.name,key='name')],
                      [sg.Text('Cognome'), sg.InputText(patient.lastname,key='lastname')],
@@ -70,7 +70,7 @@ def modifyProfile(patient,patientContracts, windowHome, private_key):
             break
         if event == 'Salva':
             if checkValues(values):
-                patientContracts.update_patient(patient.cf, private_key, values['name'], values['lastname'],values['birthPlace'],values['password'],bool(values['isIndependent']),values['cf'])
+                patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(values['isIndependent']),values['cf'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
                 patient.lastname = values['lastname']
@@ -102,7 +102,7 @@ def checkValues(values):
         return 0
     return 1
 
-def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windowHome, private_key):
+def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windowHome):
     sg.theme('DarkAmber')
     layout=[[sg.Text('Inserire codice fiscale del caregiver: '),sg.InputText('', key='cfCaregiver')],
             [sg.Text('', size=(30, 1), key='-OUTPUT-')],
@@ -116,7 +116,7 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
             break
         elif event == 'Conferma cure':
             if checkCaregiver(values['cfCaregiver'], caregiverContracts):
-                healthFileContracts.confirm_treatement( values['cfCaregiver'],patient.cf , patient.isIndependent, private_key)
+                healthFileContracts.confirm_treatement( values['cfCaregiver'],patient.cf , patient.isIndependent)
             else:
                 windowConfirmTreatement['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowConfirmTreatement['cfCaregover'].update('')
