@@ -69,3 +69,12 @@ class Model:
         with open(f'onChain/abi/{contract_name}.json', 'w') as file:
             json.dump(self.contract.abi, file)
         print(self.contract)
+
+
+    def cf_to_address(self, cf):
+        try:
+            with open("onChain/address/addressList.json", 'r') as file:
+                data = json.load(file)
+            return data
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}

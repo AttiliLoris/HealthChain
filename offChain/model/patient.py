@@ -2,7 +2,7 @@ import json
 from collections import namedtuple
 
 from web3 import Web3
-
+from eth_account import Account
 from .model import Model
 
 PatientData = namedtuple('PatientData', ['name', 'lastname', 'birthPlace','password','isRegistered','isIndependent','cf'])
@@ -11,9 +11,11 @@ class Patient(Model):
         super().__init__(provider_url, 'patient')
 
     def create_patient(self, private_key, name, lastname, birthPlace, pwd, isIndependent,cf):
+        address, private_key = self.create_new_account()
+
         transaction = self.contract.functions.registerPatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
-            'from': '0x098049451CC663e32544Bb4AA2136df812b5235c',
-            'nonce': self.web3.eth.get_transaction_count('0x098049451CC663e32544Bb4AA2136df812b5235c'),
+            'from': address,
+            'nonce': self.web3.eth.get_transaction_count(address),
             'gas': 2000000,
             'gasPrice': self.web3.to_wei('50', 'gwei')
         })
@@ -41,3 +43,12 @@ class Patient(Model):
         patient = PatientData(name, lastname, birthPlace, pwd, 1,isIndependent,cf)
         return patient
 
+    def create_new_account(self):
+        # Genera un nuovo account
+        new_account = Account.create()
+
+        # Estrai l'indirizzo e la chiave privata
+        address = new_account.address
+        private_key = new_account.privateKey.hex()
+
+        return address, private_key
