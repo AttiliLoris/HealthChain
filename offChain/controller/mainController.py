@@ -40,7 +40,7 @@ def main():
     healthFileContracts = HealthFile(provider_url)
 
     user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts, private_key)
-
+    #come si fa con l'admin?????? ad accedere alla sua home dico
     if isinstance(user, DoctorData):
         homeDoctor(user,doctorContracts, healthFileContracts, private_key)
     elif isinstance(user, CaregiverData):
