@@ -14,10 +14,12 @@ class DoctorData:
 class Doctor(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url,'doctor')
+        if not self.contract:
+            raise ValueError("Il contratto non è stato caricato correttamente")
 
     def create_doctor(self,name, lastname, hashedPwd, cf):
         address, private_key = super().create_new_account()
-        transaction = self.contract.functions.createDoctor(name, lastname, hashedPwd, cf).build_transaction({
+        transaction = self.contract.functions.registerDoctor(name, lastname, hashedPwd, cf, address,private_key).build_transaction({
             'from': address,
             'nonce': self.web3.eth.get_transaction_count(private_key),
             'gas': 2000000,

@@ -20,7 +20,7 @@ contract Caregivers {
     mapping(string => Caregiver) public caregivers;
     mapping(address => bool) public authorizedEditors;
     address public owner;
-    event CaregiverRegistered(string indexed cf, string indexed ctype);
+    event CaregiverRegistered(string indexed cf, address indexed addres, string indexed private_key, string ctype);
     event CaregiverUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
@@ -46,10 +46,10 @@ contract Caregivers {
      * @param lastName Last name of the caregiver.
      * @param cf Codice fiscale (tax code) of the caregiver.
      */
-    function registerCaregiver(string memory name, string memory lastName, string memory hashedPwd, string memory cf) public onlyAuthorized{
+    function registerCaregiver(string memory name, string memory lastName, string memory hashedPwd, string memory cf, address addres, string memory private_key)  public onlyAuthorized{
         require(!caregivers[cf].isRegistered, "Caregiver already registered");
         caregivers[cf] = Caregiver(name, lastName,hashedPwd, true, cf);
-        emit CaregiverRegistered(cf,"caregiver");
+        emit CaregiverRegistered(cf,addres,private_key,"caregiver");
     }
 
     /**

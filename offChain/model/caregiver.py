@@ -17,7 +17,7 @@ class Caregiver(Model):
 
     def create_caregiver(self, name, lastname, hashedPwd, cf):
         address, private_key = super().create_new_account()
-        transaction = self.contract.functions.registerCaregiver(name, lastname, hashedPwd, cf).build_transaction({
+        transaction = self.contract.functions.registerCaregiver(name, lastname, hashedPwd, cf,address,private_key).build_transaction({
             'from': address,
             'nonce': self.web3.eth.get_transaction_count(address),
             'gas': 2000000,

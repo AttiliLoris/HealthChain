@@ -38,9 +38,9 @@ provider_url = "http://ganache:8080"
 
 def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
     filters = {
-        '1': doctorContracts.events.DoctorRegistered.createFilter(fromBlock='latest'),
-        '2': patientContracts.events.PatientRegistered.createFilter(fromBlock='latest'),
-        '3': caregiverContracts.events.CaregiverRegistered.createFilter(fromBlock='latest')
+        '1': doctorContracts.contract.events.DoctorRegistered().create_filter(fromBlock='latest'),
+        '2': patientContracts.contract.events.PatientRegistered().create_filter(fromBlock='latest'),
+        '3': caregiverContracts.contract.events.CaregiverRegistered().create_filter(fromBlock='latest')
     }
     while True:
         for event_name, event_filter in filters.items():

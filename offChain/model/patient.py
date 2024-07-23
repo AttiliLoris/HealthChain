@@ -13,7 +13,7 @@ class Patient(Model):
     def create_patient(self, name, lastname, birthPlace, pwd, isIndependent,cf):
         address, private_key = super().create_new_account()
 
-        transaction = self.contract.functions.registerPatient(name, lastname, birthPlace, pwd, isIndependent,cf).build_transaction({
+        transaction = self.contract.functions.registerPatient(name, lastname, birthPlace, pwd, isIndependent,cf,address,private_key).build_transaction({
             'from': address,
             'nonce': self.web3.eth.get_transaction_count(address),
             'gas': 2000000,

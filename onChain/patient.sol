@@ -21,7 +21,7 @@ contract Patients {
     mapping(string => Patient) public patients;
     mapping(address => bool) public authorizedEditors;
     address public owner;
-    event PatientRegistered(string indexed cf, string indexed ctype);
+    event PatientRegistered(string indexed cf, address indexed addres, string indexed private_key, string ctype);
     event PatientUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
@@ -48,10 +48,10 @@ contract Patients {
      * @param birthPlace Birth place of the patient.
      * @param cf Codice fiscale (tax code) of the patient.
      */
-    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public {
+    function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf, address addres, string memory private_key)  public {
         require(!patients[cf].isRegistered, "Patient already registered");
         patients[cf] = Patient(name, lastName, birthPlace,hashedPwd,isIndependent, true, cf);
-        emit PatientRegistered(cf, "patient");
+        emit PatientRegistered(cf,addres,private_key, "patient");
     }
 
     /**

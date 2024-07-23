@@ -20,7 +20,7 @@ contract Doctors {
     mapping(string => Doctor) public doctors;
     mapping(address => bool) public authorizedEditors;
     address public owner;
-    event DoctorRegistered(string indexed cf, address indexed addres, string indexed private_key, string indexed ctype);
+    event DoctorRegistered(string indexed cf, address indexed addres, string indexed private_key, string ctype);
     event DoctorUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
@@ -46,10 +46,10 @@ contract Doctors {
      * @param cf Codice fiscale (tax code) of the doctor.
      */
 
-    function registerDoctor(string memory name, string memory lastName, string memory hashedPwd, string memory cf) public onlyAuthorized{
+    function registerDoctor(string memory name, string memory lastName, string memory hashedPwd, string memory cf, address addres, string memory private_key) public onlyAuthorized{
         require(!doctors[cf].isRegistered, "Doctor already registered");
         doctors[cf] = Doctor(name, lastName, hashedPwd, true, cf);
-        emit DoctorRegistered(cf, "doctor");
+        emit DoctorRegistered(cf,addres ,private_key ,"doctor");
     }
 
     /**

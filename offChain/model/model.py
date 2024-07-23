@@ -86,6 +86,6 @@ class Model:
 
         # Estrai l'indirizzo e la chiave privata
         address = new_account.address
-        private_key = new_account.privateKey.hex()
+        private_key = new_account._private_key.hex()
 
         return address, private_key
