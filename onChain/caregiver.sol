@@ -20,7 +20,7 @@ contract Caregivers {
     mapping(string => Caregiver) public caregivers;
     mapping(address => bool) public authorizedEditors;
     address public owner;
-    event CaregiverRegistered(string indexed cf, address indexed addres, string indexed private_key, string ctype);
+    event CaregiverRegistered(string  cf, address indexed addres, string  private_key, string ctype);
     event CaregiverUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
