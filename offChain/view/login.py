@@ -40,14 +40,13 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
 def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientContracts):
     try:
         user = doctorContracts.get_doctor(cf)
-        print(user.password)
-        if user.password == password:
+        if user and user.password == password:
             return user
         user = caregiverContracts.get_caregiver(cf)
-        if user.password == password:
+        if user and user.password == password:
             return user
         user = patientContracts.get_patient(cf)
-        if user.password == password:
+        if user and user.password == password:
             return user
         user = loadAdmin()
         if user['username'] == cf and user['password'] == password:

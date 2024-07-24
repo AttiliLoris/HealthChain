@@ -51,9 +51,11 @@ class HealthFile(Model):
 
     def get_healthFile(self, cf):
         data = super().cf_to_address(cf)
-        cf,clinicalHistory,prescriptions,treatmentPlan,note = self.contract.functions.getHealthFile(cf).call({'from': data['address']})
-        healthFile = HealthFileData(cf,clinicalHistory,prescriptions,treatmentPlan,note)
-        return healthFile
+        if data:
+            cf,clinicalHistory,prescriptions,treatmentPlan,note = self.contract.functions.getHealthFile(cf).call({'from': data['address']})
+            healthFile = HealthFileData(cf,clinicalHistory,prescriptions,treatmentPlan,note)
+            return healthFile
+        return None
     #isIndependet da fare
 
     def confirm_treatment(self, cfCaregiver, cfPatient, isIndependent):

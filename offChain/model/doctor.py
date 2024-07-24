@@ -46,9 +46,11 @@ class Doctor(Model):
 
     def get_doctor(self, cf):
         data=super().cf_to_address(cf)
-        name, lastname,pwd, cf= self.contract.functions.getDoctor(cf).call({'from': str(data['address'])})
-        doctor = DoctorData(name, lastname,pwd,0, cf)
-        if doctor.name:
-            doctor.isRegistered=True
-        return doctor
+        if data:
+            name, lastname,pwd, cf= self.contract.functions.getDoctor(cf).call({'from': str(data['address'])})
+            doctor = DoctorData(name, lastname,pwd,0, cf)
+            if doctor.name:
+                doctor.isRegistered=True
+            return doctor
+        return 0
 

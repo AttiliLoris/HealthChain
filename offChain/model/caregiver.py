@@ -43,8 +43,10 @@ class Caregiver(Model):
 
     def get_caregiver(self, cf):
         data = super().cf_to_address(cf)
-        name, lastname,pwd, cf= self.contract.functions.getCaregiver(cf).call({'from': data['address']})
-        caregiver = CaregiverData(name, lastname,pwd, 0, cf)
-        if caregiver.name:
-            caregiver.isRegistered = True
-        return caregiver
+        if data:
+            name, lastname,pwd, cf= self.contract.functions.getCaregiver(cf).call({'from': data['address']})
+            caregiver = CaregiverData(name, lastname,pwd, 0, cf)
+            if caregiver.name:
+                caregiver.isRegistered = True
+            return caregiver
+        return 0

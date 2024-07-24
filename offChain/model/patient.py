@@ -51,7 +51,9 @@ class Patient(Model):
 
     def get_patient(self,cf):
         data = super().cf_to_address(cf)
-        name, lastname, birthPlace, pwd, isIndependent, cf = self.contract.functions.getPatient(cf).call({'from': data['address']})
-        patient = PatientData(name, lastname, birthPlace, pwd, 1,isIndependent,cf)
-        return patient
+        if data:
+            name, lastname, birthPlace, pwd, isIndependent, cf = self.contract.functions.getPatient(cf).call({'from': data['address']})
+            patient = PatientData(name, lastname, birthPlace, pwd, 1,isIndependent,cf)
+            return patient
+        return 0
 

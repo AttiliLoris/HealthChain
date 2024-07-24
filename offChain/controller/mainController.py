@@ -65,7 +65,7 @@ def main():
         elif isinstance(user, PatientData):
             homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
         elif isinstance(user, Admin):
-            homeAdmin(user,)
+            homeAdmin(doctorContracts, caregiverContracts)
 
 
 def handle_event(event):
