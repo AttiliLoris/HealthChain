@@ -5,7 +5,16 @@ from web3 import Web3
 
 from .model import Model
 
-HealthFileData = namedtuple('HealthData', ['cf','clinicalHistory','prescriptions','treatmentPlan','notes'])
+
+class HealthFileData:
+    def __init__(self, cf, clinicalHistory, prescriptions, treatmentPlan, notes):
+        self.cf = cf
+        self.clinicalHistory = clinicalHistory
+        self.prescriptions = prescriptions
+        self.prescriptions = prescriptions
+        self.treatmentPlan = treatmentPlan
+        self.notes = notes
+
 class HealthFile(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url,'healthFile')
@@ -32,7 +41,7 @@ class HealthFile(Model):
             'from': data['address'],
             'nonce': self.web3.eth.get_transaction_count(data['address']),
             'gas': 2000000,
-            'gasPrice': self.web3.to_wei('50', 'gwei')
+            'gasPrice': self.web3.to_wei('0', 'gwei')
         })
 
         signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=data['private_key'])
@@ -54,7 +63,7 @@ class HealthFile(Model):
                 'from': data['address'],
                 'nonce': self.web3.eth.get_transaction_count(data['address']),
                 'gas': 2000000,
-                'gasPrice': self.web3.to_wei('50', 'gwei')
+                'gasPrice': self.web3.to_wei('0', 'gwei')
             })
         else:
             data = super().cf_to_address(cfCaregiver)
@@ -62,7 +71,7 @@ class HealthFile(Model):
                 'from': data['address'],
                 'nonce': self.web3.eth.get_transaction_count(data['address']),
                 'gas': 2000000,
-                'gasPrice': self.web3.to_wei('50', 'gwei')
+                'gasPrice': self.web3.to_wei('0', 'gwei')
             })
 
         signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=data['private_key'])
