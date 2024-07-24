@@ -61,7 +61,7 @@ contract Patients {
      * @param birthPlace New birth place of the patient.
      * @param cf New codice fiscale (tax code) of the patient.
      */
-    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public onlyAuthorized{
+    function updatePatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf) public {
         require(patients[cf].isRegistered, "Patient not found");
         Patient storage patient = patients[cf];
         patient.name = name;

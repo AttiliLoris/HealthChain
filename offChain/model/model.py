@@ -76,7 +76,7 @@ class Model:
         try:
             with open("onChain/address/addressList.json", 'r') as file:
                 data = json.load(file)
-            return data[cf]
+            return data[cf] #se sbaglio cf mi da errore si rompe
         except (FileNotFoundError, json.JSONDecodeError):
             return {}
 

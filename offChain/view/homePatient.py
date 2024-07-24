@@ -6,9 +6,9 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
         [sg.Text(f'Benvenuto {patient.name} {patient.lastname}')]
     ]
     if not patient.isIndependent:
-        layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo')])
+        layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo'), sg.Button('Logout')])
     else:
-        layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Conferma cure'), sg.Button('Modifica profilo')])
+        layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Conferma cure'), sg.Button('Modifica profilo'), sg.Button('Logout')])
 
     windowHome = sg.Window('Home Paziente', layout)
 
@@ -26,6 +26,8 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
             modifyProfile(patient,patientContracts, windowHome)
         elif event == 'Conferma cure':
             viewConfirmTreatement(patient, caregiverContracts,healthFileContracts, windowHome)
+        elif event == 'Logout':
+            break
     windowHome.close()
 
 def viewHealthFile(healthFile, windowHome):
@@ -59,7 +61,8 @@ def modifyProfile(patient,patientContracts, windowHome):
                      [sg.Text('Luogo di nascita'), sg.InputText(patient.birthPlace, key='birthPlace')],
                      [sg.Text('Indipendente'), sg.InputText(patient.isIndependent, key='isIndependent')],#bottone
                      [sg.Text('Password'), sg.InputText(patient.password, key='password')],#per modificare la password dovremmo fare una cosa a parte
-                     [sg.Button('Salva'), sg.Button('Home')]]
+                     [sg.Button('Salva'), sg.Button('Home')],
+                     [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
     windowProfile = sg.Window('Profile', layoutProfile)
 
     while True:

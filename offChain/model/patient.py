@@ -5,7 +5,18 @@ from web3 import Web3
 from eth_account import Account
 from .model import Model
 
-PatientData = namedtuple('PatientData', ['name', 'lastname', 'birthPlace','password','isRegistered','isIndependent','cf'])
+
+class PatientData:
+    def __init__(self, name, lastname,birthPlace, password, isRegistered, isIndependent, cf):
+        self.name = name
+        self.lastname = lastname
+        self.birthPlace = birthPlace
+        self.password = password
+        self.isRegistered = isRegistered
+        self.isIndependent = isIndependent
+        self.cf = cf
+
+
 class Patient(Model):
     def __init__(self, provider_url):
         super().__init__(provider_url, 'patient')
