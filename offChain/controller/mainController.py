@@ -1,12 +1,13 @@
 import json
 import threading
 import time
-
+from collections import namedtuple
 
 from view.login import login
 from view.homeCaregiver import homeCaregiver
 from view.homeDoctor import homeDoctor
 from view.homePatient import homePatient
+from view.homeAdmin import homeAdmin
 
 from model.caregiver import Caregiver
 from model.caregiver import CaregiverData
@@ -29,7 +30,7 @@ from offChain.view.login import login'''
 
 
 provider_url = "http://ganache:8080"
-
+Admin = namedtuple('Admin', ['username','password'])
 
 
 
@@ -63,6 +64,8 @@ def main():
             homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts)
         elif isinstance(user, PatientData):
             homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
+        elif isinstance(user, Admin):
+            homeAdmin(user,)
 
 
 def handle_event(event):

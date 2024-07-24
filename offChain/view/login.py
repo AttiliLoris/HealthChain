@@ -1,4 +1,9 @@
+import json
+from collections import namedtuple
+
 import PySimpleGUI as sg
+
+Admin = namedtuple('Admin', ['username','password'])
 
 def login(doctorContracts, caregiverContracts, patientContracts,healthFileContract):
     sg.theme('DarkAmber')
@@ -44,6 +49,10 @@ def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientCo
         user = patientContracts.get_patient(cf)
         if user.password == password:
             return user
+        user = loadAdmin()
+        if user['username'] == cf and user['password'] == password:
+            admin = Admin(user['username'], user['password'])
+            return admin
         raise ValueError("")
     except ValueError as e:
         return 0
@@ -76,3 +85,8 @@ def signIn(patientContracts,healthFileContract,windowLogin):
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
         windowLogin.UnHide()
+
+def loadAdmin():
+    with open("offChain/credential/credential.json", 'r') as file:
+        data = json.load(file)
+    return data
