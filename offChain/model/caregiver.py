@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 from web3 import Web3
 
 from .model import Model

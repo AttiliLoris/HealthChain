@@ -3,7 +3,7 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Benvenuto {patient.name} {patient.lastname}')]
+        [sg.Text(f'Salve {patient.name} {patient.lastname}',key='Salve')]
     ]
     if not patient.isIndependent:
         layout.append([sg.Button('Visualizza cartella clinica'), sg.Button('Modifica profilo'), sg.Button('Logout')])
@@ -79,7 +79,8 @@ def modifyProfile(patient,patientContracts, windowHome):
                 patient.lastname = values['lastname']
                 patient.isIndependent = values['isIndependent']
                 patient.birthPlace = values['birthPlace']
-
+                windowHome['Salve'].update(f'Salve {patient.name} {patient.lastname}')
+                break
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(patient.name)

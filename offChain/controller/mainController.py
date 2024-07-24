@@ -1,7 +1,6 @@
 import json
 import threading
 import time
-from collections import namedtuple
 
 
 from view.login import login
@@ -55,14 +54,15 @@ def main():
     event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
     event_listener_thread.start()
 
-    user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
-    #come si fa con l'admin?????? ad accedere alla sua home dico
-    if isinstance(user, DoctorData):
-        homeDoctor(user,doctorContracts, healthFileContracts)
-    elif isinstance(user, CaregiverData):
-        homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts)
-    elif isinstance(user, PatientData):
-        homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
+    while True:
+        user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
+        #come si fa con l'admin?????? ad accedere alla sua home dico
+        if isinstance(user, DoctorData):
+            homeDoctor(user,doctorContracts, healthFileContracts)
+        elif isinstance(user, CaregiverData):
+            homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts)
+        elif isinstance(user, PatientData):
+            homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
 
 
 def handle_event(event):
