@@ -62,7 +62,7 @@ contract HealthFiles {
      * @param treatmentPlan List of treatment plans for the patient.
      * @param notes List of notes for the patient.
      */
-    function updateHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) public onlyOwner {
+    function updateHealthFile(string memory cf, string memory clinicalHistory, string memory prescriptions, string memory treatmentPlan, string memory notes) public {
         HealthFile storage healthFile = healthFiles[cf];
         healthFile.cf = cf;
         healthFile.clinicalHistory = clinicalHistory;

@@ -37,7 +37,7 @@ class HealthFile(Model):
     def update_healthFile(self, cf,clinicalHistory,prescriptions,treatmentPlan,notes):
 
         data = super().cf_to_address(cf)
-        transaction = self.contract.functions.updatehealthFile(cf,clinicalHistory,prescriptions,treatmentPlan,notes).build_transaction({
+        transaction = self.contract.functions.updateHealthFile(cf,clinicalHistory,prescriptions,treatmentPlan,notes).build_transaction({
             'from': data['address'],
             'nonce': self.web3.eth.get_transaction_count(data['address']),
             'gas': 2000000,
