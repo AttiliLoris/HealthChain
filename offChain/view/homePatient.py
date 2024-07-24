@@ -118,7 +118,7 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
 
         if event == sg.WINDOW_CLOSED or event == 'Indietro':
             break
-        elif event == 'Conferma cure':
+        elif event == 'Conferma':
             if checkCaregiver(values['cfCaregiver'], caregiverContracts):
                 healthFileContracts.confirm_treatement( values['cfCaregiver'],patient.cf , patient.isIndependent)
             else:

@@ -76,9 +76,9 @@ def healthFileResearch(cf,healthFileContracts):
 
 def patientHealthFile(healthFile, windowHome, healthFileContracts):
     layoutHealthFile = [[sg.Text('Codice fiscale: '+ healthFile.cf)],
-                        [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicalHistory)],
-                        [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions)],
-                        [sg.Text('Trattamenti: '), sg.Text(healthFile.treatmentPlan)],
+                        [sg.Text('Storia clinica: '), sg.Text(healthFile.clinicalHistory, key='Storia clinica')],
+                        [sg.Text('Prescrizioni: '), sg.Text(healthFile.prescriptions, key='Prescrizioni')],
+                        [sg.Text('Trattamenti: '), sg.Text(healthFile.treatmentPlan, key='Trattamenti')],
                         [sg.Button('Home'), sg.Button('Aggiorna storia clinica'), sg.Button('Modifica prescrizioni'), sg.Button('Aggiungi trattamento')]]
 
     windowHealthFile = sg.Window('Fascicolo', layoutHealthFile)
@@ -118,6 +118,7 @@ def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts):
             else:
                 healthFile.clinicalHistory = text
                 healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)#vanno aggiunti gli attributi
+                windowHealthFile['Storia clinica'].update(healthFile.clinicalHistory)
                 break
         if event == 'Indietro':
             break
@@ -140,6 +141,7 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts):
             else:
                 healthFile.prescriptions = text
                 healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
+                windowHealthFile['Prescrizioni'].update(healthFile.prescriptions)
                 break
         if event == 'Indietro':
             break
@@ -162,14 +164,12 @@ def addTreatmentPlan(healthFile, windowHealthFile, healthFileContracts):
         elif event == 'Conferma':
             newTreatmentPlan = values['treatmentPlan']
             if newTreatmentPlan:
-                conferma = sg.popup_ok_cancel(f'Confermi di voler aggiungere il trattamento?')
-                if conferma == 'OK':
-                    healthFile.treatmentPlan= newTreatmentPlan
-                    healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
-                                                          healthFile.prescriptions, healthFile.treatmentPlan,
-                                                          healthFile.notes)
-                    sg.popup(f'trattamento aggiunto.')
-                    break
+                healthFile.treatmentPlan= newTreatmentPlan
+                healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
+                                                      healthFile.prescriptions, healthFile.treatmentPlan,
+                                                      healthFile.notes)
+                windowHealthFile['Trattamenti'].update(healthFile.treatmentPlan)
+                break
 
 
     windowTreatmentPlan.close()
