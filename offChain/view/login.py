@@ -3,7 +3,7 @@ from collections import namedtuple
 
 import PySimpleGUI as sg
 
-Admin = namedtuple('Admin', ['username','password'])
+Admin = namedtuple('Admin', ['username','password','address','private_key'])
 
 def login(doctorContracts, caregiverContracts, patientContracts,healthFileContract):
     sg.theme('DarkAmber')
@@ -25,6 +25,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
             windowLogin.Hide()
         elif event == 'Conferma':
             utente = checkCredentials(values['cf'], values['password'],doctorContracts, caregiverContracts, patientContracts)
+            print(utente)
             if utente:
                 windowLogin['-OUTPUT-'].update('Login Successful', text_color='green')
                 windowLogin.close()
@@ -50,7 +51,7 @@ def checkCredentials (cf,password,doctorContracts, caregiverContracts, patientCo
             return user
         user = loadAdmin()
         if user['username'] == cf and user['password'] == password:
-            admin = Admin(user['username'], user['password'])
+            admin = Admin(username=user['username'], password=user['password'],address=user['address'], private_key=user['private_key'])
             return admin
         raise ValueError("")
     except ValueError as e:

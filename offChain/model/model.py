@@ -57,7 +57,7 @@ class Model:
         self.contract_id, self.contract_interface = next(iter(compiled_sol['contracts'][f"onChain/{contract_name}.sol"].items()))
         self.abi = self.contract_interface['abi']
         self.bytecode = self.contract_interface['evm']['bytecode']['object']
-        account = random.choice(self.web3.eth.accounts)
+        account = self.loadAdmin()
         # Create the contract in Web3
         contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode)
         # Send transaction to deploy the contract
@@ -92,3 +92,8 @@ class Model:
         private_key = new_account._private_key.hex()
 
         return address, private_key
+
+    def loadAdmin(self):
+        with open("offChain/credential/credential.json", 'r') as file:
+            data = json.load(file)
+        return data["address"]

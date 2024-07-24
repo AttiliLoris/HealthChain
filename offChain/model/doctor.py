@@ -16,16 +16,16 @@ class Doctor(Model):
         if not self.contract:
             raise ValueError("Il contratto non è stato caricato correttamente")
 
-    def create_doctor(self,name, lastname, hashedPwd, cf):
+    def create_doctor(self, adminAddress, adminPrivate_key,name, lastname, hashedPwd, cf):
         address, private_key = super().create_new_account()
         transaction = self.contract.functions.registerDoctor(name, lastname, hashedPwd, cf, address,private_key).build_transaction({
-            'from': address,
-            'nonce': self.web3.eth.get_transaction_count(private_key),
+            'from': adminAddress,
+            'nonce': self.web3.eth.get_transaction_count(adminAddress),
             'gas': 2000000,
             'gasPrice': self.web3.to_wei('0', 'gwei')
         })
 
-        signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=private_key)
+        signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=adminPrivate_key)
         tx_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
         receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         return receipt

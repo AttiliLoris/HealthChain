@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 
 
-def homeAdmin(doctorContracts, caregiverContracts):
+def homeAdmin(admin, doctorContracts, caregiverContracts):
     sg.theme('DarkAmber')
 
     layoutHome = [
@@ -15,14 +15,14 @@ def homeAdmin(doctorContracts, caregiverContracts):
             break
         if event == 'Aggiungi caregiver':
             windowHome.Hide()
-            caregiver_registration_panel(caregiverContracts,windowHome)
+            caregiver_registration_panel(admin, caregiverContracts,windowHome)
         if event == 'Aggiungi dottore':
             windowHome.Hide()
-            doctor_registration_panel(doctorContracts,windowHome)
+            doctor_registration_panel(admin, doctorContracts,windowHome)
 
     windowHome.close()
 
-def caregiver_registration_panel(caregiverContract,windowHome):
+def caregiver_registration_panel(admin, caregiverContract,windowHome):
     layout = [
         [sg.Text('Nome'), sg.InputText(key='name')],
         [sg.Text('Cognome'), sg.InputText(key='lastname')],
@@ -37,11 +37,11 @@ def caregiver_registration_panel(caregiverContract,windowHome):
         if event == sg.WIN_CLOSED or event == 'Annulla':
             break
         elif event == 'Registra caregiver':
-            caregiverContract.create_caregiver(values['name'], values['lastname'], values['hashedPwd'], values['cf'])
+            caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
             window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
     windowHome.UnHide()
     window.close()
-def doctor_registration_panel(doctorContract,windowHome):
+def doctor_registration_panel(admin, doctorContract,windowHome):
     layout = [
         [sg.Text('Nome'), sg.InputText(key='name')],
         [sg.Text('Cognome'), sg.InputText(key='lastname')],
@@ -56,7 +56,7 @@ def doctor_registration_panel(doctorContract,windowHome):
         if event == sg.WIN_CLOSED or event == 'Annulla':
             break
         elif event == 'Registra dottore':
-            doctorContract.create_doctor( values['name'], values['lastname'], values['hashedPwd'], values['cf'])
+            doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
             window['-OUTPUT-'].update('Dottore registrato', text_color='green')
         windowHome.UnHide()
         window.close()

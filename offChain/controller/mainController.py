@@ -4,6 +4,7 @@ import time
 from collections import namedtuple
 
 from view.login import login
+from view.login import Admin
 from view.homeCaregiver import homeCaregiver
 from view.homeDoctor import homeDoctor
 from view.homePatient import homePatient
@@ -30,7 +31,6 @@ from offChain.view.login import login'''
 
 
 provider_url = "http://ganache:8080"
-Admin = namedtuple('Admin', ['username','password'])
 
 
 
@@ -57,7 +57,7 @@ def main():
 
     while True:
         user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
-        #come si fa con l'admin?????? ad accedere alla sua home dico
+        print(user)
         if isinstance(user, DoctorData):
             homeDoctor(user,doctorContracts, healthFileContracts)
         elif isinstance(user, CaregiverData):
@@ -65,7 +65,7 @@ def main():
         elif isinstance(user, PatientData):
             homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
         elif isinstance(user, Admin):
-            homeAdmin(doctorContracts, caregiverContracts)
+            homeAdmin(user, doctorContracts, caregiverContracts)
 
 
 def handle_event(event):
@@ -76,9 +76,13 @@ def handle_event(event):
     private_key = event['args']['private_key']
     type = event['args']['ctype']
 
+    print(address)
+    print(str(address))
+    print(private_key)
+    print(str(private_key))
     data[cf] = {
         "address": str(address),
-        "private_key": private_key,
+        "private_key": str(private_key),
         "type": type
     }
     save_addresses(file_path, data)

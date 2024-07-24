@@ -20,7 +20,7 @@ contract Doctors {
     mapping(string => Doctor) public doctors;
     mapping(address => bool) public authorizedEditors;
     address public owner;
-    event DoctorRegistered(string indexed cf, address indexed addres, string indexed private_key, string ctype);
+    event DoctorRegistered(string cf, address indexed addres, string private_key, string ctype);
     event DoctorUpdated(string indexed cf, string indexed ctype);
 
     // Modifier to restrict access to the contract owner
