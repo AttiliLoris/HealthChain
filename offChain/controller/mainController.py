@@ -45,6 +45,8 @@ def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
             for event in event_filter.get_new_entries():
                 handle_event(event)
         time.sleep(2)
+        if fine.is_set():
+            break
 
 def main():
 
@@ -66,6 +68,7 @@ def main():
             homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
         elif isinstance(user, Admin):
             homeAdmin(user, doctorContracts, caregiverContracts)
+
 
 
 def handle_event(event):
@@ -96,6 +99,7 @@ def load_addresses(file_path):
         return {}
 
 
+fine = threading.Event()
 
 def save_addresses(file_path, addresses):
     with open(file_path, 'w') as file:

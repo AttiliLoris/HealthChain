@@ -23,6 +23,7 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
 
         if event == sg.WINDOW_CLOSED or event == 'Esci':
             windowLogin.Hide()
+            fine.set()
         elif event == 'Conferma':
             utente = checkCredentials(values['cf'], values['password'],doctorContracts, caregiverContracts, patientContracts)
             if utente:
