@@ -32,6 +32,8 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
     window = sg.Window('Registra caregiver', layout)
+
+
     while True:
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Annulla':
