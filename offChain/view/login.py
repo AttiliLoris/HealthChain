@@ -25,14 +25,12 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
             windowLogin.Hide()
         elif event == 'Conferma':
             utente = checkCredentials(values['cf'], values['password'],doctorContracts, caregiverContracts, patientContracts)
-            print(utente)
             if utente:
                 windowLogin['-OUTPUT-'].update('Login Successful', text_color='green')
                 windowLogin.close()
                 return utente
             else:
                 windowLogin['-OUTPUT-'].update('Login Failed', text_color='red')
-                # Azzera il contenuto degli input text
                 windowLogin['cf'].update('')
                 windowLogin['password'].update('')
         elif event == 'Registrati':
@@ -66,7 +64,7 @@ def signIn(patientContracts,healthFileContract,windowLogin):
         [sg.Text('Codice fiscale: '), sg.InputText(key='cf')],
         [sg.Text('Luogo di nascita: '), sg.InputText(key='birthPlace')],
         [sg.Text('Indipendente: '), sg.InputText(key='isIndependent')],#come bottone
-        [sg.Text('Password: '), sg.InputText(key='hashedPwd')], #forse da mettere doppia e che non se vede dai
+        [sg.Text('Password: '), sg.InputText(key='hashedPwd',password_char='*')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Registrati'), sg.Button('Annulla')]
     ]

@@ -14,15 +14,18 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts):
         if event == sg.WIN_CLOSED or event == 'Esci':
             break
         if event == 'Profilo':
+            windowHome['-OUTPUT'].update('')
             windowHome.Hide()
             doctorProfile(doctor, windowHome,doctorContracts)
         if event == 'Ok':
             healthFile = healthFileResearch(cf,healthFileContracts)
             if healthFile:
+                windowHome['-OUTPUT'].update('')
                 windowHome.Hide()
                 patientHealthFile(healthFile, windowHome, healthFileContracts)
+
             else:
-                #DEVE SCOMPARIRE QUANDO UNA CARTELLA VIENE TROVATA O QUANDO SI ACCEDE AL PROFILO
+
                 windowHome['-OUTPUT-'].update('Cartella non trovata', text_color='red')
                 windowHome['cf'].update('')
 
@@ -44,12 +47,15 @@ def doctorProfile(doctor, windowHome,doctorContracts):
         if event == 'Home':
             break
         if event == 'Salva':
-            #USCIRE DAL PROFILO DOPO LA MODIFICA
             if checkValues(values):
                 doctorContracts.update_doctor(doctor.cf,values['name'],values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 doctor.name = values['name']
                 doctor.lastname = values['lastname']
+
+                windowHome['name'].update(doctor.name)
+                windowHome['lastname'].update(doctor.lastname)
+                break
 
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
@@ -119,7 +125,7 @@ def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts):
                 windowClinicalHistory['clinicalHistory'].update(healthFile.clinicalHistory)
             else:
                 healthFile.clinicalHistory = text
-                healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)#vanno aggiunti gli attributi
+                healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
                 windowHealthFile['Storia clinica'].update(healthFile.clinicalHistory)
                 break
         if event == 'Indietro':

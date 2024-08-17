@@ -32,7 +32,7 @@ from offChain.view.login import login'''
 
 provider_url = "http://ganache:8080"
 
-
+#fare un evento che fa bloccare tuttp quando c'è esci o etc nfnnf
 
 def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
     filters = {

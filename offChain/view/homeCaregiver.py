@@ -36,7 +36,8 @@ def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileCont
         [sg.Text(f'Cognome: {patient.lastname}')],
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text(f'Prescrizioni:{healthFile.prescriptions}')],
-        [sg.Text(f'Note: {healthFile.notes}')]]
+        [sg.Text(f'Note: {healthFile.notes}', key='notes')],
+        [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
     if not patient.isIndependent:
         layout.append([sg.Button('Aggiungi nota'), sg.Button('Conferma cure'), sg.Button('Home')])
     else:
@@ -52,9 +53,8 @@ def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileCont
             break
         elif event == 'Conferma cure':
             healthFileContracts.confirm_treatment(caregiver.cf, healthFile.cf, patient.isIndependent)
-            #^-AGGIUNGERE FINESTRA O QUALCOSA CHE FACCIA CAPIRE IL FUNZIONAMENTO CORRETTO
+            windowHealthFile['-OUTPUT-'].update('Cure confermate', text_color='green')
         elif event == 'Aggiungi nota':
-            #L'ELENCO DELLE NOTE SI DEVE AGGIORNARE QUANDO VIENE AGGIUNTA UNA NOTA (TOGLIERE TUTTE STE CAZZO DI FINESTRELLE POPUP PORCO)
             addNote(healthFile, patient, windowHealthFile, healthFileContracts)
         elif event == 'Home':
             break
@@ -83,13 +83,11 @@ def addNote(healthFile, patient, windowHealthFile, healthFileContracts):
         elif event == 'Aggiungi':
             newNote = values['nuova_nota']
             if newNote:
-                conferma = sg.popup_ok_cancel(f'Confermi di voler aggiungere la nota?')
-                if conferma == 'OK':
-                    windowAddNote['-OUTPUT-'].update('')
-                    healthFile.notes=healthFile.notes +'\n'+ newNote
-                    healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory, healthFile.prescriptions, healthFile.treatmentPlan,healthFile.notes)
-                    sg.popup(f'Nota aggiunta.')
-                    break
+                healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
+                                                      healthFile.prescriptions, healthFile.treatmentPlan,
+                                                      healthFile.notes)
+                windowHealthFile['notes'].update(newNote)
+
             else:
                 windowAddNote['-OUTPUT-'].update('Modifiche non valide', text_color='red')
 
@@ -118,13 +116,14 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
         if event == 'Home':
             break
         if event == 'Salva':
-            #DEVE USCIRE DAL PROFILO DOPO AVER FATTO LE MODIFICHE E AGGIORNARE LA HOME CON LE MODIFICHE
             if checkValues(values):
                 caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 caregiver.name = values['name']
                 caregiver.lastname = values['lastname']
-
+                windowHome['name'].update(caregiver.name)
+                windowHome['lastname'].update(caregiver.lastname)
+                break
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(caregiver.name)

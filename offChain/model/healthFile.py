@@ -56,7 +56,6 @@ class HealthFile(Model):
             healthFile = HealthFileData(cf,clinicalHistory,prescriptions,treatmentPlan,note)
             return healthFile
         return None
-    #isIndependet da fare
 
     def confirm_treatment(self, cfCaregiver, cfPatient, isIndependent):
         if isIndependent:
