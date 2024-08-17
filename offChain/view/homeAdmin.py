@@ -5,13 +5,13 @@ def homeAdmin(admin, doctorContracts, caregiverContracts):
     sg.theme('DarkAmber')
 
     layoutHome = [
-        [sg.Button('Aggiungi dottore'), sg.Button('Aggiungi caregiver'), sg.Button('Logout')]]
+        [sg.Button('Aggiungi dottore'), sg.Button('Aggiungi caregiver'), sg.Button('Esci')]]
 
     windowHome = sg.Window('Home', layoutHome)
 
     while True:
         event, values = windowHome.read()  # SANIFICARE
-        if event == sg.WIN_CLOSED or event == 'Logout':
+        if event == sg.WIN_CLOSED or event == 'Esci':
             break
         if event == 'Aggiungi caregiver':
             windowHome.Hide()

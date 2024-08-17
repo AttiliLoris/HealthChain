@@ -50,7 +50,7 @@ contract Patients {
      */
     function registerPatient(string memory name, string memory lastName, string memory birthPlace, string memory hashedPwd,bool isIndependent, string memory cf, address addres, string memory private_key)  public {
         require(!patients[cf].isRegistered, "Patient already registered");
-        patients[cf] = Patient(name, lastName, birthPlace,hashedPwd,isIndependent, true, cf);
+        patients[cf] = Patient(name, lastName, birthPlace,hashedPwd, true, isIndependent, cf);
         emit PatientRegistered(cf,addres,private_key, "patient");
     }
 

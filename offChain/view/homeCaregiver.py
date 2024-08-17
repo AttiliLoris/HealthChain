@@ -5,7 +5,7 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
     layout = [
         [sg.Text(f'Benvenuto {caregiver.name} {caregiver.lastname}')],
         [sg.Text('Inserire il codice fiscale del paziente:'), sg.InputText(key='cf'), sg.Button('Ok')],
-        [ sg.Button('Indietro'), sg.Button('Profilo')]
+        [ sg.Button('Esci'), sg.Button('Profilo')]
     ]
 
     windowHome = sg.Window('Home', layout)
@@ -13,7 +13,7 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
     while True:
         event, values = windowHome.read()
 
-        if event == sg.WINDOW_CLOSED or event == 'Indietro':
+        if event == sg.WINDOW_CLOSED or event == 'Esci':
             break
         elif event == 'Profilo':
             windowHome.Hide()
@@ -23,18 +23,17 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
             healthFile = healthFileResearch(cf, healthFileContracts)
             if healthFile:
                 windowHome.Hide()
-                patientHealthFile(caregiver, healthFile, windowHome,healthFileContracts, patientContracts)
-            break
+                patient = patientResearch(cf, patientContracts)
+                patientHealthFile(caregiver, patient, healthFile, windowHome,healthFileContracts)
 
     windowHome.close()
 
-def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, patientContracts):
+def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileContracts):
     sg.theme('DarkAmber')
-    patient= patientContracts.get_patient(healthFile.cf)
     layout = [
-        [sg.Text(f'Cartella di {healthFile.name} {healthFile.lastname}')],
-        [sg.Text(f'Nome: {healthFile.name}')],
-        [sg.Text(f'Cognome: {healthFile.lastname}')],
+        [sg.Text(f'Cartella di {patient.name} {patient.lastname}')],
+        [sg.Text(f'Nome: {patient.name}')],
+        [sg.Text(f'Cognome: {patient.lastname}')],
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text(f'Prescrizioni:{healthFile.prescriptions}')],
         [sg.Text(f'Note: {healthFile.notes}')]]
@@ -53,19 +52,22 @@ def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, pa
             break
         elif event == 'Conferma cure':
             healthFileContracts.confirm_treatment(caregiver.cf, healthFile.cf, patient.isIndependent)
+            #^-AGGIUNGERE FINESTRA O QUALCOSA CHE FACCIA CAPIRE IL FUNZIONAMENTO CORRETTO
         elif event == 'Aggiungi nota':
-            addNote(healthFile, windowHealthFile, healthFileContracts)
+            #L'ELENCO DELLE NOTE SI DEVE AGGIORNARE QUANDO VIENE AGGIUNTA UNA NOTA (TOGLIERE TUTTE STE CAZZO DI FINESTRELLE POPUP PORCO)
+            addNote(healthFile, patient, windowHealthFile, healthFileContracts)
         elif event == 'Home':
-            windowHome.UnHide()
             break
 
     windowHealthFile.close()
+    windowHome.UnHide()
 
-def addNote(healthFile, windowHealthFile, healthFileContracts):
+
+def addNote(healthFile, patient, windowHealthFile, healthFileContracts):
     sg.theme('DarkAmber')
 
     layout = [
-        [sg.Text(f'Aggiungi Nota per {healthFile.name} {healthFile.lastname}')], #amo healthFile non ha name e lastname ha solo cf
+        [sg.Text(f'Aggiungi Nota per {patient.name} {patient.lastname}')],
         [sg.Text('Nuova Nota:'), sg.InputText(key='nuova_nota')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Aggiungi'), sg.Button('Annulla')]
@@ -116,6 +118,7 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
         if event == 'Home':
             break
         if event == 'Salva':
+            #DEVE USCIRE DAL PROFILO DOPO AVER FATTO LE MODIFICHE E AGGIORNARE LA HOME CON LE MODIFICHE
             if checkValues(values):
                 caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
@@ -140,3 +143,12 @@ def healthFileResearch(cf,healthFileContracts):
         return None
     return None
 
+
+def patientResearch(cf, patientContracts):
+    try:
+        patient = patientContracts.get_patient(cf)
+        if patient.cf:
+            return patient
+    except ValueError as e:
+        return None
+    return None

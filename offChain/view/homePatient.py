@@ -25,6 +25,7 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
             windowHome.Hide()
             modifyProfile(patient,patientContracts, windowHome)
         elif event == 'Conferma cure':
+            print('ciaooooooooooooooHome')
             viewConfirmTreatement(patient, caregiverContracts,healthFileContracts, windowHome)
         elif event == 'Logout':
             break
@@ -32,6 +33,7 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
 
 def viewHealthFile(healthFile, windowHome):
     sg.theme('DarkAmber')
+    #SISTEMARE LA VISUALIZZAZIONE CHE ORA SEMBRA UN VETTORE
     layout = [
 
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
@@ -73,7 +75,7 @@ def modifyProfile(patient,patientContracts, windowHome):
             break
         if event == 'Salva':
             if checkValues(values):
-                patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(values['isIndependent']),values['cf'])
+                patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(int(values['isIndependent'])),values['cf'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
                 patient.lastname = values['lastname']
@@ -106,6 +108,7 @@ def checkValues(values):
         return 0
     return 1
 
+
 def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windowHome):
     sg.theme('DarkAmber')
     layout=[[sg.Text('Inserire codice fiscale del caregiver: '),sg.InputText('', key='cfCaregiver')],
@@ -114,19 +117,20 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
     windowConfirmTreatement = sg.Window('Conferma cure', layout)
 
     while True:
-        event, values = windowHome.read()
+        event, values = windowConfirmTreatement.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Indietro':
             break
         elif event == 'Conferma':
             if checkCaregiver(values['cfCaregiver'], caregiverContracts):
-                healthFileContracts.confirm_treatement( values['cfCaregiver'],patient.cf , patient.isIndependent)
+                healthFileContracts.confirm_treatment( values['cfCaregiver'],patient.cf , patient.isIndependent)
             else:
                 windowConfirmTreatement['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowConfirmTreatement['cfCaregover'].update('')
 
     windowConfirmTreatement.close()
     windowHome.UnHide()
+
 
 def checkCaregiver(cf, caregiverContracts):
     try:

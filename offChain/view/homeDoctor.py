@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 def homeDoctor(doctor,doctorContracts,healthFileContracts):
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
-                [sg.Button('Ok'), sg.Button('Cancel'), sg.Button('Profilo')],
+                [sg.Button('Ok'), sg.Button('Profilo'), sg.Button('Esci')],
                   [sg.Text('', size=(30, 1), key='-OUTPUT-')] ]
 
 
@@ -11,7 +11,7 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts):
     while True:
         event, values = windowHome.read() #SANIFICARE
         cf=values['cf']
-        if event == sg.WIN_CLOSED or event == 'Cancel':
+        if event == sg.WIN_CLOSED or event == 'Esci':
             break
         if event == 'Profilo':
             windowHome.Hide()
@@ -22,6 +22,7 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts):
                 windowHome.Hide()
                 patientHealthFile(healthFile, windowHome, healthFileContracts)
             else:
+                #DEVE SCOMPARIRE QUANDO UNA CARTELLA VIENE TROVATA O QUANDO SI ACCEDE AL PROFILO
                 windowHome['-OUTPUT-'].update('Cartella non trovata', text_color='red')
                 windowHome['cf'].update('')
 
@@ -43,6 +44,7 @@ def doctorProfile(doctor, windowHome,doctorContracts):
         if event == 'Home':
             break
         if event == 'Salva':
+            #USCIRE DAL PROFILO DOPO LA MODIFICA
             if checkValues(values):
                 doctorContracts.update_doctor(doctor.cf,values['name'],values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')

@@ -41,7 +41,7 @@ class Doctor(Model):
 
         signed_txn = self.web3.eth.account.sign_transaction(transaction, private_key=data['private_key'])
         tx_hash = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-        receipt = self.web3.eth.wait_for_Transaction_receipt(tx_hash)
+        receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         return receipt
 
     def get_doctor(self, cf):

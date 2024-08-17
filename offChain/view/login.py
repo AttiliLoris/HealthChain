@@ -80,7 +80,7 @@ def signIn(patientContracts,healthFileContract,windowLogin):
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Registrati':
-            patientContracts.create_patient(values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(values['isIndependent']),values['cf'])
+            patientContracts.create_patient(values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(int(values['isIndependent'])),values['cf'])
             healthFileContract.create_healthFile(values['cf'])
             windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
         windowSignIn.close()
