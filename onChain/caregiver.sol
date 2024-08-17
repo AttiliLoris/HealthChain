@@ -58,7 +58,7 @@ contract Caregivers {
      * @param lastName New last name of the caregiver.
      * @param cf New codice fiscale (tax code) of the caregiver.
      */
-    function updateCaregiver(string memory name, string memory lastName, string memory cf) public onlyAuthorized{
+    function updateCaregiver(string memory name, string memory lastName, string memory cf) public {
         require(caregivers[cf].isRegistered, "Caregiver not found");
         Caregiver storage caregiver = caregivers[cf];
         caregiver.name = name;

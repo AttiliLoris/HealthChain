@@ -30,7 +30,7 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
 
 def patientHealthFile(caregiver, healthFile, windowHome, healthFileContracts, patientContracts):
     sg.theme('DarkAmber')
-    patient= patientContracts.getPatient(healthFile.cf)
+    patient= patientContracts.get_patient(healthFile.cf)
     layout = [
         [sg.Text(f'Cartella di {healthFile.name} {healthFile.lastname}')],
         [sg.Text(f'Nome: {healthFile.name}')],

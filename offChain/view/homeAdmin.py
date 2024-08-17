@@ -39,6 +39,7 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         elif event == 'Registra caregiver':
             caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
             window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
+            break
     windowHome.UnHide()
     window.close()
 def doctor_registration_panel(admin, doctorContract,windowHome):
@@ -58,6 +59,7 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
         elif event == 'Registra dottore':
             doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
             window['-OUTPUT-'].update('Dottore registrato', text_color='green')
-        windowHome.UnHide()
-        window.close()
+            break
+    windowHome.UnHide()
+    window.close()
 

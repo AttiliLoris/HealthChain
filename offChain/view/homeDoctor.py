@@ -95,10 +95,10 @@ def patientHealthFile(healthFile, windowHome, healthFileContracts):
             modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts)
         if event == 'Home':
             windowHome.UnHide()
+            break
         if event == 'Aggiungi trattamento':
             windowHealthFile.hide()
             addTreatmentPlan(healthFile, windowHealthFile,healthFileContracts)
-            break
     windowHealthFile.close()
 
 

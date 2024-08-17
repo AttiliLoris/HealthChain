@@ -58,7 +58,7 @@ contract Doctors {
      * @param lastName New last name of the doctor.
      * @param cf New codice fiscale (tax code) of the doctor.
      */
-    function updateDoctor(string memory name, string memory lastName, string memory cf) public onlyAuthorized{
+    function updateDoctor(string memory name, string memory lastName, string memory cf) public {
         require(doctors[cf].isRegistered, "Doctor not found");
         Doctor storage doctor = doctors[cf];
         doctor.name = name;
