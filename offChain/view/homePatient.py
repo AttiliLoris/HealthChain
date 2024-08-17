@@ -25,7 +25,6 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
             windowHome.Hide()
             modifyProfile(patient,patientContracts, windowHome)
         elif event == 'Conferma cure':
-            print('ciaooooooooooooooHome')
             viewConfirmTreatement(patient, caregiverContracts,healthFileContracts, windowHome)
         elif event == 'Logout':
             break
@@ -33,14 +32,14 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
 
 def viewHealthFile(healthFile, windowHome):
     sg.theme('DarkAmber')
-    #SISTEMARE LA VISUALIZZAZIONE CHE ORA SEMBRA UN VETTORE
+
     layout = [
 
         [sg.Text(f'Codice fiscale: {healthFile.cf}')],
         [sg.Text('Prescrizioni:')],
-        [sg.Listbox(values=healthFile.prescriptions, size=(30, 5))],
+        [sg.Text(healthFile.prescriptions, size=(30, 5))],
         [sg.Text('Note:')],
-        [sg.Listbox(values=healthFile.notes, size=(30, 5))],
+        [sg.Text(healthFile.notes, size=(30, 5))],
         [sg.Button('Chiudi')]
     ]
 
@@ -59,10 +58,10 @@ def modifyProfile(patient,patientContracts, windowHome):
     sg.theme('DarkAmber')
     layoutProfile = [[sg.Text('Nome'), sg.InputText(patient.name,key='name')],
                      [sg.Text('Cognome'), sg.InputText(patient.lastname,key='lastname')],
-                     [sg.Text('Codice fiscale'), sg.InputText(patient.cf, key='cf')],#non dovrebbe essere modificabile
+                     [sg.Text('Codice fiscale'), sg.Text(patient.cf, key='cf')],
                      [sg.Text('Luogo di nascita'), sg.InputText(patient.birthPlace, key='birthPlace')],
                      [sg.Text('Indipendente'), sg.InputText(patient.isIndependent, key='isIndependent')],#bottone
-                     [sg.Text('Password'), sg.InputText(patient.password, key='password')],#per modificare la password dovremmo fare una cosa a parte
+                     [sg.Text('Password'), sg.InputText(patient.password, key='password')],
                      [sg.Button('Salva'), sg.Button('Home')],
                      [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
     windowProfile = sg.Window('Profile', layoutProfile)
@@ -75,7 +74,7 @@ def modifyProfile(patient,patientContracts, windowHome):
             break
         if event == 'Salva':
             if checkValues(values):
-                patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(int(values['isIndependent'])),values['cf'])
+                patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(int(values['isIndependent'])),patient.cf)
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
                 patient.lastname = values['lastname']
@@ -126,7 +125,7 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
                 healthFileContracts.confirm_treatment( values['cfCaregiver'],patient.cf , patient.isIndependent)
             else:
                 windowConfirmTreatement['-OUTPUT-'].update('Modifiche non valide', text_color='red')
-                windowConfirmTreatement['cfCaregover'].update('')
+                windowConfirmTreatement['cfCaregiver'].update('')
 
     windowConfirmTreatement.close()
     windowHome.UnHide()

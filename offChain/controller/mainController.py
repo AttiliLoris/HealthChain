@@ -59,7 +59,6 @@ def main():
 
     while True:
         user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
-        print(user)
         if isinstance(user, DoctorData):
             homeDoctor(user,doctorContracts, healthFileContracts)
         elif isinstance(user, CaregiverData):
@@ -79,10 +78,6 @@ def handle_event(event):
     private_key = event['args']['private_key']
     type = event['args']['ctype']
 
-    print(address)
-    print(str(address))
-    print(private_key)
-    print(str(private_key))
     data[cf] = {
         "address": str(address),
         "private_key": str(private_key),

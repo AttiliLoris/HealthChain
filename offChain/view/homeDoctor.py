@@ -14,13 +14,13 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts):
         if event == sg.WIN_CLOSED or event == 'Esci':
             break
         if event == 'Profilo':
-            windowHome['-OUTPUT'].update('')
+            windowHome['-OUTPUT-'].update('')
             windowHome.Hide()
             doctorProfile(doctor, windowHome,doctorContracts)
         if event == 'Ok':
             healthFile = healthFileResearch(cf,healthFileContracts)
             if healthFile:
-                windowHome['-OUTPUT'].update('')
+                windowHome['-OUTPUT-'].update('')
                 windowHome.Hide()
                 patientHealthFile(healthFile, windowHome, healthFileContracts)
 
@@ -53,8 +53,8 @@ def doctorProfile(doctor, windowHome,doctorContracts):
                 doctor.name = values['name']
                 doctor.lastname = values['lastname']
 
-                windowHome['name'].update(doctor.name)
-                windowHome['lastname'].update(doctor.lastname)
+                windowProfile['name'].update(doctor.name)
+                windowProfile['lastname'].update(doctor.lastname)
                 break
 
             else:

@@ -68,7 +68,7 @@ def addNote(healthFile, patient, windowHealthFile, healthFileContracts):
 
     layout = [
         [sg.Text(f'Aggiungi Nota per {patient.name} {patient.lastname}')],
-        [sg.Text('Nuova Nota:'), sg.InputText(key='nuova_nota')],
+        [sg.Text('Nuova Nota:'), sg.InputText(healthFile.notes,key='nuova_nota')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Aggiungi'), sg.Button('Annulla')]
     ]
@@ -86,7 +86,8 @@ def addNote(healthFile, patient, windowHealthFile, healthFileContracts):
                 healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
                                                       healthFile.prescriptions, healthFile.treatmentPlan,
                                                       healthFile.notes)
-                windowHealthFile['notes'].update(newNote)
+                windowHealthFile['notes'].update('Note: '+ newNote)
+                break
 
             else:
                 windowAddNote['-OUTPUT-'].update('Modifiche non valide', text_color='red')
@@ -116,6 +117,7 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
         if event == 'Home':
             break
         if event == 'Salva':
+            #DEVE USCIRE DAL PROFILO DOPO AVER FATTO LE MODIFICHE E AGGIORNARE LA HOME CON LE MODIFICHE
             if checkValues(values):
                 caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
