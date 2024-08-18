@@ -5,7 +5,7 @@ import PySimpleGUI as sg
 
 Admin = namedtuple('Admin', ['username','password','address','private_key'])
 
-def login(doctorContracts, caregiverContracts, patientContracts,healthFileContract):
+def login(doctorContracts, caregiverContracts, patientContracts,healthFileContract,fine):
     sg.theme('DarkAmber')
 
     layout = [
@@ -22,8 +22,8 @@ def login(doctorContracts, caregiverContracts, patientContracts,healthFileContra
         event, values = windowLogin.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Esci':
-            windowLogin.Hide()
-            fine.set()
+            windowLogin.close()
+            break
         elif event == 'Conferma':
             utente = checkCredentials(values['cf'], values['password'],doctorContracts, caregiverContracts, patientContracts)
             if utente:

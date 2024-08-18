@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
+import logging
 def homeDoctor(doctor,doctorContracts,healthFileContracts):
+    logging.info('Autenticato il dottore: ' + doctor.lastname + ' ' + doctor.name)
     sg.theme('DarkAmber')
     layoutHome = [[sg.Text('Inserire il codice fiscale di un paziente per vedere il suo fascicolo'), sg.InputText(key='cf')],
                 [sg.Button('Ok'), sg.Button('Profilo'), sg.Button('Esci')],
@@ -22,6 +24,7 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts):
             if healthFile:
                 windowHome['-OUTPUT-'].update('')
                 windowHome.Hide()
+                logging.info('Fascicolo con codice: ' + healthFile.cf + ' aperto dal dottore: ' + doctor.lastname + ' ' + doctor.name)
                 patientHealthFile(healthFile, windowHome, healthFileContracts)
 
             else:
@@ -48,6 +51,7 @@ def doctorProfile(doctor, windowHome,doctorContracts):
             break
         if event == 'Salva':
             if checkValues(values):
+                logging.info('Profilo del dottore: '+doctor.lastname+ ' ' + doctor.name + ' modificato')
                 doctorContracts.update_doctor(doctor.cf,values['name'],values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 doctor.name = values['name']

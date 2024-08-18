@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
+import logging
 def homePatient(patient,patientContracts, caregiverContracts, healthFileContracts):
+    logging.info('Autenticato il paziente: '+patient.lastname + ' ' + patient.name)
     sg.theme('DarkAmber')
 
     layout = [
@@ -20,7 +22,7 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
         elif event == 'Visualizza cartella clinica':
             healthFile = researchHealthFile(patient.cf, healthFileContracts)
             windowHome.Hide()
-            viewHealthFile(healthFile, windowHome)
+            viewHealthFile(healthFile, patient, windowHome)
         elif event == 'Modifica profilo':
             windowHome.Hide()
             modifyProfile(patient,patientContracts, windowHome)
@@ -30,7 +32,8 @@ def homePatient(patient,patientContracts, caregiverContracts, healthFileContract
             break
     windowHome.close()
 
-def viewHealthFile(healthFile, windowHome):
+def viewHealthFile(healthFile, patient, windowHome):
+    logging.info('Fascicolo con codice: '+ healthFile.cf + ' aperto da: ' + patient.lastname +' '+patient.name)
     sg.theme('DarkAmber')
 
     layout = [
@@ -74,6 +77,7 @@ def modifyProfile(patient,patientContracts, windowHome):
             break
         if event == 'Salva':
             if checkValues(values):
+                logging.info('Modificato il profilo del paziente: '+ patient.name + ' ' + patient.lastname)
                 patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(int(values['isIndependent'])),patient.cf)
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 patient.name = values['name']
@@ -122,7 +126,9 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
             break
         elif event == 'Conferma':
             if checkCaregiver(values['cfCaregiver'], caregiverContracts):
+                logging.info('Cure per: ' + patient.lastname + ' ' + patient.name + ' confermate dal paziente')
                 healthFileContracts.confirm_treatment( values['cfCaregiver'],patient.cf , patient.isIndependent)
+                break
             else:
                 windowConfirmTreatement['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowConfirmTreatement['cfCaregiver'].update('')

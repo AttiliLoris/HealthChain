@@ -1,7 +1,8 @@
 import PySimpleGUI as sg
-
+import logging
 
 def homeAdmin(admin, doctorContracts, caregiverContracts):
+    logging.info('Amministratore autenticato')
     sg.theme('DarkAmber')
 
     layoutHome = [
@@ -39,6 +40,7 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         if event == sg.WIN_CLOSED or event == 'Annulla':
             break
         elif event == 'Registra caregiver':
+            logging.info('Caregiver '+ values['lastname'] + ' ' +values['name']+' creato')
             caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
             window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
             break
@@ -59,6 +61,7 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
         if event == sg.WIN_CLOSED or event == 'Annulla':
             break
         elif event == 'Registra dottore':
+            logging.info('Dottore ' + values['lastname'] + ' ' + values['name'] + ' creato')
             doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
             window['-OUTPUT-'].update('Dottore registrato', text_color='green')
             break

@@ -1,6 +1,11 @@
 import PySimpleGUI as sg
+import logging
+
+from offChain.model import caregiver
+
 
 def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientContracts):
+    logging.info('Autenticato il caregiver: ' + caregiver.lastname + ' ' + caregiver.name)
     sg.theme('DarkAmber')
     layout = [
         [sg.Text(f'Benvenuto {caregiver.name} {caregiver.lastname}')],
@@ -29,6 +34,8 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
     windowHome.close()
 
 def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileContracts):
+    logging.info('Fascicolo del paziente: ' + patient.lastname + ' ' + patient.name + 'aperto dal caregiver: ' +
+                 caregiver.lastname + ' ' + caregiver.name)
     sg.theme('DarkAmber')
     layout = [
         [sg.Text(f'Cartella di {patient.name} {patient.lastname}')],
@@ -52,10 +59,12 @@ def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileCont
         if event == sg.WINDOW_CLOSED or event == 'Chiudi':
             break
         elif event == 'Conferma cure':
+            logging.info('Cure per: ' + patient.lastname + ' ' + patient.name +
+                         ' confermate dal caregiver: '+caregiver.lastname +' '+caregiver.name)
             healthFileContracts.confirm_treatment(caregiver.cf, healthFile.cf, patient.isIndependent)
             windowHealthFile['-OUTPUT-'].update('Cure confermate', text_color='green')
         elif event == 'Aggiungi nota':
-            addNote(healthFile, patient, windowHealthFile, healthFileContracts)
+            addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContracts)
         elif event == 'Home':
             break
 
@@ -63,7 +72,9 @@ def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileCont
     windowHome.UnHide()
 
 
-def addNote(healthFile, patient, windowHealthFile, healthFileContracts):
+def addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContracts):
+    logging.info('Aggiunta nota al fascicolo del paziente: '+patient.lastname + ' ' +patient.name + 'da parte del caregiver: '
+                 +caregiver.lastname + ' '+caregiver.name)
     sg.theme('DarkAmber')
 
     layout = [
@@ -119,6 +130,7 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
         if event == 'Salva':
             #DEVE USCIRE DAL PROFILO DOPO AVER FATTO LE MODIFICHE E AGGIORNARE LA HOME CON LE MODIFICHE
             if checkValues(values):
+                logging.info('Profilo del caregiver: '+caregiver.lastname + ' '+ caregiver.name + ' modificato')
                 caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 caregiver.name = values['name']

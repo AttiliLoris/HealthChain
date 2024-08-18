@@ -1,6 +1,8 @@
 import json
 import threading
 import time
+import psutil
+import logging
 from collections import namedtuple
 
 from view.login import login
@@ -34,6 +36,37 @@ provider_url = "http://ganache:8080"
 
 #fare un evento che fa bloccare tuttp quando c'è esci o etc nfnnf
 
+# Configurazione del logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',filename='offChain/monitoring/softwareLog.log', filemode='a')
+
+def main():
+
+    doctorContracts = Doctor(provider_url)
+    caregiverContracts = Caregiver(provider_url)
+    patientContracts = Patient(provider_url)
+    healthFileContracts = HealthFile(provider_url)
+    event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
+    event_listener_thread.start()
+
+    sistem_monitoring = threading.Thread(target=monitor_system,
+                                             args=())
+    sistem_monitoring.start()
+
+    while True:
+        user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts,fine)
+        if isinstance(user, DoctorData):
+            homeDoctor(user,doctorContracts, healthFileContracts)
+        elif isinstance(user, CaregiverData):
+            homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts)
+        elif isinstance(user, PatientData):
+            homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
+        elif isinstance(user, Admin):
+            homeAdmin(user, doctorContracts, caregiverContracts)
+        else:
+            fine.set()
+            break
+
+
 def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
     filters = {
         '1': doctorContracts.contract.events.DoctorRegistered().create_filter(fromBlock='latest'),
@@ -47,28 +80,6 @@ def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
         time.sleep(2)
         if fine.is_set():
             break
-
-def main():
-
-    doctorContracts = Doctor(provider_url)
-    caregiverContracts = Caregiver(provider_url)
-    patientContracts = Patient(provider_url)
-    healthFileContracts = HealthFile(provider_url)
-    event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
-    event_listener_thread.start()
-
-    while True:
-        user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
-        if isinstance(user, DoctorData):
-            homeDoctor(user,doctorContracts, healthFileContracts)
-        elif isinstance(user, CaregiverData):
-            homeCaregiver(user,caregiverContracts, healthFileContracts, patientContracts)
-        elif isinstance(user, PatientData):
-            homePatient(user,patientContracts, caregiverContracts, healthFileContracts)
-        elif isinstance(user, Admin):
-            homeAdmin(user, doctorContracts, caregiverContracts)
-
-
 
 def handle_event(event):
     file_path='onChain/address/addressList.json'
@@ -99,3 +110,18 @@ fine = threading.Event()
 def save_addresses(file_path, addresses):
     with open(file_path, 'w') as file:
         json.dump(addresses, file, indent=4)
+
+
+def monitor_system():
+    file_path = 'offChain/monitoring/systemMonitoring.txt'
+    with open(file_path, 'w') as file:
+        while True:
+            file.write(f"CPU usage: {psutil.cpu_percent()}%")
+            file.write(f"Memory usage: {psutil.virtual_memory().percent}%")
+            file.write(f"Disk usage: {psutil.disk_usage('/').percent}%")
+            file.write("Data e ora formattata:" + time.strftime("%d-%m-%Y %H:%M:%S", time.localtime()))
+            file.write("\n")
+            file.flush()
+            time.sleep(10)
+            if fine.is_set():
+                break
