@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
 import logging
+import re
+
 def homePatient(patient,patientContracts, caregiverContracts, healthFileContracts):
     logging.info('Autenticato il paziente: '+patient.lastname + ' ' + patient.name)
     sg.theme('DarkAmber')
@@ -76,6 +78,13 @@ def modifyProfile(patient,patientContracts, windowHome):
         if event == 'Home':
             break
         if event == 'Salva':
+
+            values['name'] = sanitizeInput(values['name'])
+            values['lastname'] = sanitizeInput(values['lastname'])
+            values['birthPlace'] = sanitizeInput(values['birthPlace'])
+            values['password'] = sanitizeInput(values['password'])
+            values['isIndependent'] = sanitizeInput(values['isIndependent'])
+
             if checkValues(values):
                 logging.info('Modificato il profilo del paziente: '+ patient.name + ' ' + patient.lastname)
                 patientContracts.update_patient(values['name'], values['lastname'],values['birthPlace'],values['password'],bool(int(values['isIndependent'])),patient.cf)
@@ -106,10 +115,12 @@ def researchHealthFile(cf, healthFileContracts):
     return None
 
 def checkValues(values):
-    if values['name'] == '' or values['lastname'] == '':
-        sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
-        return 0
-    return 1
+    for key, value in values.items():
+        if not value:
+            sg.popup_error(f'Il campo "{key}" non è valido')
+            return False
+    return True
+
 
 
 def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windowHome):
@@ -125,6 +136,7 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
         if event == sg.WINDOW_CLOSED or event == 'Indietro':
             break
         elif event == 'Conferma':
+            values['cfCaregiver'] = sanitizeInput(values['cfCaregiver'])
             if checkCaregiver(values['cfCaregiver'], caregiverContracts):
                 logging.info('Cure per: ' + patient.lastname + ' ' + patient.name + ' confermate dal paziente')
                 healthFileContracts.confirm_treatment( values['cfCaregiver'],patient.cf , patient.isIndependent)
@@ -145,3 +157,14 @@ def checkCaregiver(cf, caregiverContracts):
     except ValueError as e:
         return None
     return None
+
+
+
+def sanitizeInput(value):
+
+    sanitizedValue = re.sub(r'\b(import|exec|eval)\b', '', value, flags=re.IGNORECASE)
+
+    if re.search(r'[^a-zA-Z0-9\s]', sanitizedValue):
+        return False
+
+    return sanitizedValue

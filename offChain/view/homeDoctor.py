@@ -1,3 +1,5 @@
+import re
+
 import PySimpleGUI as sg
 import logging
 def homeDoctor(doctor,doctorContracts,healthFileContracts):
@@ -50,6 +52,8 @@ def doctorProfile(doctor, windowHome,doctorContracts):
         if event == 'Home':
             break
         if event == 'Salva':
+            values['name'] = sanitizeInput(values['name'])
+            values['lastname'] = sanitizeInput(values['lastname'])
             if checkValues(values):
                 logging.info('Profilo del dottore: '+doctor.lastname+ ' ' + doctor.name + ' modificato')
                 doctorContracts.update_doctor(doctor.cf,values['name'],values['lastname'])
@@ -68,13 +72,6 @@ def doctorProfile(doctor, windowHome,doctorContracts):
                 windowProfile['cf'].update(doctor.cf)
     windowProfile.close()
     windowHome.UnHide()
-
-def checkValues(values):
-    #Questi controlli sono forse un po' troppo banali
-    if values['name'] == '' or values['lastname'] == '':
-        sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
-        return 0
-    return 1
 
 def healthFileResearch(cf,healthFileContracts):
     try:
@@ -120,15 +117,14 @@ def modififyClinicalHistory(healthFile, windowHealthFile, healthFileContracts):
     windowClinicalHistory = sg.Window('Dettaglio', layoutClinicalHistory)
     while True:
         event, values = windowClinicalHistory.read()
-        text= values['clinicalHistory']
+        values['clinicalHistory'] = sanitizeInput(values['clinicalHistory'])
         if event == sg.WIN_CLOSED:
             break
         if event == 'Conferma':
-            if text =='':
-                sg.popup_error('Il testo è vuoto, modifiche non valide')
+            if not checkValues(values):
                 windowClinicalHistory['clinicalHistory'].update(healthFile.clinicalHistory)
             else:
-                healthFile.clinicalHistory = text
+                healthFile.clinicalHistory = values['clinicalHistory']
                 healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
                 windowHealthFile['Storia clinica'].update(healthFile.clinicalHistory)
                 break
@@ -143,15 +139,14 @@ def modifyPrescriptions(healthFile, windowHealthFile, healthFileContracts):
 
     while True:
         event, values = windowPrescription.read()
-        text = values['prescriptions']
+        values['prescriptions'] = sanitizeInput(values['prescriptions'])
         if event == sg.WIN_CLOSED:
             break
         if event == 'Conferma':
-            if text == '': #in realtà potrebbe andare bene se è vuoto
-                sg.popup_error('Il testo è vuoto, modifiche non valide')
+            if not checkValues(values): #in realtà potrebbe andare bene se è vuoto
                 windowPrescription['prescriptions'].update(healthFile.prescriptions)
             else:
-                healthFile.prescriptions = text
+                healthFile.prescriptions = values['prescriptions']
                 healthFileContracts.update_healthFile(healthFile.cf,healthFile.clinicalHistory,healthFile.prescriptions,healthFile.treatmentPlan,healthFile.notes)
                 windowHealthFile['Prescrizioni'].update(healthFile.prescriptions)
                 break
@@ -174,15 +169,32 @@ def addTreatmentPlan(healthFile, windowHealthFile, healthFileContracts):
         if event == sg.WINDOW_CLOSED or event == 'Indietro':
             break
         elif event == 'Conferma':
-            newTreatmentPlan = values['treatmentPlan']
-            if newTreatmentPlan:
-                healthFile.treatmentPlan= newTreatmentPlan
+            values['treatmentPlan'] = sanitizeInput(values['treatmentPlan'])
+            if checkValues(values):
+                healthFile.treatmentPlan = values['treatmentPlan']
                 healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
                                                       healthFile.prescriptions, healthFile.treatmentPlan,
                                                       healthFile.notes)
                 windowHealthFile['Trattamenti'].update(healthFile.treatmentPlan)
                 break
-
+            else:
+                windowTreatmentPlan['treatmentPlan'].update(healthFile.treatmentPlan)
 
     windowTreatmentPlan.close()
     windowHealthFile.UnHide()
+
+def checkValues(values):
+    for key, value in values.items():
+        if not value:
+            sg.popup_error(f'Il campo "{key}" non è valido')
+            return False
+    return True
+
+def sanitizeInput(value):
+
+    sanitizedValue = re.sub(r'\b(import|exec|eval)\b', '', value, flags=re.IGNORECASE)
+
+    if re.search(r'[^a-zA-Z0-9\s]', sanitizedValue):
+        return ''
+
+    return sanitizedValue

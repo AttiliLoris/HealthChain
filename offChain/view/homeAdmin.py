@@ -1,3 +1,5 @@
+import re
+
 import PySimpleGUI as sg
 import logging
 
@@ -40,10 +42,20 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         if event == sg.WIN_CLOSED or event == 'Annulla':
             break
         elif event == 'Registra caregiver':
-            logging.info('Caregiver '+ values['lastname'] + ' ' +values['name']+' creato')
-            caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
-            window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
-            break
+            values['name'] = sanitizeInput(values['name'])
+            values['lastname'] = sanitizeInput(values['lastname'])
+            values['password'] = sanitizeInput(values['password'])
+            values['cf'] = sanitizeInput(values['cf'])
+            if checkValues(values) and checkCf(values['cf']):
+                logging.info('Caregiver '+ values['lastname'] + ' ' +values['name']+' creato')
+                caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
+                window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
+                break
+            else:
+                window['name'].update(values['name'])
+                window['lastname'].update(values['lastname'])
+                window['password'].update(values['password'])
+                window['cf'].update(values['cf'])
     windowHome.UnHide()
     window.close()
 def doctor_registration_panel(admin, doctorContract,windowHome):
@@ -61,10 +73,41 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
         if event == sg.WIN_CLOSED or event == 'Annulla':
             break
         elif event == 'Registra dottore':
-            logging.info('Dottore ' + values['lastname'] + ' ' + values['name'] + ' creato')
-            doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
-            window['-OUTPUT-'].update('Dottore registrato', text_color='green')
-            break
+            values['name'] = sanitizeInput(values['name'])
+            values['lastname'] = sanitizeInput(values['lastname'])
+            values['password'] = sanitizeInput(values['password'])
+            values['cf'] = sanitizeInput(values['cf'])
+            if checkValues(values) and checkCf(values['cf']):
+                logging.info('Dottore ' + values['lastname'] + ' ' + values['name'] + ' creato')
+                doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
+                window['-OUTPUT-'].update('Dottore registrato', text_color='green')
+                break
+            else:
+                window['name'].update(values['name'])
+                window['lastname'].update(values['lastname'])
+                window['password'].update(values['password'])
+                window['cf'].update(values['cf'])
     windowHome.UnHide()
     window.close()
 
+def sanitizeInput(value):
+
+    sanitizedValue = re.sub(r'\b(import|exec|eval)\b', '', value, flags=re.IGNORECASE)
+
+    if re.search(r'[^a-zA-Z0-9\s]', sanitizedValue):
+        return ''
+
+    return sanitizedValue
+
+def checkValues(values):
+    for key, value in values.items():
+        if not value or (key == 'cf' and not checkCf(value)):
+            sg.popup_error(f'Il campo "{key}" non è valido')
+            return False
+    return True
+
+def checkCf(cf):
+    if re.match(r'^[a-zA-Z0-9]{16}$', cf):
+        return True
+    else:
+        return False

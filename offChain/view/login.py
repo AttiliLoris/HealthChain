@@ -1,4 +1,5 @@
 import json
+import re
 from collections import namedtuple
 
 import PySimpleGUI as sg
@@ -61,11 +62,11 @@ def signIn(patientContracts,healthFileContract,windowLogin):
 
     layout = [
         [sg.Text('Nome: '), sg.InputText(key='name')],
-        [sg.Text('Cognome: '), sg.InputText(key='surname')],
+        [sg.Text('Cognome: '), sg.InputText(key='lastname')],
         [sg.Text('Codice fiscale: '), sg.InputText(key='cf')],
         [sg.Text('Luogo di nascita: '), sg.InputText(key='birthPlace')],
         [sg.Text('Indipendente: '), sg.InputText(key='isIndependent')],#come bottone
-        [sg.Text('Password: '), sg.InputText(key='hashedPwd',password_char='*')],
+        [sg.Text('Password: '), sg.InputText(key='password',password_char='*')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [sg.Button('Registrati'), sg.Button('Annulla')]
     ]
@@ -79,13 +80,52 @@ def signIn(patientContracts,healthFileContract,windowLogin):
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Registrati':
-            patientContracts.create_patient(values['name'], values['surname'],values['birthPlace'], values['hashedPwd'], bool(int(values['isIndependent'])),values['cf'])
-            healthFileContract.create_healthFile(values['cf'])
-            windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
-        windowSignIn.close()
-        windowLogin.UnHide()
+            values['name'] = sanitizeInput(values['name'])
+            values['lastname'] = sanitizeInput(values['lastname'])
+            values['birthPlace'] = sanitizeInput(values['birthPlace'])
+            values['password'] = sanitizeInput(values['password'])
+            values['isIndependent'] = sanitizeInput(values['isIndependent'])
+            values['cf'] = sanitizeInput(values['cf'])
+
+            if checkValues(values) and checkCf(values['cf']):
+                patientContracts.create_patient(values['name'], values['lastname'],values['birthPlace'], values['password'], bool(int(values['isIndependent'])),values['cf'])
+                healthFileContract.create_healthFile(values['cf'])
+                windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
+                windowSignIn.close()
+                windowLogin.UnHide()
+            else:
+                windowSignIn['name'].update(values['name'])
+                windowSignIn['lastname'].update(values['lastname'])
+                windowSignIn['birthPlace'].update(values['birthPlace'])
+                windowSignIn['isIndependent'].update(values['isIndependent'])
+                windowSignIn['password'].update(values['password'])
+                windowSignIn['cf'].update(values['cf'])
+    windowSignIn.close()
+    windowLogin.UnHide()
 
 def loadAdmin():
     with open("offChain/credential/credential.json", 'r') as file:
         data = json.load(file)
     return data
+
+def sanitizeInput(value):
+
+    sanitizedValue = re.sub(r'\b(import|exec|eval)\b', '', value, flags=re.IGNORECASE)
+
+    if re.search(r'[^a-zA-Z0-9\s]', sanitizedValue):
+        return ''
+
+    return sanitizedValue
+
+def checkValues(values):
+    for key, value in values.items():
+        if not value or (key == 'cf' and not checkCf(value)):
+            sg.popup_error(f'Il campo "{key}" non è valido')
+            return False
+    return True
+
+def checkCf(cf):
+    if re.match(r'^[a-zA-Z0-9]{16}$', cf):
+        return True
+    else:
+        return False

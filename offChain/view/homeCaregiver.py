@@ -1,7 +1,9 @@
+import re
+
 import PySimpleGUI as sg
 import logging
 
-from offChain.model import caregiver
+
 
 
 def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientContracts):
@@ -92,12 +94,12 @@ def addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContract
         if event == sg.WINDOW_CLOSED or event == 'Annulla':
             break
         elif event == 'Aggiungi':
-            newNote = values['nuova_nota']
-            if newNote:
+            values['nuova_nota'] = sanitizeInput(values['nuova_nota'])
+            if checkValues(values):
                 healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
                                                       healthFile.prescriptions, healthFile.treatmentPlan,
                                                       healthFile.notes)
-                windowHealthFile['notes'].update('Note: '+ newNote)
+                windowHealthFile['notes'].update('Note: '+ values['nuova_nota'])
                 break
 
             else:
@@ -106,11 +108,6 @@ def addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContract
     windowAddNote.close()
     windowHealthFile.UnHide()
 
-def checkValues(values):
-    if values['name'] == '' or values['lastname'] == '':
-        sg.popup_error('Uno dei campi è vuoto, inserire un input valido')
-        return 0
-    return 1
 
 def caregiverProfile(caregiver, caregiverContracts, windowHome):
     layoutProfile = [[sg.Text('Nome'), sg.InputText(caregiver.name, key='name')],
@@ -128,7 +125,8 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
         if event == 'Home':
             break
         if event == 'Salva':
-            #DEVE USCIRE DAL PROFILO DOPO AVER FATTO LE MODIFICHE E AGGIORNARE LA HOME CON LE MODIFICHE
+            values['name'] = sanitizeInput(values['name'])
+            values['lastname'] = sanitizeInput(values['lastname'])
             if checkValues(values):
                 logging.info('Profilo del caregiver: '+caregiver.lastname + ' '+ caregiver.name + ' modificato')
                 caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
@@ -165,3 +163,19 @@ def patientResearch(cf, patientContracts):
     except ValueError as e:
         return None
     return None
+
+def sanitizeInput(value):
+
+    sanitizedValue = re.sub(r'\b(import|exec|eval)\b', '', value, flags=re.IGNORECASE)
+
+    if re.search(r'[^a-zA-Z0-9\s]', sanitizedValue):
+        return ''
+
+    return sanitizedValue
+
+def checkValues(values):
+    for key, value in values.items():
+        if not value:
+            sg.popup_error(f'Il campo "{key}" non è valido')
+            return False
+    return True
