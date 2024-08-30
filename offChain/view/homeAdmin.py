@@ -30,7 +30,7 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         [sg.Text('Nome'), sg.InputText(key='name')],
         [sg.Text('Cognome'), sg.InputText(key='lastname')],
         [sg.Text('Codice Fiscale'), sg.InputText(key='cf')],
-        [sg.Text('Password'), sg.InputText(key='password')],
+        [sg.Text('Password'), sg.InputText(key='password'), sg.InputText(key='password', password_char='*')],
         [sg.Button('Registra caregiver'), sg.Button('Annulla')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
@@ -63,7 +63,7 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
         [sg.Text('Nome'), sg.InputText(key='name')],
         [sg.Text('Cognome'), sg.InputText(key='lastname')],
         [sg.Text('Codice Fiscale'), sg.InputText(key='cf')],
-        [sg.Text('Password'), sg.InputText(key='password')],
+        [sg.Text('Password'), sg.InputText(key='password'), sg.InputText(key='password', password_char='*')],
         [sg.Button('Registra dottore'), sg.Button('Annulla')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
