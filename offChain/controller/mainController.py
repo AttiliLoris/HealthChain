@@ -59,10 +59,10 @@ c.execute('''
 
 def main():
 
-    doctorContracts = Doctor(provider_url)
-    caregiverContracts = Caregiver(provider_url)
-    patientContracts = Patient(provider_url)
-    healthFileContracts = HealthFile(provider_url)
+    doctorContracts = Doctor(provider_url, conn)
+    caregiverContracts = Caregiver(provider_url, conn)
+    patientContracts = Patient(provider_url, conn)
+    healthFileContracts = HealthFile(provider_url, conn)
     event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
     event_listener_thread.start()
 

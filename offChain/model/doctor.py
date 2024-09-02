@@ -11,8 +11,8 @@ class DoctorData:
         self.isRegistered = isRegistered
         self.cf = cf
 class Doctor(Model):
-    def __init__(self, provider_url):
-        super().__init__(provider_url,'doctor')
+    def __init__(self, provider_url, conn):
+        super().__init__(provider_url,'doctor', conn)
         if not self.contract:
             raise ValueError("Il contratto non è stato caricato correttamente")
 

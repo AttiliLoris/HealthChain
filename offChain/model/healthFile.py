@@ -16,8 +16,8 @@ class HealthFileData:
         self.notes = notes
 
 class HealthFile(Model):
-    def __init__(self, provider_url):
-        super().__init__(provider_url,'healthFile')
+    def __init__(self, provider_url, conn):
+        super().__init__(provider_url,'healthFile', conn)
 
     def create_healthFile(self, cf):
         time.sleep(3)

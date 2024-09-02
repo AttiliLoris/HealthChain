@@ -10,8 +10,8 @@ class CaregiverData:
         self.isRegistered = isRegistered
         self.cf = cf
 class Caregiver(Model):
-    def __init__(self, provider_url):
-        super().__init__(provider_url,'caregiver')
+    def __init__(self, provider_url, conn):
+        super().__init__(provider_url,'caregiver', conn)
 
     def create_caregiver(self,adminAddress, adminPrivate_key, name, lastname, hashedPwd, cf):
         address, private_key = super().create_new_account()

@@ -17,8 +17,8 @@ class PatientData:
 
 
 class Patient(Model):
-    def __init__(self, provider_url):
-        super().__init__(provider_url, 'patient')
+    def __init__(self, provider_url, conn):
+        super().__init__(provider_url, 'patient', conn)
 
     def create_patient(self, name, lastname, birthPlace, pwd, isIndependent,cf):
         address, private_key = super().create_new_account()

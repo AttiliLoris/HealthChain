@@ -8,12 +8,12 @@ from eth_account import Account
 
 class Model:
 
-    def __init__(self, provider_url,contract_name, solc_version='0.8.0'):
+    def __init__(self, provider_url,contract_name, conn, solc_version='0.8.0'):
         self.solc_version = solc_version
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
         self.contract= None
         self.deploy_contract(contract_name)
-
+        self.conn=conn
 
     def get_contract_abi(self, contract_name):
         with open(f'onChain/abi/{contract_name}.json') as f:
@@ -61,15 +61,15 @@ class Model:
 
 
     def cf_to_address(self, cf):
-        try:
-            with open("onChain/address/addressList.json", 'r') as file:
-                data = json.load(file)
-            if data[cf]:
-                return data[cf]
-            else:
-                return {}
-        except Exception as e:
-            return {}
+        cursor = self.conn.cursor(dictionary=True)
+
+        # Esecuzione della query con un filtro per CF
+        query = "SELECT * FROM events WHERE cf = %s"
+        cursor.execute(query, (cf,))
+
+        # Recupero di una singola riga
+        result = cursor.fetchone()
+        return result
 
     def create_new_account(self):
 
