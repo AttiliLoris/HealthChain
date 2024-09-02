@@ -1,4 +1,4 @@
-web3
+web3 == 6.20.2
 py-solc-x
 PySimpleGUI
 pyautogui

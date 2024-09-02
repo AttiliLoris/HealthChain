@@ -142,7 +142,7 @@ def viewConfirmTreatement(patient,caregiverContracts, healthFileContracts, windo
                 healthFileContracts.confirm_treatment( values['cfCaregiver'],patient.cf , patient.isIndependent)
                 break
             else:
-                windowConfirmTreatement['-OUTPUT-'].update('Modifiche non valide', text_color='red')
+                windowConfirmTreatement['-OUTPUT-'].update('Codice non valido', text_color='red')
                 windowConfirmTreatement['cfCaregiver'].update('')
 
     windowConfirmTreatement.close()
