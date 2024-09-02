@@ -5,6 +5,8 @@ services:
     image: trufflesuite/ganache-cli
     command: ganache-cli --host 0.0.0.0 --port 8080 --accounts 10 --defaultBalanceEther 1000 --mnemonic "saddle point immune salmon swear indoor riot process easily marine charge leave"
     #qui specifica i paramentri in esecuzione su ganache in particolare crea 10 account e imposta il saldo a 1000 ether infine utilizza questa frase mnemonica per generare gli account
+    volumes:
+      - my_volume2:/tmp
     ports:
       - 8080:8080
     healthcheck:
@@ -16,6 +18,8 @@ services:
 #questa sotto è la seconda immagine che dipende da ganache
   healthchain:
     build: .
+    volumes:
+      - my_volume:/HealthChain
     stdin_open: true
     tty: true
     #queste due istruzioni attivano l'interfaccia interattiva da terminale. non so se ci servono, non so neanche se serve dockerizzare XDXD
@@ -23,8 +27,14 @@ services:
       - ganache
     restart: always
     environment:
+      - DISPLAY=host.docker.internal:0
       - ETHEREUM_NODE_URL=http://ganache:8080
     #se decidiamo di cambiare la porta dobbiamo cambiare anche qui
     ports:
       - 3000:3000
 #stesso discorso per queste porte
+volumes:
+  my_volume:
+    external: true
+  my_volume2:
+    external: true

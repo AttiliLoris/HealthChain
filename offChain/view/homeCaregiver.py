@@ -10,8 +10,9 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
     logging.info('Autenticato il caregiver: ' + caregiver.lastname + ' ' + caregiver.name)
     sg.theme('DarkAmber')
     layout = [
-        [sg.Text(f'Benvenuto {caregiver.name} {caregiver.lastname}')],
+        [sg.Text(f'Benvenuto {caregiver.name} {caregiver.lastname}', key='benvenuto')],
         [sg.Text('Inserire il codice fiscale del paziente:'), sg.InputText(key='cf'), sg.Button('Ok')],
+        [sg.Text('', size=(30, 1), key='-OUTPUT-')],
         [ sg.Button('Esci'), sg.Button('Profilo')]
     ]
 
@@ -23,15 +24,20 @@ def homeCaregiver(caregiver, caregiverContracts, healthFileContracts, patientCon
         if event == sg.WINDOW_CLOSED or event == 'Esci':
             break
         elif event == 'Profilo':
+            windowHome['-OUTPUT-'].update('')
             windowHome.Hide()
             caregiverProfile(caregiver,caregiverContracts, windowHome)
         elif event == 'Ok':
             cf = values['cf']
-            healthFile = healthFileResearch(cf, healthFileContracts)
-            if healthFile:
-                windowHome.Hide()
-                patient = patientResearch(cf, patientContracts)
-                patientHealthFile(caregiver, patient, healthFile, windowHome,healthFileContracts)
+            if checkCf(cf):
+                healthFile = healthFileResearch(cf, healthFileContracts)
+                if healthFile:
+                    windowHome['-OUTPUT-'].update('Caricando il fascicolo...', text_color='green')
+                    windowHome.Hide()
+                    patient = patientResearch(cf, patientContracts)
+                    patientHealthFile(caregiver, patient, healthFile, windowHome,healthFileContracts)
+            else:
+                windowHome['-OUTPUT-'].update('codice fiscale non valido', text_color='red')
 
     windowHome.close()
 
@@ -68,6 +74,8 @@ def patientHealthFile(caregiver, patient, healthFile, windowHome, healthFileCont
         elif event == 'Aggiungi nota':
             addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContracts)
         elif event == 'Home':
+            windowHome['-OUTPUT-'].update('')
+            windowHome['cf'].update('')
             break
 
     windowHealthFile.close()
@@ -96,10 +104,11 @@ def addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContract
         elif event == 'Aggiungi':
             values['nuova_nota'] = sanitizeInput(values['nuova_nota'])
             if checkValues(values):
+                healthFile.notes = values['nuova_nota']
                 healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
                                                       healthFile.prescriptions, healthFile.treatmentPlan,
                                                       healthFile.notes)
-                windowHealthFile['notes'].update('Note: '+ values['nuova_nota'])
+                windowHealthFile['notes'].update('Note: '+ healthFile.notes)
                 break
 
             else:
@@ -133,8 +142,8 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
                 windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
                 caregiver.name = values['name']
                 caregiver.lastname = values['lastname']
-                windowHome['name'].update(caregiver.name)
-                windowHome['lastname'].update(caregiver.lastname)
+                windowHome['benvenuto'].update(f'Benvenuto {caregiver.name} {caregiver.lastname}')
+
                 break
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
@@ -146,9 +155,10 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
 
 
 def healthFileResearch(cf,healthFileContracts):
+    healthFile = False
     try:
         healthFile = healthFileContracts.get_healthFile(cf)
-        if healthFile.cf:
+        if healthFile:
             return healthFile
     except ValueError as e:
         return None
@@ -179,3 +189,10 @@ def checkValues(values):
             sg.popup_error(f'Il campo "{key}" non è valido')
             return False
     return True
+
+
+def checkCf(cf):
+    if re.match(r'^[a-zA-Z0-9]{16}$', cf):
+        return True
+    else:
+        return False

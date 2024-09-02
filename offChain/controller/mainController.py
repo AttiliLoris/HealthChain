@@ -3,6 +3,7 @@ import threading
 import time
 import psutil
 import logging
+import mysql.connector
 from collections import namedtuple
 
 from view.login import login
@@ -38,6 +39,23 @@ provider_url = "http://ganache:8080"
 
 # Configurazione del logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',filename='offChain/monitoring/softwareLog.log', filemode='a')
+
+conn = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='loris',
+    database='healthchain'
+)
+c = conn.cursor()
+
+c.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        cf VARCHAR(16) UNIQUE NOT NULL,
+        address VARCHAR(100) UNIQUE NOT NULL,
+        private_key VARCHAR(100) UNIQUE NOT NULL,
+        ctype VARCHAR(100) UNIQUE NOT NULL
+    )
+''')
 
 def main():
 
@@ -82,34 +100,19 @@ def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
             break
 
 def handle_event(event):
-    file_path='onChain/address/addressList.json'
-    data = load_addresses(file_path)
     cf = event['args']['cf']
     address = event['args']['addres']
     private_key = event['args']['private_key']
-    type = event['args']['ctype']
+    ctype = event['args']['ctype']
 
-    data[cf] = {
-        "address": str(address),
-        "private_key": str(private_key),
-        "type": type
-    }
-    save_addresses(file_path, data)
+    query = "INSERT INTO events (cf, address, private_key, ctype) VALUES (%s, %s, %s, %s)"
+    c.execute(query, (cf, address, private_key, ctype))
+    conn.commit()
 
-def load_addresses(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        return data
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
+
 
 
 fine = threading.Event()
-
-def save_addresses(file_path, addresses):
-    with open(file_path, 'w') as file:
-        json.dump(addresses, file, indent=4)
 
 
 def monitor_system():

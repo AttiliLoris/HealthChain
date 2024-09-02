@@ -52,8 +52,8 @@ class HealthFile(Model):
     def get_healthFile(self, cf):
         data = super().cf_to_address(cf)
         if data:
-            cf,clinicalHistory,prescriptions,treatmentPlan,note = self.contract.functions.getHealthFile(cf).call({'from': data['address']})
-            healthFile = HealthFileData(cf,clinicalHistory,prescriptions,treatmentPlan,note)
+            cf,clinicalHistory,prescriptions,treatmentPlan,notes = self.contract.functions.getHealthFile(cf).call({'from': data['address']})
+            healthFile = HealthFileData(cf,clinicalHistory,prescriptions,treatmentPlan,notes)
             return healthFile
         return None
 
