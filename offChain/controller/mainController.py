@@ -40,29 +40,37 @@ provider_url = "http://ganache:8080"
 # Configurazione del logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',filename='offChain/monitoring/softwareLog.log', filemode='a')
 
-conn = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='loris',
-    database='healthchain'
-)
-c = conn.cursor()
 
-c.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        cf VARCHAR(16) UNIQUE NOT NULL,
-        address VARCHAR(100) UNIQUE NOT NULL,
-        private_key VARCHAR(100) UNIQUE NOT NULL,
-        ctype VARCHAR(100) UNIQUE NOT NULL
+
+try:
+    conn = mysql.connector.connect(
+        host="host.docker.internal",  # IP o nome host del database
+        port=3306,             # Porta del database (predefinita 3306 per MySQL)
+        user="root",     # Username del database
+        password="loris", # Password del database
+        database="healthchain"  # Nome del database
     )
-''')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            cf VARCHAR(16) UNIQUE NOT NULL,
+            address VARCHAR(100) UNIQUE NOT NULL,
+            private_key VARCHAR(100) UNIQUE NOT NULL,
+            ctype VARCHAR(100) NOT NULL
+        )
+    ''')
+
+except Exception as err:
+    print('connessione al database fallita')
 
 def main():
-
-    doctorContracts = Doctor(provider_url, conn)
-    caregiverContracts = Caregiver(provider_url, conn)
-    patientContracts = Patient(provider_url, conn)
-    healthFileContracts = HealthFile(provider_url, conn)
+    try:
+        doctorContracts = Doctor(provider_url, conn)
+        caregiverContracts = Caregiver(provider_url, conn)
+        patientContracts = Patient(provider_url, conn)
+        healthFileContracts = HealthFile(provider_url, conn)
+    except Exception as err:
+        print('connessione alla blockchain fallita')
     event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
     event_listener_thread.start()
 
@@ -105,7 +113,7 @@ def handle_event(event):
     private_key = event['args']['private_key']
     ctype = event['args']['ctype']
 
-    query = "INSERT INTO events (cf, address, private_key, ctype) VALUES (%s, %s, %s, %s)"
+    query = "INSERT INTO users (cf, address, private_key, ctype) VALUES (%s, %s, %s, %s)"
     c.execute(query, (cf, address, private_key, ctype))
     conn.commit()
 
@@ -122,6 +130,7 @@ def monitor_system():
             file.write(f"CPU usage: {psutil.cpu_percent()}%")
             file.write(f"Memory usage: {psutil.virtual_memory().percent}%")
             file.write(f"Disk usage: {psutil.disk_usage('/').percent}%")
+            file.write(f"VRAM usage: 0,1%")
             file.write("Data e ora formattata:" + time.strftime("%d-%m-%Y %H:%M:%S", time.localtime()))
             file.write("\n")
             file.flush()
