@@ -71,7 +71,13 @@ You could also check if services were built properly by running `docker-compose 
 
 To setup the application on Windows, you can basically run the same commands previously listed in your **Windows PowerShell**. Make sure you open the Shell in the project's directory.
 
+### How to use the application
+Once the setup is finished you can run the application running the command:
 
+```bash
+docker-compose run -it healthchain
+```
+To understand completely howw to use the application you can read the "User's action flow" section in this file().
 
 ## Contributors
 
