@@ -77,7 +77,7 @@ Once the setup is finished you can run the application running the command:
 ```bash
 docker-compose run -it healthchain
 ```
-To understand completely howw to use the application you can read the "User's action flow" section in this file().
+To understand completely how to use the application you can read the "User's action flow" section in this file().
 
 ## Contributors
 
