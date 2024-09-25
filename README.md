@@ -37,18 +37,18 @@ Also, make sure you have installed `git` on your computer. In **Windows** system
 sudo apt install git
 ```
 
-### Setup in UNIX-like OS's
+### Setup in UNIX-like OS's and macOS
 
 First, you need to clone this repository. In order to do that, you can open your command shell and run this command:
 
 ```bash
-git clone https://github.com/Arianna6400/ADIChain
+git clone https://github.com/AttiliLoris/HealthChain
 ```
 
 Then, make sure you are placed in the right directory:
 
 ```bash
-cd ADIChain
+cd HealthChain
 ```
 
 You can run the following command if you want to re-build Docker's image:
@@ -65,27 +65,12 @@ docker-compose up -d
 
 You could also check if services were built properly by running `docker-compose logs`. Also, make sure your user has the proper privileges to run Docker commands. Otherwise, you can address this issue by prefixing each command with `sudo`.
 
-> **NOTE:** The application has been tested on [Ubuntu](https://ubuntu.com/) and [Kali Linux](https://www.kali.org/).
+> **NOTE:** The application has been tested on [Ubuntu](https://ubuntu.com/).
 
 ### Setup in Windows
 
 To setup the application on Windows, you can basically run the same commands previously listed in your **Windows PowerShell**. Make sure you open the Shell in the project's directory.
 
-If the docker commands do not work due to the missing *engine*, you will probably need to start [Docker Desktop](https://www.docker.com/products/docker-desktop/) in the background, which is the fastest way to start docker on Windows systems.
-
-> **NOTE:** The application has been tested both on Windows 10 and Windows 11. 
-
-### Setup in macOS
-
-The application on macOS systems works in the same way as previously described. You can test it on your terminal following the UNIX-like setup. 
-
-If `docker-compose` does not run at first, you probably need to set up an environment variable to set the Docker platform. You should run the following command:
-
-```bash
-sudo DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose run -it adichain
-```
-
-After this set-up, the application should run properly.
 
 
 ## Contributors
