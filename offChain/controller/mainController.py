@@ -52,7 +52,6 @@ except Exception as err:
     print('connessione al database fallita')
 
 def main():
-
     try:
         doctorContracts = Doctor(provider_url, conn)
         caregiverContracts = Caregiver(provider_url, conn)
