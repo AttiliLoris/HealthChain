@@ -30,7 +30,8 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         [sg.Text('Nome'), sg.InputText(key='name')],
         [sg.Text('Cognome'), sg.InputText(key='lastname')],
         [sg.Text('Codice Fiscale'), sg.InputText(key='cf')],
-        [sg.Text('Password'), sg.InputText(key='password'), sg.InputText(key='password', password_char='*')],
+        [sg.Text('Password'), sg.InputText(key='password', password_char='*')],
+        [sg.Text('Conferma password'), sg.InputText(key='passwordConfirm', password_char='*')],
         [sg.Button('Registra caregiver'), sg.Button('Annulla')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
@@ -45,17 +46,23 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
             values['name'] = sanitizeInput(values['name'])
             values['lastname'] = sanitizeInput(values['lastname'])
             values['password'] = sanitizeInput(values['password'])
+            values['passwordConfirm'] = sanitizeInput(values['passwordConfirm'])
             values['cf'] = sanitizeInput(values['cf'])
-            if checkValues(values) and checkCf(values['cf']):
-                logging.info('Caregiver '+ values['lastname'] + ' ' +values['name']+' creato')
-                caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
-                window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
-                break
-            else:
+            if values['password'] == values['passwordConfirm']:
+                if checkValues(values) and checkCf(values['cf']):
+                    logging.info('Caregiver '+ values['lastname'] + ' ' +values['name']+' creato')
+                    caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
+                    window['-OUTPUT-'].update('Caregiver registrato', text_color='green')
+                    break
+            elif values['password'] != values['passwordConfirm']:
+                window['-OUTPUT-'].update('Le password non corrispondono', text_color='red')
                 window['name'].update(values['name'])
                 window['lastname'].update(values['lastname'])
-                window['password'].update(values['password'])
+                window['password'].update('')
+                window['passwordConfirm'].update('')
                 window['cf'].update(values['cf'])
+            elif not checkCf(values['cf']):
+                window['-OUTPUT-'].update('Codice fiscale non valido', text_color='red')
     windowHome.UnHide()
     window.close()
 def doctor_registration_panel(admin, doctorContract,windowHome):
@@ -63,7 +70,8 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
         [sg.Text('Nome'), sg.InputText(key='name')],
         [sg.Text('Cognome'), sg.InputText(key='lastname')],
         [sg.Text('Codice Fiscale'), sg.InputText(key='cf')],
-        [sg.Text('Password'), sg.InputText(key='password'), sg.InputText(key='password', password_char='*')],
+        [sg.Text('Password'), sg.InputText(key='password', password_char='*')],
+        [sg.Text('Conferma password'), sg.InputText(key='passwordConfirm', password_char='*')],
         [sg.Button('Registra dottore'), sg.Button('Annulla')],
         [sg.Text('', size=(30, 1), key='-OUTPUT-')]
     ]
@@ -76,17 +84,20 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
             values['name'] = sanitizeInput(values['name'])
             values['lastname'] = sanitizeInput(values['lastname'])
             values['password'] = sanitizeInput(values['password'])
+            values['passwordConfirm'] = sanitizeInput(values['passwordConfirm'])
             values['cf'] = sanitizeInput(values['cf'])
-            if checkValues(values) and checkCf(values['cf']):
-                logging.info('Dottore ' + values['lastname'] + ' ' + values['name'] + ' creato')
-                doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
-                window['-OUTPUT-'].update('Dottore registrato', text_color='green')
-                break
-            else:
-                window['name'].update(values['name'])
-                window['lastname'].update(values['lastname'])
-                window['password'].update(values['password'])
-                window['cf'].update(values['cf'])
+            if values['password'] == values['passwordConfirm']:
+                if checkValues(values) and checkCf(values['cf']):
+                    logging.info('Dottore ' + values['lastname'] + ' ' + values['name'] + ' creato')
+                    doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
+                    window['-OUTPUT-'].update('Dottore registrato', text_color='green')
+                    break
+            if values['password'] != values['passwordConfirm']:
+                window['-OUTPUT-'].update('Le password non corrispondono', text_color='red')
+                window['password'].update('')
+                window['passwordConfirm'].update('')
+            if not checkCf(values['cf']):
+                window['-OUTPUT-'].update('Codice fiscale non valido', text_color='red')
     windowHome.UnHide()
     window.close()
 

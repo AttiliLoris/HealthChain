@@ -105,11 +105,13 @@ def addNote(healthFile, patient, caregiver, windowHealthFile, healthFileContract
             values['nuova_nota'] = sanitizeInput(values['nuova_nota'])
             if checkValues(values):
                 healthFile.notes = values['nuova_nota']
-                healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
+                if healthFileContracts.update_healthFile(healthFile.cf, healthFile.clinicalHistory,
                                                       healthFile.prescriptions, healthFile.treatmentPlan,
-                                                      healthFile.notes)
-                windowHealthFile['notes'].update('Note: '+ healthFile.notes)
-                break
+                                                      healthFile.notes):
+                    windowHealthFile['notes'].update('Note: '+ healthFile.notes)
+                    break
+                else:
+                    windowAddNote['-OUTPUT-'].update("Connessione alla blockchain fallita, contattare l'amministratore", text_color='red')
 
             else:
                 windowAddNote['-OUTPUT-'].update('Modifiche non valide', text_color='red')
@@ -138,13 +140,15 @@ def caregiverProfile(caregiver, caregiverContracts, windowHome):
             values['lastname'] = sanitizeInput(values['lastname'])
             if checkValues(values):
                 logging.info('Profilo del caregiver: '+caregiver.lastname + ' '+ caregiver.name + ' modificato')
-                caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname'])
-                windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
-                caregiver.name = values['name']
-                caregiver.lastname = values['lastname']
-                windowHome['benvenuto'].update(f'Benvenuto {caregiver.name} {caregiver.lastname}')
+                if caregiverContracts.update_caregiver(caregiver.cf, values['name'], values['lastname']):
+                    windowProfile['-OUTPUT-'].update('Modifiche registrate', text_color='green')
+                    caregiver.name = values['name']
+                    caregiver.lastname = values['lastname']
+                    windowHome['benvenuto'].update(f'Benvenuto {caregiver.name} {caregiver.lastname}')
+                    break
+                else:
+                    windowProfile['-OUTPUT-'].update("Connessione alla blockchain fallita, contattare l'amministratore", text_color='red')
 
-                break
             else:
                 windowProfile['-OUTPUT-'].update('Modifiche non valide', text_color='red')
                 windowProfile['name'].update(caregiver.name)

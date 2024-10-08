@@ -4,5 +4,6 @@ py-solc-x
 PySimpleGUI
 pyautogui
 psutil
+faker
 #qui dentro dobbiamo inserire tutto quello che c'è da installare per far funzionare l'applicazione
 #ad esempio se usiamo pyGui dobbiamo mettere anche quella etc.

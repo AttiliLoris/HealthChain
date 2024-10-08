@@ -1,4 +1,3 @@
 from controller import mainController
 
-
-mainC = mainController.main()
+main = mainController.main()

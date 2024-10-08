@@ -66,7 +66,7 @@ def modifyProfile(patient,patientContracts, windowHome):
                      [sg.Text('Codice fiscale'), sg.Text(patient.cf, key='cf')],
                      [sg.Text('Luogo di nascita'), sg.InputText(patient.birthPlace, key='birthPlace')],
                      [sg.Text('Indipendente'), sg.InputText(patient.isIndependent, key='isIndependent')],#bottone
-                     [sg.Text('Password'), sg.InputText(patient.password, key='password')],
+                     [sg.Text('Password'), sg.InputText(patient.password, key='password', password_char='*')],
                      [sg.Button('Salva'), sg.Button('Home')],
                      [sg.Text('', size=(30, 1), key='-OUTPUT-')]]
     windowProfile = sg.Window('Profile', layoutProfile)

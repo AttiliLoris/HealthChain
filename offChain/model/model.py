@@ -7,7 +7,6 @@ import random
 from eth_account import Account
 
 class Model:
-
     def __init__(self, provider_url,contract_name, conn, solc_version='0.8.0'):
         self.solc_version = solc_version
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
@@ -39,9 +38,7 @@ class Model:
         self.abi = self.contract_interface['abi']
         self.bytecode = self.contract_interface['evm']['bytecode']['object']
         account = self.loadAdmin()
-
         contract = self.web3.eth.contract(abi=self.abi, bytecode=self.bytecode)
-
         tx_hash = contract.constructor().transact({'from': account})
         tx_receipt = self.web3.eth.wait_for_transaction_receipt(tx_hash)
         self.contract = self.web3.eth.contract(address=tx_receipt.contractAddress, abi=self.abi)
@@ -49,7 +46,6 @@ class Model:
             file.write(self.contract.address)
         with open(f'onChain/abi/{contract_name}.json', 'w') as file:
             json.dump(self.contract.abi, file)
-
 
     def cf_to_address(self, cf):
         cursor = self.conn.cursor(dictionary=True)

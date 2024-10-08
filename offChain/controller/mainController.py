@@ -23,24 +23,12 @@ from model.patient import PatientData
 
 
 
-'''from offChain.model.caregiver import Caregiver
-from offChain.model.doctor import Doctor
-from offChain.model.healthFile import HealthFile
-from offChain.model.patient import Patient
-from offChain.view.homeCaregiver import homeCaregiver
-from offChain.view.homeDoctor import homeDoctor
-from offChain.view.homePatient import homePatient
-from offChain.view.login import login'''
-
 
 provider_url = "http://ganache:8080"
 
-#fare un evento che fa bloccare tuttp quando c'è esci o etc nfnnf
-
 # Configurazione del logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',filename='offChain/monitoring/softwareLog.log', filemode='a')
-
-
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
+                    filename='offChain/monitoring/softwareLog.log', filemode='a')
 
 try:
     conn = mysql.connector.connect(
@@ -64,20 +52,25 @@ except Exception as err:
     print('connessione al database fallita')
 
 def main():
+
     try:
         doctorContracts = Doctor(provider_url, conn)
         caregiverContracts = Caregiver(provider_url, conn)
         patientContracts = Patient(provider_url, conn)
         healthFileContracts = HealthFile(provider_url, conn)
     except Exception as err:
-        print('connessione alla blockchain fallita')
-    event_listener_thread = threading.Thread(target=listen_to_events, args=(doctorContracts,caregiverContracts,patientContracts))
+        return -1
+
+    event_listener_thread = threading.Thread(target=listen_to_events,
+                                             args=(doctorContracts,caregiverContracts,patientContracts))
     event_listener_thread.start()
 
     sistem_monitoring = threading.Thread(target=monitor_system,
                                              args=())
     sistem_monitoring.start()
-
+    flag = beginLogin()
+    return flag
+def beginLogin():
     while True:
         user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts,fine)
         if isinstance(user, DoctorData):
@@ -91,7 +84,7 @@ def main():
         else:
             fine.set()
             break
-
+    return 0
 
 def listen_to_events(doctorContracts,caregiverContracts,patientContracts):
     filters = {

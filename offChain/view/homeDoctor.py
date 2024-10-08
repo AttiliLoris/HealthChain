@@ -26,7 +26,9 @@ def homeDoctor(doctor,doctorContracts,healthFileContracts):
             if healthFile:
                 windowHome['-OUTPUT-'].update('')
                 windowHome.Hide()
-                logging.info('Fascicolo con codice: ' + healthFile.cf + ' aperto dal dottore: ' + doctor.lastname + ' ' + doctor.name)
+                logging.info('Fascicolo con codice: ' + healthFile.cf +
+                             ' aperto dal dottore: ' + doctor.lastname + ' ' + doctor.name + ' con codice fiscale: '
+                             + doctor.cf)
                 patientHealthFile(healthFile, windowHome, healthFileContracts)
 
             else:
