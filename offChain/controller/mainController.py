@@ -67,9 +67,9 @@ def main():
     sistem_monitoring = threading.Thread(target=monitor_system,
                                              args=())
     sistem_monitoring.start()
-    flag = beginLogin()
+    flag = beginLogin(doctorContracts, caregiverContracts, patientContracts, healthFileContracts)
     return flag
-def beginLogin():
+def beginLogin(doctorContracts, caregiverContracts, patientContracts, healthFileContracts):
     while True:
         user = login(doctorContracts, caregiverContracts, patientContracts, healthFileContracts,fine)
         if isinstance(user, DoctorData):
