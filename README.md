@@ -78,6 +78,7 @@ Once the setup is finished you can run the application running the command:
 docker-compose run -it healthchain
 ```
 A window of PySimpleGUI installation will show up, requesting you to accept the terms in the License Agreement, you have to check the box and press the "Ok" button. Then an other similar window will request you to register or to insert a Developer key in the text box at the center of the screen, you have to copy the license key in [this file](https://github.com/AttiliLoris/HealthChain/blob/main/PySimpleGUILicenseKey.txt) and paste it in the box, then press the "Ok" button; you will see a last window that confirm the key validity and you can press the "Ok" button so you will finally enter the application home.
+As you start the application for the first time, you can access as Admin using "sara" and "pwds" as "codice fiscale" and password, add doctors and caregivers to try all the functionality.
 To understand completely how to use the application you can read the "User's action flow" section in [this file](https://github.com/AttiliLoris/HealthChain/blob/main/HealthChain.pdf).
 
 ## Contributors
