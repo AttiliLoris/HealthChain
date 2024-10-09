@@ -69,7 +69,7 @@ You could also check if services were built properly by running `docker-compose 
 
 ### Setup in Windows
 
-To setup the application on Windows, you can basically run the same commands previously listed in your **Windows PowerShell**. Make sure you open the Shell in the project's directory.
+To setup the application on Windows, you can basically run the same commands previously listed in your **Windows PowerShell**. Make sure you open the Shell in the project's directory. Before you can run the application, however, you must install an application to use Linux graphic interfaces such as PySimpleGUI, and you can find an easy to use  X Window System [here](https://xming.it.softonic.com/download). You just have to run the background server that will recognize PySimpleGUI as a Linux graphic application and show it as a common application.
 
 ### How to use the application
 Once the setup is finished you can run the application running the command:
@@ -77,7 +77,7 @@ Once the setup is finished you can run the application running the command:
 ```bash
 docker-compose run -it healthchain
 ```
-A window of PySimppleGUI installation will show up, requesting you to accept the terms in the License Agreement, you have to check the box and press the "Ok" button. Then an other similar window will request you to register or to insert a Developer key in the text box at the center of the screen, you have to copy the license key in [this file](https://github.com/AttiliLoris/HealthChain/blob/main/PySimpleGUILicenseKey.txt) and paste it in the box, then press the "Ok" button; you will see a last window that confirm the key validity and you can press the "Ok" button so you will finally enter the application home.
+A window of PySimpleGUI installation will show up, requesting you to accept the terms in the License Agreement, you have to check the box and press the "Ok" button. Then an other similar window will request you to register or to insert a Developer key in the text box at the center of the screen, you have to copy the license key in [this file](https://github.com/AttiliLoris/HealthChain/blob/main/PySimpleGUILicenseKey.txt) and paste it in the box, then press the "Ok" button; you will see a last window that confirm the key validity and you can press the "Ok" button so you will finally enter the application home.
 To understand completely how to use the application you can read the "User's action flow" section in [this file](https://github.com/AttiliLoris/HealthChain/blob/main/HealthChain.pdf).
 
 ## Contributors
