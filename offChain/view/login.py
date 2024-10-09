@@ -86,8 +86,7 @@ def signIn(patientContracts,healthFileContract,windowLogin):
             values['password'] = sanitizeInput(values['password'])
             values['isIndependent'] = sanitizeInput(values['isIndependent'])
             values['cf'] = sanitizeInput(values['cf'])
-
-            if checkValues(values) and checkCf(values['cf']):
+            if checkValues(values) and checkCf(values['cf']) and checkPassword(values['password']):
                 patientContracts.create_patient(values['name'], values['lastname'],values['birthPlace'], values['password'], bool(int(values['isIndependent'])),values['cf'])
                 healthFileContract.create_healthFile(values['cf'])
                 windowSignIn['-OUTPUT-'].update('Paziente registrato', text_color='green')
@@ -100,6 +99,8 @@ def signIn(patientContracts,healthFileContract,windowLogin):
                 windowSignIn['isIndependent'].update(values['isIndependent'])
                 windowSignIn['password'].update(values['password'])
                 windowSignIn['cf'].update(values['cf'])
+            if not checkPassword(values['password']):
+                windowSignIn['-OUTPUT-'].update('La password è troppo corta', text_color='red')
     windowSignIn.close()
     windowLogin.UnHide()
 
@@ -129,3 +130,8 @@ def checkCf(cf):
         return True
     else:
         return False
+
+def checkPassword(password):
+    if len(password) < 8:
+        return False
+    return password

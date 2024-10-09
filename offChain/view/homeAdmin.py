@@ -45,10 +45,10 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
         elif event == 'Registra caregiver':
             values['name'] = sanitizeInput(values['name'])
             values['lastname'] = sanitizeInput(values['lastname'])
-            values['password'] = sanitizeInput(values['password'])
-            values['passwordConfirm'] = sanitizeInput(values['passwordConfirm'])
+            values['password'] = checkPassword(sanitizeInput(values['password']))
+            values['passwordConfirm'] = checkPassword(sanitizeInput(values['passwordConfirm']))
             values['cf'] = sanitizeInput(values['cf'])
-            if values['password'] == values['passwordConfirm']:
+            if (values['password']!= False) and (values['password'] == values['passwordConfirm']):
                 if checkValues(values) and checkCf(values['cf']):
                     logging.info('Caregiver '+ values['lastname'] + ' ' +values['name']+' creato')
                     caregiverContract.create_caregiver(admin.address, admin.private_key,values['name'], values['lastname'], values['password'], values['cf'])
@@ -63,6 +63,10 @@ def caregiver_registration_panel(admin, caregiverContract,windowHome):
                 window['cf'].update(values['cf'])
             elif not checkCf(values['cf']):
                 window['-OUTPUT-'].update('Codice fiscale non valido', text_color='red')
+            if values['password']== False:
+                window['-OUTPUT-'].update('La password è troppo corta', text_color='red')
+                window['password'].update('')
+                window['passwordConfirm'].update('')
     windowHome.UnHide()
     window.close()
 def doctor_registration_panel(admin, doctorContract,windowHome):
@@ -83,10 +87,10 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
         elif event == 'Registra dottore':
             values['name'] = sanitizeInput(values['name'])
             values['lastname'] = sanitizeInput(values['lastname'])
-            values['password'] = sanitizeInput(values['password'])
-            values['passwordConfirm'] = sanitizeInput(values['passwordConfirm'])
+            values['password'] = checkPassword(sanitizeInput(values['password']))
+            values['passwordConfirm'] = checkPassword(sanitizeInput(values['passwordConfirm']))
             values['cf'] = sanitizeInput(values['cf'])
-            if values['password'] == values['passwordConfirm']:
+            if (values['password']!= False) and (values['password'] == values['passwordConfirm']):
                 if checkValues(values) and checkCf(values['cf']):
                     logging.info('Dottore ' + values['lastname'] + ' ' + values['name'] + ' creato')
                     doctorContract.create_doctor(admin.address, admin.private_key, values['name'], values['lastname'], values['password'], values['cf'])
@@ -94,6 +98,10 @@ def doctor_registration_panel(admin, doctorContract,windowHome):
                     break
             if values['password'] != values['passwordConfirm']:
                 window['-OUTPUT-'].update('Le password non corrispondono', text_color='red')
+                window['password'].update('')
+                window['passwordConfirm'].update('')
+            if values['password']== False:
+                window['-OUTPUT-'].update('La password è troppo corta', text_color='red')
                 window['password'].update('')
                 window['passwordConfirm'].update('')
             if not checkCf(values['cf']):
@@ -122,3 +130,8 @@ def checkCf(cf):
         return True
     else:
         return False
+
+def checkPassword(password):
+    if len(password) < 8:
+        return False
+    return password
