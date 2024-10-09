@@ -25,14 +25,13 @@ from model.patient import PatientData
 
 
 provider_url = "http://ganache:8080"
-
 # Configurazione del logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
                     filename='offChain/monitoring/softwareLog.log', filemode='a')
 
 try:
     conn = mysql.connector.connect(
-        host="host.docker.internal",  # IP o nome host del database
+        host="db",  # IP o nome host del database
         port=3306,             # Porta del database (predefinita 3306 per MySQL)
         user="root",     # Username del database
         password="loris", # Password del database
