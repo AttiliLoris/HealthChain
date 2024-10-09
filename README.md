@@ -77,6 +77,7 @@ Once the setup is finished you can run the application running the command:
 ```bash
 docker-compose run -it healthchain
 ```
+A window of PySimppleGUI installation will show up, requesting you to accept the terms in the License Agreement, you have to check the box and press the "Ok" button. Then an other similar window will request you to register or to insert a Developer key in the text box at the center of the screen, you have to copy the license key in [this file] and paste it in the box, then press the "Ok" button; you will see a last window that confirm the key validity and you can press the "Ok" button so you will finally enter the application home.
 To understand completely how to use the application you can read the "User's action flow" section in [this file](https://github.com/AttiliLoris/HealthChain/blob/main/HealthChain.pdf).
 
 ## Contributors
